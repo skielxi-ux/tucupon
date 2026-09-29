@@ -59,7 +59,8 @@ p{margin:0}
 .tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.92rem;color:var(--muted)}
 .tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
 main.wrap{padding-bottom:64px}
-.panel{margin-top:14px;display:grid;gap:14px}
+.panel{margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.item .t,.item .s{overflow-wrap:anywhere}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px}
 .card h2{font-size:1.25rem}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -136,10 +137,10 @@ th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
 td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .scroll{overflow-x:auto}
 .lg{flex:none;display:grid;place-items:center;overflow:hidden;width:58px;height:58px;border-radius:16px;border:1px solid var(--line);color:#2B0F63;font:800 1.15rem/1 var(--font-display)}
-.lg.img{background:#fff;padding:5px}
+.lg.img{background:#fff;padding:0}
 .lg img{width:100%;height:100%;object-fit:contain;display:block}
 .lg.big{width:120px;height:120px;border-radius:26px;font-size:2.2rem}
-.lg.mini{width:30px;height:30px;border-radius:9px;font-size:.7rem;padding:2px;border-color:rgba(255,255,255,.3)}
+.lg.mini{width:30px;height:30px;border-radius:9px;font-size:.7rem;border-color:rgba(255,255,255,.3)}
 .logo-edit{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .file-btn{position:relative;overflow:hidden}
 .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
@@ -158,6 +159,9 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .ic-grid button{aspect-ratio:1;border-radius:12px;font-size:1.7rem;line-height:1;background:var(--surface-2);border:2px solid transparent;transition:transform .1s}
 .ic-grid button:hover{transform:scale(1.08)}
 .ic-grid button[aria-pressed="true"]{border-color:var(--brand);background:var(--surface)}
+.hora{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.hora select{padding:11px 8px;text-align:center}
+.hint.ok{color:var(--ok);font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -184,6 +188,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
     <span class="who"><span id="w-nombre"></span><button type="button" id="btn-salir" class="btn-top">Salir</button></span>
   </div></header>
   <main class="wrap">
+    <div id="pausa-aviso" class="alert" style="margin-top:14px" hidden></div>
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button type="button" class="tab" role="tab" data-tab="canjear" aria-selected="true">Canjear</button>
       <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Canjes</button>
@@ -239,7 +244,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
               <button type="button" id="pf-quitar" class="btn ghost sm">Quitar logo</button>
             </div>
           </div>
-          <p class="hint">Ideal: cuadrado, con fondo blanco o transparente. Lo achicamos automáticamente.</p>
+          <p class="hint"><b>Ideal: 512 × 512 px, cuadrado.</b> Si tu logo tiene fondo de color, que llegue hasta los bordes. Si es transparente, dejale un pequeño margen.</p>
         </div>
         <div><label class="label" for="pf-nombre">Nombre del local</label><input id="pf-nombre" class="field" maxlength="60"></div>
         <div class="grid2">
@@ -306,11 +311,21 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
       <div class="dias" id="cf-dias">
         <label><input type="checkbox" value="1"><span>Lun</span></label><label><input type="checkbox" value="2"><span>Mar</span></label><label><input type="checkbox" value="3"><span>Mié</span></label><label><input type="checkbox" value="4"><span>Jue</span></label><label><input type="checkbox" value="5"><span>Vie</span></label><label><input type="checkbox" value="6"><span>Sáb</span></label><label><input type="checkbox" value="0"><span>Dom</span></label>
       </div>
-      <p class="hint">Si marcás todos (o ninguno), vale todos los días.</p>
+      <p class="hint">Si marcás todos (o ninguno), vale todos los días. AM = de medianoche a mediodía · PM = de mediodía a medianoche.</p>
     </div>
     <div class="grid2">
-      <div><label class="label" for="cf-desde">Desde (opcional)</label><input id="cf-desde" class="field" type="time"></div>
-      <div><label class="label" for="cf-hasta">Hasta (opcional)</label><input id="cf-hasta" class="field" type="time"><p class="hint">Dejá las dos horas vacías si vale todo el día.</p></div>
+      <div><span class="label" id="cf-desde-l">Desde (opcional)</span><input id="cf-desde" type="hidden"><div class="hora" data-hora="cf-desde" aria-labelledby="cf-desde-l"></div></div>
+      <div><span class="label" id="cf-hasta-l">Hasta (opcional)</span><input id="cf-hasta" type="hidden"><div class="hora" data-hora="cf-hasta" aria-labelledby="cf-hasta-l"></div></div>
+    </div>
+    <p id="cf-res1" class="hint" style="margin-top:-6px">Sin horario: vale todo el día.</p>
+    <button type="button" id="cf-mas-horario" class="btn ghost sm" style="justify-self:start">+ Agregar otro horario</button>
+    <div id="cf-franja2" hidden>
+      <div class="row" style="margin-bottom:6px"><span class="label grow" style="margin:0">Segundo horario</span><button type="button" id="cf-quitar-horario" class="btn ghost sm">Quitar</button></div>
+      <div class="grid2">
+        <div><span class="label" id="cf-desde2-l">Desde</span><input id="cf-desde2" type="hidden"><div class="hora" data-hora="cf-desde2" aria-labelledby="cf-desde2-l"></div></div>
+        <div><span class="label" id="cf-hasta2-l">Hasta</span><input id="cf-hasta2" type="hidden"><div class="hora" data-hora="cf-hasta2" aria-labelledby="cf-hasta2-l"></div></div>
+      </div>
+      <p id="cf-res2" class="hint">Por ejemplo, para la noche: 8:00 PM a 11:30 PM.</p>
     </div>
     <div class="grid2">
       <div><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
@@ -462,6 +477,10 @@ async function abrirFormCupon(c, opciones = {}){
   $$('#cf-dias input').forEach(i => i.checked = !!(c && c.dias && c.dias.includes(+i.value)));
   $('cf-desde').value = c && c.hora_desde ? c.hora_desde : '';
   $('cf-hasta').value = c && c.hora_hasta ? c.hora_hasta : '';
+  $('cf-desde2').value = c && c.hora_desde2 ? c.hora_desde2 : '';
+  $('cf-hasta2').value = c && c.hora_hasta2 ? c.hora_hasta2 : '';
+  mostrarFranja2(!!(c && c.hora_desde2));
+  ['cf-desde', 'cf-hasta', 'cf-desde2', 'cf-hasta2'].forEach(id => ponerHora(id, $(id).value)); resumenHorarios();
   $('cf-vence').value = c && c.vence ? c.vence : '';
   $('cf-activo').checked = c ? c.activo : true;
   pintarFotoCupon();
@@ -479,6 +498,7 @@ function leerFormCupon(){
     descripcion: $('cf-descripcion').value.trim(), condiciones: $('cf-condiciones').value.trim(),
     dias: dias.length && dias.length < 7 ? dias : null,
     hora_desde: $('cf-desde').value || null, hora_hasta: $('cf-hasta').value || null,
+    hora_desde2: !$('cf-franja2').hidden && $('cf-desde2').value || null, hora_hasta2: !$('cf-franja2').hidden && $('cf-hasta2').value || null,
     vence: $('cf-vence').value || null, activo: $('cf-activo').checked,
     ...(fotoNueva !== undefined ? {foto: fotoNueva} : {}),
   };
@@ -555,6 +575,51 @@ document.addEventListener('click', e => {
   if(ic && iconoDestino){ $(iconoDestino).value = ic.dataset.ic; pintarBotonIcono(iconoDestino); cerrarHoja('sheet-iconos'); }
 });
 
+// ---------- Segundo horario del cupón ----------
+function mostrarFranja2(si){ $('cf-franja2').hidden = !si; $('cf-mas-horario').hidden = si; }
+$('cf-mas-horario').addEventListener('click', () => {
+  if(!$('cf-desde').value || !$('cf-hasta').value){ avisoCupon('Completá primero el primer horario (Desde y Hasta).'); $('cf-desde').focus(); return; }
+  avisoCupon(''); mostrarFranja2(true); $('cf-desde2').focus();
+});
+$('cf-quitar-horario').addEventListener('click', () => { ponerHora('cf-desde2', ''); ponerHora('cf-hasta2', ''); resumenHorarios(); mostrarFranja2(false); });
+
+// ---------- Selector de hora con AM / PM (guarda HH:MM de 24 h en el campo oculto) ----------
+const hh12 = t => { if(!t) return null; let [h, m] = t.split(':').map(Number); const pm = h >= 12; h = h % 12 || 12; return {h, m, pm}; };
+const texto12 = t => { const x = hh12(t); return x ? `${x.h}:${String(x.m).padStart(2, '0')} ${x.pm ? 'PM' : 'AM'}` : ''; };
+function armarHora(el){
+  const id = el.dataset.hora;
+  el.innerHTML = `<select class="field" data-p="h" aria-label="Hora"><option value="">Hora</option>${[...Array(12)].map((_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}</select>
+    <select class="field" data-p="m" aria-label="Minutos">${['00','15','30','45'].map(m => `<option value="${m}">${m}</option>`).join('')}</select>
+    <select class="field" data-p="a" aria-label="AM o PM"><option value="am">AM</option><option value="pm">PM</option></select>`;
+  el.addEventListener('change', () => {
+    const h = el.querySelector('[data-p=h]').value, m = el.querySelector('[data-p=m]').value, a = el.querySelector('[data-p=a]').value;
+    $(id).value = h ? `${String((+h % 12) + (a === 'pm' ? 12 : 0)).padStart(2, '0')}:${m}` : '';
+    resumenHorarios();
+  });
+}
+function ponerHora(id, valor){
+  const el = document.querySelector(`[data-hora="${id}"]`); $(id).value = valor || '';
+  const x = hh12(valor), sm = el.querySelector('[data-p=m]');
+  el.querySelector('[data-p=h]').value = x ? String(x.h) : '';
+  const mm = x ? String(x.m).padStart(2, '0') : '00';
+  if(![...sm.options].some(o => o.value === mm)) sm.insertAdjacentHTML('beforeend', `<option value="${mm}">${mm}</option>`);
+  sm.value = mm;
+  el.querySelector('[data-p=a]').value = x && x.pm ? 'pm' : 'am';
+}
+function resumenFranja(d, h, el, vacio){
+  if(!d && !h){ el.textContent = vacio; el.className = 'hint'; return; }
+  if(!d || !h){ el.textContent = 'Completá las dos horas.'; el.className = 'hint warn'; return; }
+  if(d === h){ el.textContent = 'La hora de inicio y de fin no pueden ser iguales.'; el.className = 'hint warn'; return; }
+  const cruza = d > h;
+  el.textContent = `Vale de ${texto12(d)} a ${texto12(h)}` + (cruza ? ' del día siguiente (pasa la medianoche). ¿Es correcto?' : '.');
+  el.className = 'hint ' + (cruza ? 'warn' : 'ok');
+}
+function resumenHorarios(){
+  resumenFranja($('cf-desde').value, $('cf-hasta').value, $('cf-res1'), 'Sin horario: vale todo el día.');
+  resumenFranja($('cf-desde2').value, $('cf-hasta2').value, $('cf-res2'), 'Por ejemplo, para la noche: 8:00 PM a 11:30 PM.');
+}
+$$('[data-hora]').forEach(armarHora);
+
 
 // ---------- Sesión del local (se guarda solo en esta pestaña) ----------
 let yo = null, pin = '', cupones = [];
@@ -593,6 +658,8 @@ function entrar(){
 }
 function pintarCabecera(){
   $('w-nombre').innerHTML = `${logoHTML(yo.logo, yo.nombre, yo.color, 'mini')}${esc(yo.nombre)}`;
+  const av = $('pausa-aviso'); av.hidden = yo.activo !== false;
+  if(yo.activo === false) av.innerHTML = `<b>Tu local está pausado por Tucupón.</b> Mientras tanto no aparece para los clientes y no se pueden canjear códigos.${yo.motivo_pausa ? `<br>Motivo: ${esc(yo.motivo_pausa)}` : ''}<br>Para reactivarlo, escribile al equipo de Tucupón.`;
 }
 function guardarSesion(){ try{ sessionStorage.setItem('tucupon.local', JSON.stringify({yo: {...yo, logo: null}, pin})); }catch(_){} }
 function salir(){
@@ -788,7 +855,7 @@ $('f-perfil').addEventListener('submit', async e => {
 });
 
 cargarLocales();
-if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; pintarCabecera(); }).catch(() => {}); }
+if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; pintarCabecera(); }).catch(() => {}); }
 </script>
 </body>
 </html>
