@@ -162,6 +162,9 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .hora{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .hora select{padding:11px 8px;text-align:center}
 .hint.ok{color:var(--ok);font-weight:700}
+.rel-box{border:2px dashed var(--brand);border-radius:16px;padding:14px;background:var(--surface-2)}
+.rel-box .switch{font-size:1.02rem}
+.chip.rel{background:#1E0B45;color:#C4F04A}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -351,6 +354,18 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
     <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="En pizzas grandes de la carta"></div>
     <div><label class="label" for="cf-descripcion">Descripción (opcional)</label><textarea id="cf-descripcion" class="field" maxlength="300" placeholder="Contá qué incluye la promo"></textarea></div>
     <div><label class="label" for="cf-condiciones">Condiciones</label><textarea id="cf-condiciones" class="field" maxlength="400" placeholder="Válido en salón. No acumulable con otras promos"></textarea><p class="hint">Separá cada condición con un punto.</p></div>
+    <div class="rel-box">
+      <label class="switch"><input id="cf-rel" type="checkbox"><span>⚡ Cupón relámpago</span></label>
+      <p class="hint">Dura pocas horas y tiene cantidad limitada. Aparece destacado arriba de todo en Tucupón, con cuenta regresiva.</p>
+      <div id="cf-rel-campos" class="grid2" style="margin-top:12px" hidden>
+        <div><label class="label" for="cf-rel-horas">Dura</label><select id="cf-rel-horas" class="field">
+          <option value="1">1 hora</option><option value="2">2 horas</option><option value="3" selected>3 horas</option>
+          <option value="6">6 horas</option><option value="12">12 horas</option><option value="24">24 horas</option></select></div>
+        <div><label class="label" for="cf-stock">Cantidad de códigos</label><input id="cf-stock" class="field" type="number" min="1" max="9999" step="1" inputmode="numeric" placeholder="Ej.: 50"></div>
+        <p id="cf-rel-estado" class="hint" style="grid-column:1/-1;margin:0">Empieza apenas guardes el cupón. El código vale hasta que termina.</p>
+      </div>
+    </div>
+    <div id="cf-normal" style="display:grid;gap:14px">
     <div>
       <span class="label">Días en que vale</span>
       <div class="dias" id="cf-dias">
@@ -372,8 +387,9 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
       </div>
       <p id="cf-res2" class="hint">Por ejemplo, para la noche: 8:00 PM a 11:30 PM.</p>
     </div>
+    </div>
     <div class="grid2">
-      <div><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
+      <div id="cf-vence-w"><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
       <div style="align-self:center"><label class="switch"><input id="cf-activo" type="checkbox" checked>Visible para los clientes</label></div>
     </div>
     <button type="submit" class="btn full">Guardar cupón</button>
@@ -432,12 +448,15 @@ const badge = (c) => { const e = partes(c.etiqueta); return `<span class="badge 
 // Fila de cupón en los paneles
 function itemCupon(c, extra = ''){
   const vence = c.vence ? `Vence ${fechaCorta(c.vence)}` : '';
+  const rel = c.relampago_fin ? (new Date(c.relampago_fin) > new Date()
+      ? `<span class="chip rel">⚡ Relámpago · termina ${hora(c.relampago_fin)} h · ${c.pedidos} de ${c.stock}</span> `
+      : `<span class="chip off">⚡ Relámpago terminado · ${c.pedidos} de ${c.stock}</span> `) : '';
   const vencido = c.vence && c.vence < hoyISO();
   return `<div class="item">
     ${badge(c)}
     <div class="grow">
       <p class="t">${esc(c.icono)} ${esc(c.etiqueta)} · ${esc(c.titulo)}</p>
-      <p class="s">${extra}${esc(c.horario)}${vence ? ' · ' + vence : ''}</p>
+      <p class="s">${rel}${extra}${c.relampago_fin ? '' : esc(c.horario) + (vence ? ' · ' + vence : '')}</p>
       <p class="s"><span class="chip ${c.activo && !vencido ? 'ok' : 'off'}">${!c.activo ? 'Pausado' : vencido ? 'Vencido' : 'Visible'}</span>${c.foto_v ? ' <span class="chip">📷 Con foto</span>' : ''} ${c.pedidos} pedidos · ${c.usados} canjeados · 🔥 ${c.votos.hot} / ❄️ ${c.votos.frio}</p>
     </div>
     <div class="acts">
@@ -528,6 +547,9 @@ async function abrirFormCupon(c, opciones = {}){
   ['cf-desde', 'cf-hasta', 'cf-desde2', 'cf-hasta2'].forEach(id => ponerHora(id, $(id).value)); resumenHorarios();
   $('cf-vence').value = c && c.vence ? c.vence : '';
   $('cf-activo').checked = c ? c.activo : true;
+  relOrig = c && c.relampago_fin ? c : null;
+  $('cf-rel').checked = !!relOrig; $('cf-stock').value = relOrig ? relOrig.stock : ''; $('cf-rel-horas').value = '3';
+  pintarRelampago();
   pintarFotoCupon();
   abrirHoja('sheet-cupon');
   if(c && c.foto_v){
@@ -546,6 +568,7 @@ function leerFormCupon(){
     hora_desde2: !$('cf-franja2').hidden && $('cf-desde2').value || null, hora_hasta2: !$('cf-franja2').hidden && $('cf-hasta2').value || null,
     vence: $('cf-vence').value || null, activo: $('cf-activo').checked,
     ...(fotoNueva !== undefined ? {foto: fotoNueva} : {}),
+    relampago: $('cf-rel').checked, relampago_horas: +$('cf-rel-horas').value, stock: $('cf-stock').value ? +$('cf-stock').value : null,
   };
 }
 function avisoCupon(msg){ $('cf-alert').textContent = msg; $('cf-alert').hidden = !msg; if(msg) $('cf-alert').scrollIntoView({block:'nearest'}); }
@@ -664,6 +687,19 @@ function resumenHorarios(){
   resumenFranja($('cf-desde2').value, $('cf-hasta2').value, $('cf-res2'), 'Por ejemplo, para la noche: 8:00 PM a 11:30 PM.');
 }
 $$('[data-hora]').forEach(armarHora);
+
+// ---------- Cupón relámpago ----------
+let relOrig = null;
+function pintarRelampago(){
+  const si = $('cf-rel').checked, corriendo = relOrig && new Date(relOrig.relampago_fin) > new Date();
+  $('cf-rel-campos').hidden = !si; $('cf-normal').hidden = si; $('cf-vence-w').hidden = si;
+  $('cf-rel-horas').disabled = !!corriendo;
+  const est = $('cf-rel-estado');
+  if(corriendo){ est.textContent = `Está corriendo: termina hoy a las ${hora(relOrig.relampago_fin)} h. Ya se pidieron ${relOrig.pedidos} de ${relOrig.stock} códigos. Podés sumar más cantidad.`; est.className = 'hint ok'; }
+  else if(relOrig && relOrig.pedidos){ est.textContent = 'Este relámpago ya terminó. Para lanzar otro, creá un cupón nuevo.'; est.className = 'hint warn'; }
+  else { est.textContent = 'Empieza apenas guardes el cupón. El código vale hasta que termina.'; est.className = 'hint'; }
+}
+$('cf-rel').addEventListener('change', () => { pintarRelampago(); if($('cf-rel').checked && !$('cf-stock').value) $('cf-stock').focus(); });
 
 
 let pin = '', D = {rubros: [], locales: [], cupones: []}, tabActual = 'numeros';
