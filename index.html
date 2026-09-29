@@ -125,7 +125,9 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 /* Locales */
 .locales{display:grid;gap:12px;margin-top:12px}
 .local{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:12px;text-align:left;width:100%}
-.logo{flex:none;display:grid;place-items:center;width:62px;height:62px;border-radius:18px;font-size:1.9rem;background:var(--lc);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+.logo{flex:none;display:grid;place-items:center;overflow:hidden;width:62px;height:62px;border-radius:18px;background:var(--lc);color:#2B0F63;font:800 1.3rem/1 var(--font-display);letter-spacing:-.02em;border:1px solid var(--line)}
+.logo.img{background:#fff;padding:5px}
+.logo img{width:100%;height:100%;object-fit:contain;display:block}
 .local .min{min-width:0;flex:1}
 .local .ln{display:block;font:800 1.08rem/1.2 var(--font-display);color:var(--heading)}
 .local .dir{display:block;font-size:.82rem;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -137,7 +139,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .favs-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:2px 16px 6px}
 .favs-row::-webkit-scrollbar{display:none}
 .fav-pill{flex:none;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px 14px 8px 8px;font-weight:700;font-size:.92rem}
-.fav-pill .logo{width:38px;height:38px;border-radius:12px;font-size:1.25rem}
+.fav-pill .logo{width:38px;height:38px;border-radius:12px;font-size:.85rem;padding:3px}
 .empty{border:2px dashed var(--line);border-radius:22px;padding:22px;text-align:center;font-size:.92rem;color:var(--muted)}
 
 /* Chips de estado */
@@ -158,7 +160,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 /* Ficha del local */
 .ficha{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:0 14px 32px -12px var(--shadow)}
 .ficha .top{display:flex;gap:14px;align-items:center}
-.ficha .logo{width:72px;height:72px;border-radius:22px;font-size:2.3rem}
+.ficha .logo{width:84px;height:84px;border-radius:22px;font-size:1.6rem}
 .ficha h2{font-size:1.5rem;font-weight:800;line-height:1.1;color:var(--heading)}
 .ficha dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:16px 0 0;font-size:.9rem}
 .ficha dt{color:var(--muted);font-weight:600}
@@ -497,6 +499,23 @@ let RUBROS = [], LOCALES = [], CUPONES = [], BARRIOS = [], favs = [], mios = {};
 const localDe = c => LOCALES.find(l => l.id === c.local);
 const rubroDe = id => RUBROS.find(r => r.id === id) || {nombre: '', icono: '🍽️', color: '#7B3FF0'};
 
+// Logos: se piden aparte y solo cuando cambian (se guardan en este navegador)
+let LOGOS = {};
+try{ LOGOS = JSON.parse(localStorage.getItem('tucupon.logos') || '{}'); }catch(e){}
+const logoDe = l => l.logo_v && LOGOS[l.id] && LOGOS[l.id].v === l.logo_v ? LOGOS[l.id].logo : '';
+async function cargarLogos(){
+  const faltan = LOCALES.filter(l => l.logo_v && (!LOGOS[l.id] || LOGOS[l.id].v !== l.logo_v)).map(l => l.id);
+  Object.keys(LOGOS).forEach(id => { const l = LOCALES.find(x => x.id === +id); if(!l || !l.logo_v) delete LOGOS[id]; });
+  if(!faltan.length) return;
+  try{
+    for(let i = 0; i < faltan.length; i += 60){
+      const r = await rpc('tc_logos', {p_ids: faltan.slice(i, i + 60)});
+      Object.entries(r || {}).forEach(([id, x]) => LOGOS[id] = x);
+    }
+    try{ localStorage.setItem('tucupon.logos', JSON.stringify(LOGOS)); }catch(e){}
+    render();
+  }catch(e){ /* se reintenta en la próxima actualización */ }
+}
 async function cargarCatalogo(){
   const d = await rpc('tc_catalogo');
   RUBROS = d.rubros || [];
@@ -561,20 +580,21 @@ function venceChip(c){
 const pedidosTxt = n => n ? `🔥 ${n} ${n === 1 ? 'pedido' : 'pedidos'}` : 'Nuevo';
 const esFav = id => favs.includes(id);
 const favBtn = l => `<button type="button" class="fav" data-fav="${l.id}" aria-pressed="${esFav(l.id)}" aria-label="${esFav(l.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}: ${esc(l.nombre)}">${heart(esFav(l.id))}</button>`;
-const logo = l => `<span class="logo" style="--lc:${esc(l.color)}" aria-hidden="true">${esc(l.icono)}</span>`;
+// Logo del local: la imagen que cargó el local, o sus iniciales mientras no tenga
+const iniciales = n => String(n || '').replace(/[&]/g, ' ').split(/\s+/).filter(w => w.length > 2 || /^[A-ZÁÉÍÓÚÑ]/.test(w)).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '·';
+const logo = l => { const src = logoDe(l);
+  return src ? `<span class="logo img" aria-hidden="true"><img src="${src}" alt="" loading="lazy" decoding="async"></span>`
+             : `<span class="logo" style="--lc:${esc(l.color)}" aria-hidden="true">${esc(iniciales(l.nombre))}</span>`; };
 const tema = c => 't' + ((c.local + c.id) % 4);
 const vacio = txt => `<div class="empty">${txt}</div>`;
 
 function localCard(l){
-  const top = l.cupones.slice().sort((a, b) => pct(b) - pct(a))[0];
-  const ahora = l.cupones.some(enHorario), n = l.cupones.length;
   return `<div class="local">
     <button type="button" data-local="${l.id}" style="display:flex;gap:14px;align-items:center;flex:1;min-width:0;text-align:left">
       ${logo(l)}
       <span class="min">
         <span class="ln">${esc(l.nombre)}</span>
         <span class="dir">${esc(l.barrio)} · ${esc(l.dir)}</span>
-        <span class="tags"><span class="chip c-brand">${esc(top.etiqueta)}</span><span class="chip c-neutral">${n} ${n === 1 ? 'descuento' : 'descuentos'}</span>${ahora ? '<span class="chip c-ok"><span class="dot"></span>Ahora</span>' : ''}</span>
       </span>
     </button>
     ${favBtn(l)}
@@ -873,7 +893,7 @@ async function refrescar(){
   if(!sesion || refrescando || document.hidden) return;
   refrescando = true;
   try{
-    await cargarCatalogo(); await cargarMios();
+    await cargarCatalogo(); await cargarMios(); cargarLogos();
     const f = document.activeElement && document.activeElement.id;
     render(); if(f === 'q') $('q').focus();
     if(abierto) pintarHoja();
@@ -986,7 +1006,7 @@ async function entrar(s){
   if(history.replaceState && location.hash) history.replaceState(null, '', location.pathname + location.search);
   if(primeraVez){
     vista = 'home'; pila = []; cargado = false; $('hero-in').innerHTML = ''; render(true);
-    try{ await cargarCatalogo(); await cargarMios(); }
+    try{ await cargarCatalogo(); await cargarMios(); cargarLogos(); }
     catch(e){ toast(e.message); }
     cargado = true; render();
   }
