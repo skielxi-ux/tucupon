@@ -174,6 +174,23 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .rail.solo>*{flex-basis:100%}
 .cupon{position:relative;display:flex;flex-direction:column;min-height:24rem;border-radius:28px;overflow:hidden;box-shadow:0 18px 36px -16px var(--shadow)}
 .cupon.usado{filter:grayscale(.7);opacity:.82}
+/* Cupón relámpago */
+.cupon.rel{background:linear-gradient(140deg,#FF2E7E 0%,#B0249F 45%,#5B1FD1 100%);color:#fff}
+.cupon.rel .big{color:#C4F04A}
+.cupon.rel .cbtn{background:#C4F04A;color:#1E0B45}
+.reloj{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;background:#1E0B45;color:#C4F04A;font:800 .86rem var(--font-mono);letter-spacing:.02em;font-variant-numeric:tabular-nums;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.reloj.fin{color:#FF8C8C}
+.stockbar{margin-top:12px}
+.stockbar .t{display:flex;justify-content:space-between;font-size:.8rem;font-weight:800}
+.stockbar .b{margin-top:5px;height:8px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden}
+.stockbar .b i{display:block;height:100%;border-radius:99px;background:#C4F04A;transition:width .4s}
+.stockbar.poco .b i{background:#FFD23F}
+.cbtn[disabled]{opacity:.55;cursor:default}
+.sec-rel{margin-top:26px;border-radius:26px;padding:16px 16px 4px;margin-inline:-6px;background:linear-gradient(135deg,rgba(255,46,126,.12),rgba(123,63,240,.12))}
+.sec-rel h2{display:flex;align-items:center;gap:6px}
+.sec-rel .rail{padding-bottom:16px}
+@keyframes rayo{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.15)}}
+.rayo{display:inline-block;animation:rayo 1.2s ease-in-out infinite}
 /* Cupón con foto: la foto de fondo, velo oscuro para que el texto se lea */
 .cupon.con-foto{background:#1E0B45;color:#fff;aspect-ratio:4/5}
 .cupon .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -395,6 +412,11 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       </section>
 
       <div id="home-main">
+        <section id="sec-rel" class="sec-rel" hidden>
+          <div class="sec-h"><h2><span class="rayo" aria-hidden="true">⚡</span>Cupones relámpago</h2><span class="count" id="rel-count"></span></div>
+          <p class="muted" style="font-size:.88rem;margin-top:4px">Por pocas horas y hasta agotar stock. ¡Pedí tu código antes de que se terminen!</p>
+          <div id="rel-rail" class="rail"></div>
+        </section>
         <section class="sec">
           <div class="sec-h"><h2>Elegí un rubro</h2><span id="total-locales" class="count"></span></div>
           <div id="rubros" class="rubros"></div>
@@ -499,6 +521,7 @@ const $ = id => document.getElementById(id);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fecha = iso => new Date(iso).toLocaleString('es-AR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false});
+const hora = iso => new Date(iso).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', hour12:false, timeZone:'America/Argentina/Buenos_Aires'});
 const fechaCorta = d => new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {day:'numeric', month:'long'});
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 function hoyAR(){ const d = new Date(new Date().toLocaleString('en-US', {timeZone:'America/Argentina/Buenos_Aires'})); d.setHours(0,0,0,0); return d; }
@@ -560,7 +583,8 @@ async function traerFotos(){
   }catch(e){ ids.forEach(id => { const c = CUPONES.find(x => x.id === id); if(c) pedidas.delete(id + ':' + c.foto_v); }); }
 }
 async function cargarCatalogo(){
-  const d = await rpc('tc_catalogo');
+  const antes = Date.now(), d = await rpc('tc_catalogo');
+  if(d.ahora) desfase = new Date(d.ahora).getTime() - (antes + Date.now()) / 2;
   RUBROS = d.rubros || [];
   CUPONES = d.cupones || [];
   LOCALES = (d.locales || []).map(l => ({...l, cupones: CUPONES.filter(c => c.local === l.id)}));
@@ -573,6 +597,26 @@ async function cargarMios(){
   mios = {}; (rows || []).forEach(r => mios[r.cupon_id] = r);
 }
 
+let desfase = 0;   // diferencia entre el reloj del servidor y el del celular
+const ahoraMs = () => Date.now() + desfase;
+const esRel = c => !!c.relampago_fin;
+const quedan = c => Math.max(0, (c.stock || 0) - (c.pedidos || 0));
+function restante(fin){
+  const ms = new Date(fin).getTime() - ahoraMs();
+  if(ms <= 0) return 'Terminó';
+  const t = Math.floor(ms / 1000), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), sg = t % 60, p = n => String(n).padStart(2, '0');
+  return `${p(h)}:${p(m)}:${p(sg)}`;
+}
+// Cuenta regresiva: se actualiza cada segundo sin volver a dibujar las tarjetas
+let refrescoPorFin = false;
+setInterval(() => {
+  $$('[data-fin]').forEach(el => {
+    const r = restante(el.dataset.fin); el.textContent = r;
+    const cont = el.closest('.reloj'); if(cont) cont.classList.toggle('fin', r === 'Terminó');
+    if(r === 'Terminó' && !refrescoPorFin){ refrescoPorFin = true; setTimeout(() => { refrescoPorFin = false; refrescar(); }, 1500); }
+  });
+}, 1000);
+const RAYO = '<span aria-hidden="true">⚡</span>';
 let vista = 'home', rubroSel = null, localSel = null, barrio = 'Todos', q = '', filtro = 'todos', orden = 'pedidos', detalle = null, abierto = null, wake = null, poll = null, cargado = false;
 try{ barrio = localStorage.getItem('tucupon.barrio') || 'Todos'; }catch(e){}
 
@@ -585,8 +629,13 @@ function ahoraAR(){
   return {dia: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday), min: (+p.hour % 24) * 60 + (+p.minute)};
 }
 const aMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+// Vale si está dentro de la franja 1 o de la franja 2
 function enHorario(c){
   if(!c.restringido) return true;
+  return enFranja(c.dias, c.hora_desde, c.hora_hasta) || (!!c.hora_desde2 && enFranja(c.dias, c.hora_desde2, c.hora_hasta2));
+}
+function enFranja(dias, desde, hasta){
+  const c = {dias, hora_desde: desde, hora_hasta: hasta};
   let {dia, min} = ahoraAR();
   const d = c.hora_desde ? aMin(c.hora_desde) : null, h = c.hora_hasta ? aMin(c.hora_hasta) : null;
   if(d !== null && d > h && min < h) dia = (dia + 6) % 7;
@@ -647,24 +696,29 @@ function localCard(l){
 function tarjeta(c, puesto){
   const l = localDe(c), m = mios[c.id], usado = m && m.estado === 'usado';
   let accion;
+  const rel = esRel(c), agotado = rel && !m && quedan(c) <= 0;
   if(usado) accion = `<div class="cbtn done">✓ Usado el ${esc(fecha(m.usado_en))}</div>`;
   else if(m) accion = `<button type="button" class="cbtn" data-ver="${c.id}">Ver mi código · <span class="mono">${esc(m.codigo)}</span></button>`;
-  else accion = `<button type="button" class="cbtn" data-pedir="${c.id}">Obtener código</button>`;
-  const franja = c.restringido ? `<span class="pill">${RELOJ}${esc(c.horario)}</span>` : (c.vence ? venceChip(c) : '<span class="pill">Todos los días</span>');
+  else if(agotado) accion = `<button type="button" class="cbtn" disabled>Agotado</button>`;
+  else accion = `<button type="button" class="cbtn" data-pedir="${c.id}">${rel ? '⚡ ' : ''}Obtener código</button>`;
+  const franja = rel ? `<span class="reloj">${RAYO}<span data-fin="${esc(c.relampago_fin)}">${restante(c.relampago_fin)}</span></span>`
+    : c.restringido ? `<span class="pill">${RELOJ}${esc(c.horario)}</span>` : (c.vence ? venceChip(c) : '<span class="pill">Todos los días</span>');
+  const q = quedan(c), pct = rel ? Math.round(q / c.stock * 100) : 0;
+  const barra = rel ? `<div class="stockbar ${q <= Math.max(3, c.stock * .2) ? 'poco' : ''}"><div class="t"><span>${q ? `¡Quedan ${q}!` : 'Agotado'}</span><span>${c.pedidos} de ${c.stock} pedidos</span></div><div class="b"><i style="width:${pct}%"></i></div></div>` : '';
   const conFoto = !!c.foto_v, foto = conFoto ? fotoDe(c) : '';
   const fondo = conFoto ? `${foto ? `<img class="ph" src="${foto}" alt="" decoding="async">` : ''}<span class="velo"></span>`
     : `<span class="circ" style="right:-36px;top:-36px;width:150px;height:150px"></span><span class="circ" style="right:44px;top:96px;width:56px;height:56px"></span>`;
-  return `<article class="cupon ${conFoto ? 'con-foto' : tema(c)} ${usado ? 'usado' : ''}">
+  return `<article class="cupon ${conFoto ? 'con-foto' : rel ? 'rel' : tema(c)} ${usado ? 'usado' : ''}">
     ${fondo}
     <div class="body">
       <div class="row">
-        <div style="display:flex;flex-wrap:wrap;gap:6px">${puesto ? `<span class="pill" style="background:rgba(255,255,255,.92);color:#1E0B45">#${puesto} más pedido</span>` : ''}${franja}${c.restringido ? (enHorario(c) ? '<span class="pill">● Disponible ahora</span>' : '<span class="pill">Fuera de horario</span>') : ''}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${puesto ? `<span class="pill" style="background:rgba(255,255,255,.92);color:#1E0B45">#${puesto} más pedido</span>` : ''}${franja}${!rel && c.restringido ? (enHorario(c) ? '<span class="pill">● Disponible ahora</span>' : '<span class="pill">Fuera de horario</span>') : ''}</div>
         ${conFoto ? '' : `<span class="em" aria-hidden="true">${esc(c.icono)}</span>`}
       </div>
       ${vista !== 'local' ? `<button type="button" class="de" data-local="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)} ${FLECHA_S}</button>` : ''}
       <p class="big" style="${vista === 'local' ? 'margin-top:18px' : ''}">${esc(c.etiqueta)}</p>
       <h3>${esc(c.titulo)}</h3>
-      <p class="ped">${pedidosTxt(c.pedidos)}</p>
+      ${rel ? barra : `<p class="ped">${pedidosTxt(c.pedidos)}</p>`}
     </div>
     <div class="perf"><span class="notch l"></span><span class="notch r"></span></div>
     <div class="foot">
@@ -721,7 +775,13 @@ function pintarHome(){
     $('favs-row').innerHTML = fl.length ? `<div class="favs-row">${fl.map(l => `<button type="button" class="fav-pill" data-local="${l.id}">${logo(l)}${esc(l.nombre)}</button>`).join('')}</div>`
       : vacio('Tocá el corazón de un local para tenerlo siempre a mano acá.');
     $$('[data-go-favs]').forEach(b => b.hidden = !fl.length);
-    const top = CUPONES.filter(c => localDe(c) && porBarrio(localDe(c))).sort((a, b) => b.pedidos - a.pedidos || pct(b) - pct(a)).slice(0, 6);
+    const rels = CUPONES.filter(c => esRel(c) && localDe(c) && porBarrio(localDe(c)) && new Date(c.relampago_fin).getTime() > ahoraMs())
+      .sort((a, b) => (quedan(b) > 0) - (quedan(a) > 0) || new Date(a.relampago_fin) - new Date(b.relampago_fin));
+    $('sec-rel').hidden = !rels.length;
+    $('rel-count').textContent = rels.length ? `${rels.length} ${rels.length === 1 ? 'activo' : 'activos'}` : '';
+    $('rel-rail').classList.toggle('solo', rels.length === 1);
+    $('rel-rail').innerHTML = rels.map(c => tarjeta(c)).join('');
+    const top = CUPONES.filter(c => !esRel(c) && localDe(c) && porBarrio(localDe(c))).sort((a, b) => b.pedidos - a.pedidos || pct(b) - pct(a)).slice(0, 6);
     $('top-rail').classList.toggle('solo', top.length === 1);
     $('top-rail').innerHTML = top.length ? top.map((c, i) => tarjeta(c, c.pedidos ? i + 1 : 0)).join('') : vacio('No hay cupones en este barrio por ahora.');
   }
@@ -824,11 +884,15 @@ function verDetalle(id, soloPintar){
       </div>
     </div>
     ${c.descripcion ? `<p style="margin-top:14px">${esc(c.descripcion)}</p>` : ''}
-    <div class="box ${ya ? 'ok' : 'warn'}" style="margin-top:16px">
+    ${esRel(c) ? `<div class="box warn" style="margin-top:16px">
+      <p class="k">⚡ Cupón relámpago</p>
+      <p class="v">Termina en <span class="mono" data-fin="${esc(c.relampago_fin)}">${restante(c.relampago_fin)}</span></p>
+      <p class="v2">${quedan(c) ? `Quedan ${quedan(c)} de ${c.stock} códigos.` : 'Se agotaron los códigos.'} El código vale hasta las ${esc(hora(c.relampago_fin))} h de hoy.</p>
+    </div>` : `<div class="box ${ya ? 'ok' : 'warn'}" style="margin-top:16px">
       <p class="k">${RELOJ} Cuándo se puede usar</p>
       <p class="v">${esc(c.horario)}</p>
       <p class="v2">${!c.restringido ? 'Podés usarlo en cualquier momento del horario del local.' : ya ? 'Estás dentro del horario: podés usarlo ahora.' : 'Ahora está fuera de horario. Podés pedir el código igual y mostrarlo en esa franja.'}</p>
-    </div>
+    </div>`}
     <div class="box">
       <p class="k">Dónde</p>
       <p class="v" style="font-size:1rem">${esc(l.dir)}, ${esc(l.barrio)}</p>
@@ -836,7 +900,7 @@ function verDetalle(id, soloPintar){
     </div>
     <div class="box">
       <p class="k">Condiciones</p>
-      <ul>${conds.map(x => `<li>${esc(x.replace(/\.$/, ''))}.</li>`).join('')}<li>Un uso por cliente${c.vence ? `, válido hasta el ${esc(fechaCorta(c.vence))}` : ''}.</li></ul>
+      <ul>${conds.map(x => `<li>${esc(x.replace(/\.$/, ''))}.</li>`).join('')}<li>Un uso por cliente${esRel(c) ? `, válido hasta las ${esc(hora(c.relampago_fin))} h de hoy` : c.vence ? `, válido hasta el ${esc(fechaCorta(c.vence))}` : ''}.</li></ul>
     </div>
     <div class="box">
       <p style="font-size:.9rem"><b>¿Qué te parece esta oferta?</b> <span class="muted">Tu voto ayuda a otros a elegir.</span></p>
@@ -882,6 +946,7 @@ async function pedir(id){
   }catch(e){
     bs.forEach(b => { b.disabled = false; b.textContent = 'Obtener código'; });
     toast(e.message);
+    if(/agot|termin/i.test(e.message)) refrescar();
   }
 }
 function pintarHoja(){
@@ -897,8 +962,11 @@ function pintarHoja(){
   $('s-status').querySelector('.pulse').hidden = ok;
   $('s-status-t').textContent = ok ? `Confirmado el ${fecha(m.usado_en)} · ¡Que lo disfrutes!` : 'Esperando confirmación del local';
   $('s-sub').textContent = ok ? 'El local ya aplicó tu descuento' : 'Mostrá este código cuando hagas tu pedido';
-  const hs = $('s-hor'); hs.hidden = ok || !c.restringido;
-  if(!ok && c.restringido){
+  const hs = $('s-hor'); hs.hidden = ok || (!c.restringido && !esRel(c));
+  if(!ok && esRel(c)){
+    hs.className = 'box s-hor warn';
+    hs.innerHTML = `<p class="k">⚡ Cupón relámpago</p><p class="v2">Usalo antes de las <b>${esc(hora(c.relampago_fin))} h</b>. Termina en <b class="mono" data-fin="${esc(c.relampago_fin)}">${restante(c.relampago_fin)}</b>. Después el código ya no sirve.</p>`;
+  }else if(!ok && c.restringido){
     const ya = enHorario(c);
     hs.className = 'box s-hor ' + (ya ? 'ok' : 'warn');
     hs.innerHTML = `<p class="k">${RELOJ} Válido: ${esc(c.horario)}</p><p class="v2">${ya ? 'Estás dentro del horario: mostralo ahora.' : 'Guardalo y mostralo en ese horario. Fuera de la franja el local no puede canjearlo.'}</p>`;
