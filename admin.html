@@ -254,7 +254,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
     <div><label class="label" for="lo-nombre">Nombre</label><input id="lo-nombre" class="field" maxlength="60"></div>
     <div class="grid2">
       <div><label class="label" for="lo-rubro">Rubro</label><select id="lo-rubro" class="field"></select></div>
-      <div><label class="label" for="lo-barrio">Barrio</label><input id="lo-barrio" class="field" list="barrios-lista" maxlength="40"><datalist id="barrios-lista"></datalist></div>
+      <div><label class="label" for="lo-barrio">Barrio</label><select id="lo-barrio" class="field"></select>
+        <div data-otro hidden style="margin-top:8px"><label class="label" for="lo-barrio-otro">¿Qué barrio?</label><input id="lo-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
     </div>
     <div><label class="label" for="lo-dir">Dirección</label><input id="lo-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
     <div><label class="label" for="lo-horario">Horario del local</label><input id="lo-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
@@ -460,6 +461,21 @@ const logoHTML = (src, nombre, color, clase = '') => src
   ? `<span class="lg img ${clase}" aria-hidden="true"><img src="${src}" alt=""></span>`
   : `<span class="lg ${clase}" style="background:${esc(color || '#EFEAF9')}" aria-hidden="true">${esc(iniciales(nombre))}</span>`;
 
+// ---------- Barrios: lista fija + "Otro" ----------
+const BARRIOS = ['Yerba Buena', 'Centro', 'Barrio Sur', 'Barrio Norte', 'Mate de Luna'];
+function barrioSelectHTML(){ return BARRIOS.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('') + '<option value="__otro">Otro</option>'; }
+function ponerBarrio(sel, otro, valor){
+  sel.innerHTML = '<option value="">Elegí el barrio</option>' + barrioSelectHTML();
+  const conocido = BARRIOS.includes(valor);
+  sel.value = !valor ? '' : conocido ? valor : '__otro';
+  otro.value = conocido ? '' : (valor || '');
+  otro.closest('[data-otro]').hidden = sel.value !== '__otro';
+}
+function leerBarrio(sel, otro){ return sel.value === '__otro' ? otro.value.trim() : sel.value; }
+function unirBarrio(sel, otro){
+  sel.addEventListener('change', () => { const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro'; if(!w.hidden) otro.focus(); });
+}
+
 
 let pin = '', D = {rubros: [], locales: [], cupones: []}, tabActual = 'numeros';
 try{ pin = sessionStorage.getItem('tucupon.admin') || ''; }catch(e){}
@@ -517,7 +533,6 @@ function pintarFiltros(){
   $('cfil-local').innerHTML = '<option value="">Todos los locales</option>' + D.locales.map(l => `<option value="${l.id}">${esc(l.nombre)}</option>`).join('');
   $('cfil-local').value = D.locales.some(l => String(l.id) === lv) ? lv : '';
   $('lo-rubro').innerHTML = D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
-  $('barrios-lista').innerHTML = [...new Set(D.locales.map(l => l.barrio))].map(b => `<option value="${esc(b)}">`).join('');
 }
 $('lf-rubro').addEventListener('change', pintarLocales);
 $('cfil-local').addEventListener('change', pintarCupones);
@@ -578,16 +593,17 @@ function abrirLocal(l){
   localEdit = l ? l.id : null;
   $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
   $('lo-nombre').value = l ? l.nombre : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
-  $('lo-barrio').value = l ? l.barrio : ''; $('lo-dir').value = l ? l.dir : ''; $('lo-horario').value = l ? l.horario : '';
+  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-horario').value = l ? l.horario : '';
   logoOrig = l ? (LOGOS[l.id] || null) : null; logoNuevo = undefined; pintarLogoLocal();
   $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
   $('lo-activo').checked = l ? l.activo : true;
   abrirHoja('sheet-local'); setTimeout(() => $('lo-nombre').focus(), 250);
 }
 $('btn-nuevo-local').addEventListener('click', () => abrirLocal(null));
+unirBarrio($('lo-barrio'), $('lo-barrio-otro'));
 $('f-local').addEventListener('submit', async e => {
   e.preventDefault(); $('lo-alert').hidden = true;
-  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), rubro: $('lo-rubro').value, barrio: $('lo-barrio').value.trim(), dir: $('lo-dir').value.trim(),
+  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), rubro: $('lo-rubro').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
     horario: $('lo-horario').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value, activo: $('lo-activo').checked};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
