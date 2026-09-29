@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B0F63">
+<meta name="robots" content="noindex">
+<title>Tucupón · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Paneles de Tucupón: mismos colores y fuentes que la app de clientes */
+:root{
+  --font-display:"Outfit",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --hero:#2B0F63; --hero-2:#43198F; --brand:#7B3FF0; --brand-deep:#4F1BB5; --on-brand:#FFFFFF; --accent:#C4F04A; --on-accent:#1E0B45; --heading:#3A1789;
+  --bg:#F5F2FC; --surface:#FFFFFF; --surface-2:#EFEAF9; --ink:#22163F; --muted:#6E6585; --line:#E6E0F3;
+  --ok:#0B7A54; --ok-bg:#E1F4EA; --warn:#7A5200; --warn-bg:#FFF2D2; --hot:#E5484D; --hot-bg:#FDE8EA;
+  --shadow:rgba(43,15,99,.14); --scrim:rgba(20,8,45,.55);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --hero:#1C0A42; --hero-2:#2E1270; --brand:#9B6BFF; --brand-deep:#5F28CF; --accent:#CDF55E; --heading:#D6C8FF;
+  --bg:#120A24; --surface:#1C1233; --surface-2:#281C45; --ink:#F1EDFA; --muted:#A9A0C2; --line:#34285A;
+  --ok:#5AD7A2; --ok-bg:rgba(90,215,162,.13); --warn:#FFC56B; --warn-bg:rgba(255,197,107,.13); --hot:#FF7A7E; --hot-bg:rgba(229,72,77,.16);
+  --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.65); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --hero:#1C0A42; --hero-2:#2E1270; --brand:#9B6BFF; --brand-deep:#5F28CF; --accent:#CDF55E; --heading:#D6C8FF;
+  --bg:#120A24; --surface:#1C1233; --surface-2:#281C45; --ink:#F1EDFA; --muted:#A9A0C2; --line:#34285A;
+  --ok:#5AD7A2; --ok-bg:rgba(90,215,162,.13); --warn:#FFC56B; --warn-bg:rgba(255,197,107,.13); --hot:#FF7A7E; --hot-bg:rgba(229,72,77,.16);
+  --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.65); color-scheme:dark }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-tap-highlight-color:transparent;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.45 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:clip;min-height:100dvh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;color:var(--heading);letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:46rem;margin-inline:auto;padding-inline:16px}
+.muted{color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+
+.top{background:linear-gradient(160deg,var(--hero),var(--hero-2));color:#fff;padding-block:14px}
+.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brandmark{display:inline-flex;align-items:center;gap:8px;font:900 1.35rem/1 var(--font-display);letter-spacing:-.02em}
+.brandmark em{font-style:normal;color:var(--accent)}
+.brandmark .tag{font:700 .72rem var(--font-body);letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;margin-left:4px}
+.tk{display:grid;place-items:center;width:32px;height:24px;background:var(--accent);color:var(--on-accent);border-radius:6px;rotate:-6deg}
+.tk svg{width:14px;height:14px}
+.top .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.92rem;min-width:0}
+.top .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-top{border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.85rem;color:#fff;flex:none}
+
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:14px 4px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.92rem;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+main.wrap{padding-bottom:64px}
+.panel{margin-top:14px;display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px}
+.card h2{font-size:1.25rem}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+
+.label{display:block;font-weight:700;font-size:.88rem;margin-bottom:6px}
+.field{width:100%;border:2px solid var(--line);background:var(--surface-2);border-radius:14px;padding:11px 14px;font-size:1rem;outline:none}
+.field:focus{border-color:var(--brand);background:var(--surface)}
+textarea.field{min-height:84px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:12px}
+.hint{font-size:.8rem;color:var(--muted);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:12px 18px;font-weight:800;background:var(--brand);color:var(--on-brand)}
+.btn[disabled]{opacity:.6;cursor:default}
+.btn.full{width:100%}
+.btn.lima{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.btn.danger{background:var(--hot-bg);color:var(--hot)}
+.btn.sm{padding:7px 12px;font-size:.85rem;border-radius:11px}
+.alert{border-radius:14px;padding:11px 14px;font-weight:700;font-size:.9rem;background:var(--hot-bg);color:var(--hot)}
+.alert.ok{background:var(--ok-bg);color:var(--ok)}
+.alert.warn{background:var(--warn-bg);color:var(--warn)}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:.74rem;font-weight:800;white-space:nowrap;background:var(--surface-2);color:var(--muted)}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.off{background:var(--hot-bg);color:var(--hot)}.chip.brand{background:var(--brand);color:var(--on-brand)}
+
+.dias{display:flex;flex-wrap:wrap;gap:6px}
+.dias label{position:relative}
+.dias input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.dias span{display:inline-block;border:2px solid var(--line);border-radius:10px;padding:5px 10px;font-weight:700;font-size:.85rem;color:var(--muted)}
+.dias input:checked + span{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.dias input:focus-visible + span{outline:3px solid var(--accent);outline-offset:2px}
+.switch{display:inline-flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
+.switch input{width:44px;height:26px;appearance:none;border-radius:99px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;margin:0}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:99px;background:#fff;transition:transform .15s}
+.switch input:checked{background:var(--ok)}
+.switch input:checked::after{transform:translateX(18px)}
+
+.item{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0;padding-top:0}
+.badge{flex:none;display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#C4F04A;font:800 .95rem/1 var(--font-display);text-align:center;padding:4px;letter-spacing:-.01em}
+.badge.off{filter:grayscale(1);opacity:.6}
+.item .t{font-weight:800;line-height:1.25}
+.item .s{font-size:.82rem;color:var(--muted);margin-top:2px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.stat b{display:block;font:800 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--muted);font-weight:700}
+.empty{border:2px dashed var(--line);border-radius:18px;padding:20px;text-align:center;color:var(--muted);font-size:.92rem}
+
+.code-in{width:100%;border:2px dashed var(--brand);background:var(--surface-2);border-radius:18px;padding:16px;text-align:center;font:800 clamp(1.8rem,9vw,2.6rem) var(--font-mono);letter-spacing:.2em;text-transform:uppercase;outline:none}
+.code-in:focus{background:var(--surface)}
+.result{border-radius:20px;padding:18px;display:grid;gap:10px}
+.stamp{justify-self:center;rotate:-6deg;border:4px solid var(--ok);color:var(--ok);border-radius:12px;padding:4px 18px;font:800 1.6rem var(--font-display);letter-spacing:.06em;animation:st .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes st{from{transform:scale(2.2) rotate(-12deg);opacity:0}}
+
+.login{min-height:100dvh;display:grid;place-items:center;background:linear-gradient(160deg,var(--hero),var(--hero-2));padding:24px 16px}
+.login .card{width:100%;max-width:26rem;display:grid;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.login .brandmark{color:var(--heading)}
+
+.sheet-wrap{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:var(--scrim);transition:opacity .2s}
+.sheet-wrap[aria-hidden="true"]{opacity:0;pointer-events:none}
+.sheet{width:100%;max-width:40rem;max-height:94dvh;overflow-y:auto;background:var(--surface);border-radius:26px 26px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,0px) + 22px);transition:transform .25s cubic-bezier(.2,.8,.2,1);display:grid;gap:14px}
+.sheet-wrap[aria-hidden="true"] .sheet{transform:translateY(105%)}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:60;max-width:28rem;margin:0 auto;border-radius:14px;background:var(--ink);color:var(--bg);padding:12px 16px;text-align:center;font-size:.9rem;font-weight:700}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:10px}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;min-width:0}
+.bars i{display:block;border-radius:3px 3px 0 0}
+.bars .p{background:var(--brand);opacity:.35}.bars .u{background:var(--brand)}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);font-weight:700;margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:8px 6px;border-top:1px solid var(--line)}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.scroll{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+
+<section id="login" class="login">
+  <form id="f-login" class="card" novalidate>
+    <span class="brandmark"><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em></span>
+    <div><h1 style="font-size:1.5rem">Administración</h1><p class="muted" style="margin-top:4px">Rubros, locales, cupones y números de toda la cuponera.</p></div>
+    <div id="l-alert" class="alert" hidden></div>
+    <div><label class="label" for="l-pin">PIN maestro</label><input id="l-pin" class="field mono" type="password" inputmode="numeric" autocomplete="current-password" maxlength="8" placeholder="8 números" style="letter-spacing:.3em"></div>
+    <button type="submit" class="btn full">Ingresar</button>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top"><div class="wrap">
+    <span class="brandmark"><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em><span class="tag">Admin</span></span>
+    <span class="who"><button type="button" id="btn-salir" class="btn-top">Salir</button></span>
+  </div></header>
+  <main class="wrap">
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button type="button" class="tab" role="tab" data-tab="numeros" aria-selected="true">Números</button>
+      <button type="button" class="tab" role="tab" data-tab="locales" aria-selected="false">Locales</button>
+      <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Cupones</button>
+      <button type="button" class="tab" role="tab" data-tab="rubros" aria-selected="false">Rubros</button>
+      <button type="button" class="tab" role="tab" data-tab="canjes" aria-selected="false">Canjes</button>
+      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
+    </nav>
+
+    <!-- Números -->
+    <section id="t-numeros" class="panel">
+      <div class="row"><h2 class="grow">Resumen</h2>
+        <label class="sr" for="k-dias" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Período</label>
+        <select id="k-dias" class="field" style="width:auto"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option></select></div>
+      <div class="stats">
+        <div class="stat"><b id="k-pedidos">–</b><span>Códigos pedidos</span></div>
+        <div class="stat"><b id="k-usados">–</b><span>Canjes confirmados</span></div>
+        <div class="stat"><b id="k-conv">–</b><span>Se canjea</span></div>
+        <div class="stat"><b id="k-clientes">–</b><span>Clientes distintos</span></div>
+      </div>
+      <div class="card"><h2>Por día</h2><div id="k-bars" class="bars"></div>
+        <div class="legend"><span><i style="background:var(--brand);opacity:.35"></i>Pedidos</span><span><i style="background:var(--brand)"></i>Canjeados</span><span id="k-rango" style="margin-left:auto"></span></div></div>
+      <div class="grid2">
+        <div class="card"><h2>Locales con más pedidos</h2><div class="scroll" id="k-locales" style="margin-top:8px"></div></div>
+        <div class="card"><h2>Cupones más pedidos</h2><div class="scroll" id="k-cupones" style="margin-top:8px"></div></div>
+      </div>
+    </section>
+
+    <!-- Locales -->
+    <section id="t-locales" class="panel" hidden>
+      <div class="row"><h2 class="grow">Locales</h2><button type="button" id="btn-nuevo-local" class="btn">+ Nuevo local</button></div>
+      <div class="row"><label class="label" for="lf-rubro" style="margin:0">Rubro</label><select id="lf-rubro" class="field" style="width:auto"></select></div>
+      <div class="card" id="loc-lista"></div>
+    </section>
+
+    <!-- Cupones -->
+    <section id="t-cupones" class="panel" hidden>
+      <div class="row"><h2 class="grow">Cupones</h2><button type="button" id="btn-nuevo-cupon" class="btn">+ Nuevo cupón</button></div>
+      <div class="row"><label class="label" for="cfil-local" style="margin:0">Local</label><select id="cfil-local" class="field" style="width:auto;max-width:100%"></select></div>
+      <div class="card" id="cup-lista"></div>
+    </section>
+
+    <!-- Rubros -->
+    <section id="t-rubros" class="panel" hidden>
+      <div class="row"><h2 class="grow">Rubros</h2><button type="button" id="btn-nuevo-rubro" class="btn">+ Nuevo rubro</button></div>
+      <div class="card" id="rub-lista"></div>
+    </section>
+
+    <!-- Canjes -->
+    <section id="t-canjes" class="panel" hidden>
+      <div class="card grid2">
+        <div><label class="label" for="cj-desde">Desde</label><input id="cj-desde" class="field" type="date"></div>
+        <div><label class="label" for="cj-hasta">Hasta</label><input id="cj-hasta" class="field" type="date"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="cj-usados">–</b><span>Canjeados</span></div>
+        <div class="stat"><b id="cj-pedidos">–</b><span>Códigos pedidos</span></div>
+      </div>
+      <div class="card"><h2>Canjes confirmados</h2><div id="cj-lista" class="scroll" style="margin-top:10px"></div></div>
+    </section>
+
+    <!-- Ajustes -->
+    <section id="t-ajustes" class="panel" hidden>
+      <form id="f-pin" class="card" style="display:grid;gap:12px" novalidate>
+        <h2>Cambiar PIN maestro</h2>
+        <div id="p-alert" class="alert" hidden></div>
+        <div><label class="label" for="p-nuevo">PIN nuevo</label><input id="p-nuevo" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="8 números"></div>
+        <div><label class="label" for="p-nuevo2">Repetí el PIN</label><input id="p-nuevo2" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="8 números"></div>
+        <button type="submit" class="btn">Guardar PIN</button>
+      </form>
+      <div class="card"><h2>Links</h2><p class="muted" style="margin-top:6px;font-size:.92rem">Panel para los locales: <b>local.html</b> en tu mismo sitio. Cada local entra con el PIN que le generás desde “Locales”.</p></div>
+    </section>
+  </main>
+</div>
+
+<!-- Hoja: local -->
+<div id="sheet-local" class="sheet-wrap" aria-hidden="true">
+  <form id="f-local" class="sheet" role="dialog" aria-modal="true" aria-labelledby="lo-title" novalidate>
+    <div class="row"><h2 id="lo-title" class="grow">Nuevo local</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="lo-alert" class="alert" hidden></div>
+    <div><label class="label" for="lo-nombre">Nombre</label><input id="lo-nombre" class="field" maxlength="60"></div>
+    <div class="grid2">
+      <div><label class="label" for="lo-rubro">Rubro</label><select id="lo-rubro" class="field"></select></div>
+      <div><label class="label" for="lo-barrio">Barrio</label><input id="lo-barrio" class="field" list="barrios-lista" maxlength="40"><datalist id="barrios-lista"></datalist></div>
+    </div>
+    <div><label class="label" for="lo-dir">Dirección</label><input id="lo-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+    <div><label class="label" for="lo-horario">Horario del local</label><input id="lo-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
+    <div class="grid2">
+      <div><label class="label" for="lo-icono">Ícono</label><input id="lo-icono" class="field" maxlength="4" placeholder="🍕"></div>
+      <div><label class="label" for="lo-color">Color del logo</label><input id="lo-color" class="field" type="color" style="height:48px;padding:4px"></div>
+    </div>
+    <label class="switch"><input id="lo-activo" type="checkbox" checked>Visible para los clientes</label>
+    <button type="submit" class="btn full">Guardar local</button>
+  </form>
+</div>
+
+<!-- Hoja: rubro -->
+<div id="sheet-rubro" class="sheet-wrap" aria-hidden="true">
+  <form id="f-rubro" class="sheet" role="dialog" aria-modal="true" aria-labelledby="ru-title" novalidate>
+    <div class="row"><h2 id="ru-title" class="grow">Nuevo rubro</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="ru-alert" class="alert" hidden></div>
+    <div><label class="label" for="ru-nombre">Nombre</label><input id="ru-nombre" class="field" maxlength="60" placeholder="Sushi y comida asiática"></div>
+    <div class="grid2">
+      <div><label class="label" for="ru-icono">Ícono</label><input id="ru-icono" class="field" maxlength="4" placeholder="🍣"></div>
+      <div><label class="label" for="ru-color">Color</label><input id="ru-color" class="field" type="color" style="height:48px;padding:4px"></div>
+      <div><label class="label" for="ru-orden">Orden</label><input id="ru-orden" class="field" type="number" min="0" step="1"><p class="hint">Los más bajos aparecen primero.</p></div>
+    </div>
+    <button type="submit" class="btn full">Guardar rubro</button>
+  </form>
+</div>
+
+<!-- Hoja: PIN generado -->
+<div id="sheet-pin" class="sheet-wrap" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pin-t" style="text-align:center">
+    <h2 id="pin-t">PIN nuevo</h2>
+    <p id="pin-local" class="muted"></p>
+    <p id="pin-valor" class="mono" style="font-size:2.6rem;font-weight:800;letter-spacing:.2em;user-select:all;background:var(--surface-2);border-radius:16px;padding:14px"></p>
+    <p class="muted" style="font-size:.88rem">Pasáselo al local. Por seguridad no se puede volver a ver: si se pierde, generás otro. El PIN anterior dejó de funcionar.</p>
+    <button type="button" id="pin-copiar" class="btn ghost full">Copiar PIN</button>
+    <button type="button" class="btn full" data-close>Listo</button>
+  </div>
+</div>
+
+<!-- Confirmación -->
+<div id="sheet-conf" class="sheet-wrap" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="conf-t">
+    <h2 id="conf-t"></h2>
+    <p id="conf-s" class="muted"></p>
+    <div class="row"><button type="button" class="btn ghost grow" data-close>Cancelar</button><button type="button" id="conf-ok" class="btn danger grow"></button></div>
+  </div>
+</div>
+
+<!-- Hoja: formulario de cupón (compartido entre panel del local y panel admin) -->
+<div id="sheet-cupon" class="sheet-wrap" aria-hidden="true">
+  <form id="f-cupon" class="sheet" role="dialog" aria-modal="true" aria-labelledby="cf-title" novalidate>
+    <div class="row"><h2 id="cf-title" class="grow">Nuevo cupón</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="cf-alert" class="alert" hidden></div>
+    <div id="cf-local-w" hidden><label class="label" for="cf-local">Local</label><select id="cf-local" class="field"></select></div>
+    <div class="grid2">
+      <div><label class="label" for="cf-etiqueta">Descuento</label><input id="cf-etiqueta" class="field" maxlength="24" placeholder="20% OFF, 2x1, $ 3.000 OFF"><p class="hint">Es el texto grande del cupón.</p></div>
+      <div><label class="label" for="cf-icono">Ícono</label><input id="cf-icono" class="field" maxlength="4" placeholder="🍕"><p class="hint">Un emoji que represente el producto.</p></div>
+    </div>
+    <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="En pizzas grandes de la carta"></div>
+    <div><label class="label" for="cf-descripcion">Descripción (opcional)</label><textarea id="cf-descripcion" class="field" maxlength="300" placeholder="Contá qué incluye la promo"></textarea></div>
+    <div><label class="label" for="cf-condiciones">Condiciones</label><textarea id="cf-condiciones" class="field" maxlength="400" placeholder="Válido en salón. No acumulable con otras promos"></textarea><p class="hint">Separá cada condición con un punto.</p></div>
+    <div>
+      <span class="label">Días en que vale</span>
+      <div class="dias" id="cf-dias">
+        <label><input type="checkbox" value="1"><span>Lun</span></label><label><input type="checkbox" value="2"><span>Mar</span></label><label><input type="checkbox" value="3"><span>Mié</span></label><label><input type="checkbox" value="4"><span>Jue</span></label><label><input type="checkbox" value="5"><span>Vie</span></label><label><input type="checkbox" value="6"><span>Sáb</span></label><label><input type="checkbox" value="0"><span>Dom</span></label>
+      </div>
+      <p class="hint">Si marcás todos (o ninguno), vale todos los días.</p>
+    </div>
+    <div class="grid2">
+      <div><label class="label" for="cf-desde">Desde (opcional)</label><input id="cf-desde" class="field" type="time"></div>
+      <div><label class="label" for="cf-hasta">Hasta (opcional)</label><input id="cf-hasta" class="field" type="time"><p class="hint">Dejá las dos horas vacías si vale todo el día.</p></div>
+    </div>
+    <div class="grid2">
+      <div><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
+      <div style="align-self:center"><label class="switch"><input id="cf-activo" type="checkbox" checked>Visible para los clientes</label></div>
+    </div>
+    <button type="submit" class="btn full">Guardar cupón</button>
+  </form>
+</div>
+<div id="toast" hidden></div>
+
+
+<script>
+/* ====== CONFIGURACIÓN ====== */
+const SUPABASE_URL = "https://ulkcugdtqxuxjmsyqomy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_8tZa-AWxSmLJo729GPYmlA_tdgOTF1n"; // clave pública, segura para el navegador
+/* =========================== */
+
+const $ = id => document.getElementById(id);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fecha = iso => iso ? new Date(iso).toLocaleString('es-AR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false}) : '';
+const hora = iso => new Date(iso).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', hour12:false});
+const fechaCorta = d => new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {day:'numeric', month:'short'});
+function hoyISO(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Argentina/Buenos_Aires'}).format(new Date()); }
+
+async function rpc(fn, args = {}){
+  let r;
+  try{ r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {method:'POST', headers:{apikey: SUPABASE_KEY, 'Content-Type':'application/json'}, body: JSON.stringify(args)}); }
+  catch(e){ throw new Error('No hay conexión. Revisá internet y probá de nuevo.'); }
+  const d = await r.json().catch(() => null);
+  if(!r.ok) throw new Error((d && d.message) || 'No pudimos conectar. Probá de nuevo.');
+  return d;
+}
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
+const abrirHoja = id => $(id).setAttribute('aria-hidden', 'false');
+const cerrarHoja = id => $(id).setAttribute('aria-hidden', 'true');
+$$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrarHoja(w.id); }));
+document.addEventListener('keydown', e => { if(e.key === 'Escape') $$('.sheet-wrap').forEach(w => cerrarHoja(w.id)); });
+async function conBoton(b, fn){
+  const txt = b.innerHTML; b.disabled = true; b.textContent = 'Un momento…';
+  try{ return await fn(); } finally { b.disabled = false; b.innerHTML = txt; }
+}
+function partes(et){
+  let m = et.match(/^(.*?)(\d+\s?%)\s*(.*)$/);
+  if(m) return {pre: m[1].trim(), big: m[2].replace(/\s/g, ''), post: m[3].trim()};
+  m = et.match(/^(\$\s?[\d.,]+)\s*(.*)$/);
+  if(m) return {pre: '', big: m[1].replace(/\s/g, ''), post: m[2].trim()};
+  return {pre: '', big: et, post: ''};
+}
+const badge = (c) => { const e = partes(c.etiqueta); return `<span class="badge ${c.activo === false ? 'off' : ''}" aria-hidden="true">${esc(e.big.length > 8 ? c.icono : e.big)}</span>`; };
+
+// Fila de cupón en los paneles
+function itemCupon(c, extra = ''){
+  const vence = c.vence ? `Vence ${fechaCorta(c.vence)}` : '';
+  const vencido = c.vence && c.vence < hoyISO();
+  return `<div class="item">
+    ${badge(c)}
+    <div class="grow">
+      <p class="t">${esc(c.icono)} ${esc(c.etiqueta)} · ${esc(c.titulo)}</p>
+      <p class="s">${extra}${esc(c.horario)}${vence ? ' · ' + vence : ''}</p>
+      <p class="s"><span class="chip ${c.activo && !vencido ? 'ok' : 'off'}">${!c.activo ? 'Pausado' : vencido ? 'Vencido' : 'Visible'}</span> ${c.pedidos} pedidos · ${c.usados} canjeados · 🔥 ${c.votos.hot} / ❄️ ${c.votos.frio}</p>
+    </div>
+    <div class="acts">
+      <button type="button" class="btn ghost sm" data-edit="${c.id}">Editar</button>
+      <button type="button" class="btn ghost sm" data-toggle="${c.id}">${c.activo ? 'Pausar' : 'Activar'}</button>
+      <button type="button" class="btn danger sm" data-del="${c.id}">Borrar</button>
+    </div>
+  </div>`;
+}
+
+// ---------- Formulario de cupón ----------
+let editando = null;
+function abrirFormCupon(c, opciones = {}){
+  editando = c ? c.id : null;
+  $('cf-title').textContent = c ? 'Editar cupón' : 'Nuevo cupón';
+  $('cf-alert').hidden = true;
+  $('cf-local-w').hidden = !opciones.locales;
+  if(opciones.locales) $('cf-local').innerHTML = opciones.locales.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
+  if(opciones.locales) $('cf-local').value = c ? c.local : (opciones.localPorDefecto || opciones.locales[0]?.id || '');
+  $('cf-etiqueta').value = c ? c.etiqueta : '';
+  $('cf-icono').value = c ? c.icono : '🎟️';
+  $('cf-titulo').value = c ? c.titulo : '';
+  $('cf-descripcion').value = c ? c.descripcion : '';
+  $('cf-condiciones').value = c ? c.condiciones : '';
+  $$('#cf-dias input').forEach(i => i.checked = !!(c && c.dias && c.dias.includes(+i.value)));
+  $('cf-desde').value = c && c.hora_desde ? c.hora_desde : '';
+  $('cf-hasta').value = c && c.hora_hasta ? c.hora_hasta : '';
+  $('cf-vence').value = c && c.vence ? c.vence : '';
+  $('cf-activo').checked = c ? c.activo : true;
+  abrirHoja('sheet-cupon');
+  setTimeout(() => $('cf-etiqueta').focus(), 250);
+}
+function leerFormCupon(){
+  const dias = $$('#cf-dias input:checked').map(i => +i.value);
+  return {
+    id: editando, local: $('cf-local-w').hidden ? null : +$('cf-local').value,
+    etiqueta: $('cf-etiqueta').value.trim(), icono: $('cf-icono').value.trim(), titulo: $('cf-titulo').value.trim(),
+    descripcion: $('cf-descripcion').value.trim(), condiciones: $('cf-condiciones').value.trim(),
+    dias: dias.length && dias.length < 7 ? dias : null,
+    hora_desde: $('cf-desde').value || null, hora_hasta: $('cf-hasta').value || null,
+    vence: $('cf-vence').value || null, activo: $('cf-activo').checked,
+  };
+}
+function avisoCupon(msg){ $('cf-alert').textContent = msg; $('cf-alert').hidden = !msg; if(msg) $('cf-alert').scrollIntoView({block:'nearest'}); }
+
+
+let pin = '', D = {rubros: [], locales: [], cupones: []}, tabActual = 'numeros';
+try{ pin = sessionStorage.getItem('tucupon.admin') || ''; }catch(e){}
+const rubroNombre = id => (D.rubros.find(r => r.id === id) || {}).nombre || id;
+const localNombre = id => (D.locales.find(l => l.id === id) || {}).nombre || '';
+
+function avisoLogin(m){ $('l-alert').textContent = m || ''; $('l-alert').hidden = !m; }
+$('f-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  const p = $('l-pin').value.trim();
+  if(!/^\d{8}$/.test(p)){ avisoLogin('El PIN maestro tiene 8 números.'); return $('l-pin').focus(); }
+  avisoLogin('');
+  await conBoton(e.target.querySelector('.btn'), async () => {
+    try{
+      const r = await rpc('tc_admin_login', {p_pin: p});
+      if(!r.ok){ avisoLogin('PIN incorrecto'); $('l-pin').select(); return; }
+      pin = p; try{ sessionStorage.setItem('tucupon.admin', pin); }catch(_){}
+      entrar();
+    }catch(err){ avisoLogin(err.message); }
+  });
+});
+async function entrar(){
+  $('login').hidden = true; $('app').hidden = false; $('l-pin').value = '';
+  await recargar(); tab('numeros');
+}
+function salir(msg){
+  pin = ''; try{ sessionStorage.removeItem('tucupon.admin'); }catch(e){}
+  $('app').hidden = true; $('login').hidden = false; avisoLogin(msg || '');
+}
+$('btn-salir').addEventListener('click', () => salir());
+function manejarError(err){ if(/PIN incorrecto/i.test(err.message)) return salir('Tu sesión venció. Ingresá de nuevo.'); toast(err.message); }
+
+async function recargar(){
+  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarFiltros(); pintarTab(); }
+  catch(err){ manejarError(err); }
+}
+function tab(t){
+  tabActual = t;
+  $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+  ['numeros', 'locales', 'cupones', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  pintarTab();
+}
+$$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
+function pintarTab(){
+  if(tabActual === 'numeros') cargarKpis();
+  if(tabActual === 'locales') pintarLocales();
+  if(tabActual === 'cupones') pintarCupones();
+  if(tabActual === 'rubros') pintarRubros();
+  if(tabActual === 'canjes'){ if(!$('cj-desde').value){ $('cj-desde').value = $('cj-hasta').value = hoyISO(); } cargarCanjes(); }
+}
+function pintarFiltros(){
+  const rv = $('lf-rubro').value, lv = $('cfil-local').value;
+  $('lf-rubro').innerHTML = '<option value="">Todos</option>' + D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
+  $('lf-rubro').value = D.rubros.some(r => r.id === rv) ? rv : '';
+  $('cfil-local').innerHTML = '<option value="">Todos los locales</option>' + D.locales.map(l => `<option value="${l.id}">${esc(l.nombre)}</option>`).join('');
+  $('cfil-local').value = D.locales.some(l => String(l.id) === lv) ? lv : '';
+  $('lo-rubro').innerHTML = D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
+  $('barrios-lista').innerHTML = [...new Set(D.locales.map(l => l.barrio))].map(b => `<option value="${esc(b)}">`).join('');
+}
+$('lf-rubro').addEventListener('change', pintarLocales);
+$('cfil-local').addEventListener('change', pintarCupones);
+
+// ---------- Números ----------
+async function cargarKpis(){
+  try{
+    const k = await rpc('tc_admin_kpis', {p_pin: pin, p_dias: +$('k-dias').value});
+    $('k-pedidos').textContent = k.pedidos; $('k-usados').textContent = k.usados; $('k-clientes').textContent = k.clientes;
+    $('k-conv').textContent = k.pedidos ? Math.round(k.usados / k.pedidos * 100) + '%' : '–';
+    const max = Math.max(1, ...k.por_dia.map(d => Math.max(d.pedidos, d.usados)));
+    $('k-bars').innerHTML = k.por_dia.map(d => `<div title="${fechaCorta(d.dia)}: ${d.pedidos} pedidos, ${d.usados} canjeados"><i class="p" style="height:${Math.max(0, d.pedidos - d.usados) / max * 100}%"></i><i class="u" style="height:${d.usados / max * 100}%"></i></div>`).join('');
+    $('k-rango').textContent = `${fechaCorta(k.desde)} al ${fechaCorta(hoyISO())} · máx. ${max}`;
+    const tabla = (rows, col) => rows.length ? `<table><thead><tr><th>${col}</th><th style="text-align:right">Pedidos</th><th style="text-align:right">Canjes</th></tr></thead><tbody>${rows.join('')}</tbody></table>` : '<div class="empty">Todavía no hay pedidos en este período.</div>';
+    $('k-locales').innerHTML = tabla(k.top_locales.map(r => `<tr><td>${esc(r.icono)} ${esc(r.nombre)}</td><td class="n">${r.pedidos}</td><td class="n">${r.usados}</td></tr>`), 'Local');
+    $('k-cupones').innerHTML = tabla(k.top_cupones.map(r => `<tr><td>${esc(r.icono)} <b>${esc(r.etiqueta)}</b> · ${esc(r.titulo)}<br><span class="muted" style="font-size:.8rem">${esc(r.local)}</span></td><td class="n">${r.pedidos}</td><td class="n">${r.usados}</td></tr>`), 'Cupón');
+  }catch(err){ manejarError(err); }
+}
+$('k-dias').addEventListener('change', cargarKpis);
+
+// ---------- Locales ----------
+function pintarLocales(){
+  const r = $('lf-rubro').value, ls = D.locales.filter(l => !r || l.rubro === r);
+  $('loc-lista').innerHTML = ls.length ? ls.map(l => {
+    const n = D.cupones.filter(c => c.local === l.id).length;
+    return `<div class="item">
+      <span class="badge" style="background:${esc(l.color)};font-size:1.8rem" aria-hidden="true">${esc(l.icono)}</span>
+      <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)} · ${esc(l.dir)}</p>
+        <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Visible' : 'Oculto'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} cupones · ${l.pedidos} pedidos · ${l.usados} canjes</p></div>
+      <div class="acts">
+        <button type="button" class="btn ghost sm" data-lcup="${l.id}">Cupones</button>
+        <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
+        <button type="button" class="btn ghost sm" data-lpin="${l.id}">${l.tiene_pin ? 'Nuevo PIN' : 'Crear PIN'}</button>
+      </div></div>`;
+  }).join('') : '<div class="empty">No hay locales en este rubro.</div>';
+}
+let localEdit = null;
+function abrirLocal(l){
+  localEdit = l ? l.id : null;
+  $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
+  $('lo-nombre').value = l ? l.nombre : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
+  $('lo-barrio').value = l ? l.barrio : ''; $('lo-dir').value = l ? l.dir : ''; $('lo-horario').value = l ? l.horario : '';
+  $('lo-icono').value = l ? l.icono : '🍽️'; $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
+  $('lo-activo').checked = l ? l.activo : true;
+  abrirHoja('sheet-local'); setTimeout(() => $('lo-nombre').focus(), 250);
+}
+$('btn-nuevo-local').addEventListener('click', () => abrirLocal(null));
+$('f-local').addEventListener('submit', async e => {
+  e.preventDefault(); $('lo-alert').hidden = true;
+  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), rubro: $('lo-rubro').value, barrio: $('lo-barrio').value.trim(), dir: $('lo-dir').value.trim(),
+    horario: $('lo-horario').value.trim(), icono: $('lo-icono').value.trim(), color: $('lo-color').value, activo: $('lo-activo').checked};
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{
+      const r = await rpc('tc_admin_guardar_local', {p_pin: pin, p_local: datos});
+      cerrarHoja('sheet-local'); const nuevo = !localEdit; await recargar();
+      if(nuevo){ toast('Local creado. Ahora generale un PIN.'); generarPin(r.id); } else toast('Local actualizado');
+    }catch(err){ if(/PIN incorrecto/i.test(err.message)) return manejarError(err); $('lo-alert').textContent = err.message; $('lo-alert').hidden = false; }
+  });
+});
+async function generarPin(id){
+  try{
+    const r = await rpc('tc_admin_nuevo_pin_local', {p_pin: pin, p_local_id: id});
+    $('pin-local').textContent = localNombre(id); $('pin-valor').textContent = r.pin; abrirHoja('sheet-pin'); recargar();
+  }catch(err){ manejarError(err); }
+}
+$('pin-copiar').addEventListener('click', async () => {
+  try{ await navigator.clipboard.writeText($('pin-valor').textContent); toast('PIN copiado'); }
+  catch(e){ const r = document.createRange(); r.selectNodeContents($('pin-valor')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Seleccionado: copialo con Ctrl+C'); }
+});
+$('loc-lista').addEventListener('click', e => {
+  const ed = e.target.closest('[data-ledit]'), pn = e.target.closest('[data-lpin]'), cu = e.target.closest('[data-lcup]');
+  if(ed) abrirLocal(D.locales.find(l => l.id === +ed.dataset.ledit));
+  if(pn){
+    const l = D.locales.find(x => x.id === +pn.dataset.lpin);
+    if(!l.tiene_pin) return generarPin(l.id);
+    confirmar(`¿Generar un PIN nuevo para ${l.nombre}?`, 'El PIN actual va a dejar de funcionar y el local va a tener que ingresar con el nuevo.', 'Generar PIN', () => generarPin(l.id));
+  }
+  if(cu){ $('cfil-local').value = cu.dataset.lcup; tab('cupones'); }
+});
+
+// ---------- Cupones ----------
+function pintarCupones(){
+  const f = $('cfil-local').value, cs = D.cupones.filter(c => !f || String(c.local) === f);
+  $('cup-lista').innerHTML = cs.length ? cs.map(c => itemCupon(c, f ? '' : `<b>${esc(localNombre(c.local))}</b> · `)).join('') : '<div class="empty">No hay cupones para este local.</div>';
+}
+$('btn-nuevo-cupon').addEventListener('click', () => {
+  if(!D.locales.length) return toast('Primero creá un local.');
+  abrirFormCupon(null, {locales: D.locales, localPorDefecto: $('cfil-local').value});
+});
+$('f-cupon').addEventListener('submit', async e => {
+  e.preventDefault(); avisoCupon('');
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{ await rpc('tc_admin_guardar_cupon', {p_pin: pin, p_cupon: leerFormCupon()}); cerrarHoja('sheet-cupon'); toast(editando ? 'Cupón actualizado' : 'Cupón creado'); recargar(); }
+    catch(err){ if(/PIN incorrecto/i.test(err.message)) return manejarError(err); avisoCupon(err.message); }
+  });
+});
+$('cup-lista').addEventListener('click', async e => {
+  const ed = e.target.closest('[data-edit]'), tg = e.target.closest('[data-toggle]'), dl = e.target.closest('[data-del]');
+  if(ed) abrirFormCupon(D.cupones.find(c => c.id === +ed.dataset.edit), {locales: D.locales});
+  if(tg){
+    const c = D.cupones.find(x => x.id === +tg.dataset.toggle);
+    await conBoton(tg, async () => {
+      try{ await rpc('tc_admin_guardar_cupon', {p_pin: pin, p_cupon: {...c, activo: !c.activo}}); toast(c.activo ? 'Cupón pausado' : 'Cupón activado'); recargar(); }
+      catch(err){ manejarError(err); }
+    });
+  }
+  if(dl){
+    const c = D.cupones.find(x => x.id === +dl.dataset.del);
+    confirmar('¿Borrar este cupón?', `${c.etiqueta} · ${c.titulo}` + (c.pedidos ? '. Como ya tiene códigos pedidos, se va a pausar en vez de borrarse.' : '. No se puede deshacer.'), 'Sí, borrar', async () => {
+      try{ const r = await rpc('tc_admin_borrar_cupon', {p_pin: pin, p_cupon_id: c.id}); toast(r.pausado ? 'Tenía códigos pedidos: lo pausamos' : 'Cupón borrado'); recargar(); }
+      catch(err){ manejarError(err); }
+    });
+  }
+});
+
+// ---------- Rubros ----------
+function pintarRubros(){
+  $('rub-lista').innerHTML = D.rubros.length ? D.rubros.map(r => `<div class="item">
+    <span class="badge" style="background:${esc(r.color)};font-size:1.8rem" aria-hidden="true">${esc(r.icono)}</span>
+    <div class="grow"><p class="t">${esc(r.nombre)}</p><p class="s">${r.locales} ${r.locales === 1 ? 'local' : 'locales'} · orden ${r.orden}</p></div>
+    <div class="acts"><button type="button" class="btn ghost sm" data-redit="${esc(r.id)}">Editar</button><button type="button" class="btn danger sm" data-rdel="${esc(r.id)}">Borrar</button></div></div>`).join('')
+    : '<div class="empty">No hay rubros. Creá el primero.</div>';
+}
+let rubroEdit = null;
+function abrirRubro(r){
+  rubroEdit = r ? r.id : null;
+  $('ru-title').textContent = r ? 'Editar rubro' : 'Nuevo rubro'; $('ru-alert').hidden = true;
+  $('ru-nombre').value = r ? r.nombre : ''; $('ru-icono').value = r ? r.icono : '🍽️';
+  $('ru-color').value = r && /^#[0-9a-f]{6}$/i.test(r.color) ? r.color : '#7B3FF0';
+  $('ru-orden').value = r ? r.orden : (Math.max(0, ...D.rubros.map(x => x.orden)) + 1);
+  abrirHoja('sheet-rubro'); setTimeout(() => $('ru-nombre').focus(), 250);
+}
+$('btn-nuevo-rubro').addEventListener('click', () => abrirRubro(null));
+$('f-rubro').addEventListener('submit', async e => {
+  e.preventDefault(); $('ru-alert').hidden = true;
+  const datos = {id: rubroEdit || '', nombre: $('ru-nombre').value.trim(), icono: $('ru-icono').value.trim(), color: $('ru-color').value, orden: $('ru-orden').value};
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{ await rpc('tc_admin_guardar_rubro', {p_pin: pin, p_rubro: datos}); cerrarHoja('sheet-rubro'); toast(rubroEdit ? 'Rubro actualizado' : 'Rubro creado'); recargar(); }
+    catch(err){ if(/PIN incorrecto/i.test(err.message)) return manejarError(err); $('ru-alert').textContent = err.message; $('ru-alert').hidden = false; }
+  });
+});
+$('rub-lista').addEventListener('click', e => {
+  const ed = e.target.closest('[data-redit]'), dl = e.target.closest('[data-rdel]');
+  if(ed) abrirRubro(D.rubros.find(r => r.id === ed.dataset.redit));
+  if(dl){
+    const r = D.rubros.find(x => x.id === dl.dataset.rdel);
+    if(r.locales) return toast('Este rubro tiene locales. Pasalos a otro rubro antes de borrarlo.');
+    confirmar(`¿Borrar el rubro ${r.nombre}?`, 'No se puede deshacer.', 'Sí, borrar', async () => {
+      try{ await rpc('tc_admin_borrar_rubro', {p_pin: pin, p_id: r.id}); toast('Rubro borrado'); recargar(); }
+      catch(err){ manejarError(err); }
+    });
+  }
+});
+
+// ---------- Canjes ----------
+async function cargarCanjes(){
+  const d = $('cj-desde').value, h = $('cj-hasta').value;
+  if(d > h){ $('cj-lista').innerHTML = '<div class="alert">La fecha “desde” es posterior a “hasta”.</div>'; return; }
+  $('cj-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{
+    const r = await rpc('tc_admin_canjes', {p_pin: pin, p_desde: d, p_hasta: h});
+    $('cj-usados').textContent = r.usados; $('cj-pedidos').textContent = r.pedidos;
+    $('cj-lista').innerHTML = r.lista.length ? `<table><thead><tr><th>Cuándo</th><th>Local</th><th>Cupón</th><th>Cliente</th><th>Código</th></tr></thead><tbody>${r.lista.map(k => `<tr><td style="white-space:nowrap">${esc(fecha(k.usado_en))}</td><td>${esc(k.local)}</td><td>${esc(k.icono)} ${esc(k.etiqueta)}</td><td>${esc(k.email)}</td><td class="mono">${esc(k.codigo)}</td></tr>`).join('')}</tbody></table>`
+      : '<div class="empty">No hubo canjes confirmados en estas fechas.</div>';
+  }catch(err){ manejarError(err); }
+}
+$('cj-desde').addEventListener('change', cargarCanjes); $('cj-hasta').addEventListener('change', cargarCanjes);
+
+// ---------- Confirmaciones ----------
+let alConfirmar = null;
+function confirmar(t, s, boton, fn){ $('conf-t').textContent = t; $('conf-s').textContent = s; $('conf-ok').textContent = boton; alConfirmar = fn; abrirHoja('sheet-conf'); }
+$('conf-ok').addEventListener('click', async e => { const fn = alConfirmar; cerrarHoja('sheet-conf'); if(fn) await fn(); });
+
+// ---------- PIN maestro ----------
+$('f-pin').addEventListener('submit', async e => {
+  e.preventDefault();
+  const a = $('p-nuevo').value.trim(), b = $('p-nuevo2').value.trim(), al = $('p-alert'); al.className = 'alert';
+  if(!/^\d{8}$/.test(a)){ al.textContent = 'El PIN maestro tiene que tener 8 números.'; al.hidden = false; return; }
+  if(a !== b){ al.textContent = 'Los PIN no coinciden.'; al.hidden = false; return; }
+  await conBoton(e.target.querySelector('.btn'), async () => {
+    try{
+      await rpc('tc_admin_cambiar_pin', {p_pin: pin, p_nuevo: a});
+      pin = a; try{ sessionStorage.setItem('tucupon.admin', pin); }catch(_){}
+      al.className = 'alert ok'; al.textContent = 'Listo, el PIN maestro cambió.'; al.hidden = false; $('p-nuevo').value = $('p-nuevo2').value = '';
+    }catch(err){ manejarError(err); }
+  });
+});
+
+if(pin) entrar();
+</script>
+</body>
+</html>

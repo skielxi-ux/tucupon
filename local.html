@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B0F63">
+<meta name="robots" content="noindex">
+<title>Tucupón · Panel del local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Paneles de Tucupón: mismos colores y fuentes que la app de clientes */
+:root{
+  --font-display:"Outfit",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --hero:#2B0F63; --hero-2:#43198F; --brand:#7B3FF0; --brand-deep:#4F1BB5; --on-brand:#FFFFFF; --accent:#C4F04A; --on-accent:#1E0B45; --heading:#3A1789;
+  --bg:#F5F2FC; --surface:#FFFFFF; --surface-2:#EFEAF9; --ink:#22163F; --muted:#6E6585; --line:#E6E0F3;
+  --ok:#0B7A54; --ok-bg:#E1F4EA; --warn:#7A5200; --warn-bg:#FFF2D2; --hot:#E5484D; --hot-bg:#FDE8EA;
+  --shadow:rgba(43,15,99,.14); --scrim:rgba(20,8,45,.55);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --hero:#1C0A42; --hero-2:#2E1270; --brand:#9B6BFF; --brand-deep:#5F28CF; --accent:#CDF55E; --heading:#D6C8FF;
+  --bg:#120A24; --surface:#1C1233; --surface-2:#281C45; --ink:#F1EDFA; --muted:#A9A0C2; --line:#34285A;
+  --ok:#5AD7A2; --ok-bg:rgba(90,215,162,.13); --warn:#FFC56B; --warn-bg:rgba(255,197,107,.13); --hot:#FF7A7E; --hot-bg:rgba(229,72,77,.16);
+  --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.65); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --hero:#1C0A42; --hero-2:#2E1270; --brand:#9B6BFF; --brand-deep:#5F28CF; --accent:#CDF55E; --heading:#D6C8FF;
+  --bg:#120A24; --surface:#1C1233; --surface-2:#281C45; --ink:#F1EDFA; --muted:#A9A0C2; --line:#34285A;
+  --ok:#5AD7A2; --ok-bg:rgba(90,215,162,.13); --warn:#FFC56B; --warn-bg:rgba(255,197,107,.13); --hot:#FF7A7E; --hot-bg:rgba(229,72,77,.16);
+  --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.65); color-scheme:dark }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-tap-highlight-color:transparent;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.45 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:clip;min-height:100dvh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;color:var(--heading);letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:46rem;margin-inline:auto;padding-inline:16px}
+.muted{color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+
+.top{background:linear-gradient(160deg,var(--hero),var(--hero-2));color:#fff;padding-block:14px}
+.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brandmark{display:inline-flex;align-items:center;gap:8px;font:900 1.35rem/1 var(--font-display);letter-spacing:-.02em}
+.brandmark em{font-style:normal;color:var(--accent)}
+.brandmark .tag{font:700 .72rem var(--font-body);letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;margin-left:4px}
+.tk{display:grid;place-items:center;width:32px;height:24px;background:var(--accent);color:var(--on-accent);border-radius:6px;rotate:-6deg}
+.tk svg{width:14px;height:14px}
+.top .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.92rem;min-width:0}
+.top .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-top{border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.85rem;color:#fff;flex:none}
+
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:14px 4px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.92rem;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+main.wrap{padding-bottom:64px}
+.panel{margin-top:14px;display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px}
+.card h2{font-size:1.25rem}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+
+.label{display:block;font-weight:700;font-size:.88rem;margin-bottom:6px}
+.field{width:100%;border:2px solid var(--line);background:var(--surface-2);border-radius:14px;padding:11px 14px;font-size:1rem;outline:none}
+.field:focus{border-color:var(--brand);background:var(--surface)}
+textarea.field{min-height:84px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:12px}
+.hint{font-size:.8rem;color:var(--muted);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:12px 18px;font-weight:800;background:var(--brand);color:var(--on-brand)}
+.btn[disabled]{opacity:.6;cursor:default}
+.btn.full{width:100%}
+.btn.lima{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.btn.danger{background:var(--hot-bg);color:var(--hot)}
+.btn.sm{padding:7px 12px;font-size:.85rem;border-radius:11px}
+.alert{border-radius:14px;padding:11px 14px;font-weight:700;font-size:.9rem;background:var(--hot-bg);color:var(--hot)}
+.alert.ok{background:var(--ok-bg);color:var(--ok)}
+.alert.warn{background:var(--warn-bg);color:var(--warn)}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:.74rem;font-weight:800;white-space:nowrap;background:var(--surface-2);color:var(--muted)}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.off{background:var(--hot-bg);color:var(--hot)}.chip.brand{background:var(--brand);color:var(--on-brand)}
+
+.dias{display:flex;flex-wrap:wrap;gap:6px}
+.dias label{position:relative}
+.dias input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.dias span{display:inline-block;border:2px solid var(--line);border-radius:10px;padding:5px 10px;font-weight:700;font-size:.85rem;color:var(--muted)}
+.dias input:checked + span{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.dias input:focus-visible + span{outline:3px solid var(--accent);outline-offset:2px}
+.switch{display:inline-flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
+.switch input{width:44px;height:26px;appearance:none;border-radius:99px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;margin:0}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:99px;background:#fff;transition:transform .15s}
+.switch input:checked{background:var(--ok)}
+.switch input:checked::after{transform:translateX(18px)}
+
+.item{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0;padding-top:0}
+.badge{flex:none;display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#C4F04A;font:800 .95rem/1 var(--font-display);text-align:center;padding:4px;letter-spacing:-.01em}
+.badge.off{filter:grayscale(1);opacity:.6}
+.item .t{font-weight:800;line-height:1.25}
+.item .s{font-size:.82rem;color:var(--muted);margin-top:2px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.stat b{display:block;font:800 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--muted);font-weight:700}
+.empty{border:2px dashed var(--line);border-radius:18px;padding:20px;text-align:center;color:var(--muted);font-size:.92rem}
+
+.code-in{width:100%;border:2px dashed var(--brand);background:var(--surface-2);border-radius:18px;padding:16px;text-align:center;font:800 clamp(1.8rem,9vw,2.6rem) var(--font-mono);letter-spacing:.2em;text-transform:uppercase;outline:none}
+.code-in:focus{background:var(--surface)}
+.result{border-radius:20px;padding:18px;display:grid;gap:10px}
+.stamp{justify-self:center;rotate:-6deg;border:4px solid var(--ok);color:var(--ok);border-radius:12px;padding:4px 18px;font:800 1.6rem var(--font-display);letter-spacing:.06em;animation:st .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes st{from{transform:scale(2.2) rotate(-12deg);opacity:0}}
+
+.login{min-height:100dvh;display:grid;place-items:center;background:linear-gradient(160deg,var(--hero),var(--hero-2));padding:24px 16px}
+.login .card{width:100%;max-width:26rem;display:grid;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.login .brandmark{color:var(--heading)}
+
+.sheet-wrap{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:var(--scrim);transition:opacity .2s}
+.sheet-wrap[aria-hidden="true"]{opacity:0;pointer-events:none}
+.sheet{width:100%;max-width:40rem;max-height:94dvh;overflow-y:auto;background:var(--surface);border-radius:26px 26px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,0px) + 22px);transition:transform .25s cubic-bezier(.2,.8,.2,1);display:grid;gap:14px}
+.sheet-wrap[aria-hidden="true"] .sheet{transform:translateY(105%)}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:60;max-width:28rem;margin:0 auto;border-radius:14px;background:var(--ink);color:var(--bg);padding:12px 16px;text-align:center;font-size:.9rem;font-weight:700}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:10px}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;min-width:0}
+.bars i{display:block;border-radius:3px 3px 0 0}
+.bars .p{background:var(--brand);opacity:.35}.bars .u{background:var(--brand)}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);font-weight:700;margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:8px 6px;border-top:1px solid var(--line)}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.scroll{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+
+<!-- ============ INGRESO ============ -->
+<section id="login" class="login">
+  <form id="f-login" class="card" novalidate>
+    <span class="brandmark"><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em></span>
+    <div><h1 style="font-size:1.5rem">Panel del local</h1><p class="muted" style="margin-top:4px">Confirmá los códigos de tus clientes y manejá tus cupones.</p></div>
+    <div id="l-alert" class="alert" hidden></div>
+    <div><label class="label" for="l-local">Tu local</label><select id="l-local" class="field"><option value="">Cargando locales…</option></select></div>
+    <div><label class="label" for="l-pin">PIN</label><input id="l-pin" class="field mono" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" placeholder="6 números" style="letter-spacing:.3em"></div>
+    <button type="submit" class="btn full">Ingresar</button>
+    <p class="muted" style="font-size:.82rem;text-align:center">¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
+  </form>
+</section>
+
+<!-- ============ PANEL ============ -->
+<div id="app" hidden>
+  <header class="top"><div class="wrap">
+    <span class="brandmark"><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em><span class="tag">Local</span></span>
+    <span class="who"><span id="w-nombre"></span><button type="button" id="btn-salir" class="btn-top">Salir</button></span>
+  </div></header>
+  <main class="wrap">
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button type="button" class="tab" role="tab" data-tab="canjear" aria-selected="true">Canjear</button>
+      <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Canjes</button>
+      <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
+      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
+    </nav>
+
+    <!-- Canjear -->
+    <section id="t-canjear" class="panel">
+      <form id="f-codigo" class="card" style="display:grid;gap:12px" novalidate>
+        <h2>Canjear un código</h2>
+        <p class="muted" style="font-size:.92rem">Pedile al cliente el código de 6 letras y números que ve en su celular.</p>
+        <label for="c-codigo" class="label" style="margin:0">Código</label>
+        <input id="c-codigo" class="code-in" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123">
+        <button type="submit" class="btn full">Buscar código</button>
+      </form>
+      <div id="c-result"></div>
+    </section>
+
+    <!-- Canjes del día -->
+    <section id="t-hoy" class="panel" hidden>
+      <div class="card row">
+        <div class="grow"><label class="label" for="h-fecha">Día</label><input id="h-fecha" class="field" type="date"></div>
+        <button type="button" class="btn ghost" id="h-hoy" style="align-self:flex-end">Hoy</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="h-usados">–</b><span>Canjeados</span></div>
+        <div class="stat"><b id="h-pedidos">–</b><span>Códigos pedidos</span></div>
+      </div>
+      <div class="card"><h2>Canjes confirmados</h2><div id="h-lista" style="margin-top:12px"></div></div>
+    </section>
+
+    <!-- Mis cupones -->
+    <section id="t-cupones" class="panel" hidden>
+      <div class="row"><h2 class="grow">Mis cupones</h2><button type="button" id="btn-nuevo" class="btn">+ Nuevo cupón</button></div>
+      <div class="card" id="cup-lista"></div>
+      <p class="muted" style="font-size:.82rem">Si borrás un cupón que ya tiene códigos pedidos, se pausa en vez de borrarse, así no perdés el historial.</p>
+    </section>
+
+    <!-- Ajustes -->
+    <section id="t-ajustes" class="panel" hidden>
+      <form id="f-pin" class="card" style="display:grid;gap:12px" novalidate>
+        <h2>Cambiar PIN</h2>
+        <div id="p-alert" class="alert" hidden></div>
+        <div><label class="label" for="p-nuevo">PIN nuevo</label><input id="p-nuevo" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="6 números"></div>
+        <div><label class="label" for="p-nuevo2">Repetí el PIN</label><input id="p-nuevo2" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="6 números"></div>
+        <button type="submit" class="btn">Guardar PIN</button>
+      </form>
+      <div class="card" id="aj-info"></div>
+    </section>
+  </main>
+</div>
+
+<!-- Confirmación de borrado -->
+<div id="sheet-del" class="sheet-wrap" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="del-t">
+    <h2 id="del-t">¿Borrar este cupón?</h2>
+    <p id="del-s" class="muted"></p>
+    <div class="row"><button type="button" class="btn ghost grow" data-close>Cancelar</button><button type="button" id="del-ok" class="btn danger grow">Sí, borrar</button></div>
+  </div>
+</div>
+
+<!-- Hoja: formulario de cupón (compartido entre panel del local y panel admin) -->
+<div id="sheet-cupon" class="sheet-wrap" aria-hidden="true">
+  <form id="f-cupon" class="sheet" role="dialog" aria-modal="true" aria-labelledby="cf-title" novalidate>
+    <div class="row"><h2 id="cf-title" class="grow">Nuevo cupón</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="cf-alert" class="alert" hidden></div>
+    <div id="cf-local-w" hidden><label class="label" for="cf-local">Local</label><select id="cf-local" class="field"></select></div>
+    <div class="grid2">
+      <div><label class="label" for="cf-etiqueta">Descuento</label><input id="cf-etiqueta" class="field" maxlength="24" placeholder="20% OFF, 2x1, $ 3.000 OFF"><p class="hint">Es el texto grande del cupón.</p></div>
+      <div><label class="label" for="cf-icono">Ícono</label><input id="cf-icono" class="field" maxlength="4" placeholder="🍕"><p class="hint">Un emoji que represente el producto.</p></div>
+    </div>
+    <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="En pizzas grandes de la carta"></div>
+    <div><label class="label" for="cf-descripcion">Descripción (opcional)</label><textarea id="cf-descripcion" class="field" maxlength="300" placeholder="Contá qué incluye la promo"></textarea></div>
+    <div><label class="label" for="cf-condiciones">Condiciones</label><textarea id="cf-condiciones" class="field" maxlength="400" placeholder="Válido en salón. No acumulable con otras promos"></textarea><p class="hint">Separá cada condición con un punto.</p></div>
+    <div>
+      <span class="label">Días en que vale</span>
+      <div class="dias" id="cf-dias">
+        <label><input type="checkbox" value="1"><span>Lun</span></label><label><input type="checkbox" value="2"><span>Mar</span></label><label><input type="checkbox" value="3"><span>Mié</span></label><label><input type="checkbox" value="4"><span>Jue</span></label><label><input type="checkbox" value="5"><span>Vie</span></label><label><input type="checkbox" value="6"><span>Sáb</span></label><label><input type="checkbox" value="0"><span>Dom</span></label>
+      </div>
+      <p class="hint">Si marcás todos (o ninguno), vale todos los días.</p>
+    </div>
+    <div class="grid2">
+      <div><label class="label" for="cf-desde">Desde (opcional)</label><input id="cf-desde" class="field" type="time"></div>
+      <div><label class="label" for="cf-hasta">Hasta (opcional)</label><input id="cf-hasta" class="field" type="time"><p class="hint">Dejá las dos horas vacías si vale todo el día.</p></div>
+    </div>
+    <div class="grid2">
+      <div><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
+      <div style="align-self:center"><label class="switch"><input id="cf-activo" type="checkbox" checked>Visible para los clientes</label></div>
+    </div>
+    <button type="submit" class="btn full">Guardar cupón</button>
+  </form>
+</div>
+<div id="toast" hidden></div>
+
+
+<script>
+/* ====== CONFIGURACIÓN ====== */
+const SUPABASE_URL = "https://ulkcugdtqxuxjmsyqomy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_8tZa-AWxSmLJo729GPYmlA_tdgOTF1n"; // clave pública, segura para el navegador
+/* =========================== */
+
+const $ = id => document.getElementById(id);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fecha = iso => iso ? new Date(iso).toLocaleString('es-AR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false}) : '';
+const hora = iso => new Date(iso).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit', hour12:false});
+const fechaCorta = d => new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {day:'numeric', month:'short'});
+function hoyISO(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Argentina/Buenos_Aires'}).format(new Date()); }
+
+async function rpc(fn, args = {}){
+  let r;
+  try{ r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {method:'POST', headers:{apikey: SUPABASE_KEY, 'Content-Type':'application/json'}, body: JSON.stringify(args)}); }
+  catch(e){ throw new Error('No hay conexión. Revisá internet y probá de nuevo.'); }
+  const d = await r.json().catch(() => null);
+  if(!r.ok) throw new Error((d && d.message) || 'No pudimos conectar. Probá de nuevo.');
+  return d;
+}
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
+const abrirHoja = id => $(id).setAttribute('aria-hidden', 'false');
+const cerrarHoja = id => $(id).setAttribute('aria-hidden', 'true');
+$$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrarHoja(w.id); }));
+document.addEventListener('keydown', e => { if(e.key === 'Escape') $$('.sheet-wrap').forEach(w => cerrarHoja(w.id)); });
+async function conBoton(b, fn){
+  const txt = b.innerHTML; b.disabled = true; b.textContent = 'Un momento…';
+  try{ return await fn(); } finally { b.disabled = false; b.innerHTML = txt; }
+}
+function partes(et){
+  let m = et.match(/^(.*?)(\d+\s?%)\s*(.*)$/);
+  if(m) return {pre: m[1].trim(), big: m[2].replace(/\s/g, ''), post: m[3].trim()};
+  m = et.match(/^(\$\s?[\d.,]+)\s*(.*)$/);
+  if(m) return {pre: '', big: m[1].replace(/\s/g, ''), post: m[2].trim()};
+  return {pre: '', big: et, post: ''};
+}
+const badge = (c) => { const e = partes(c.etiqueta); return `<span class="badge ${c.activo === false ? 'off' : ''}" aria-hidden="true">${esc(e.big.length > 8 ? c.icono : e.big)}</span>`; };
+
+// Fila de cupón en los paneles
+function itemCupon(c, extra = ''){
+  const vence = c.vence ? `Vence ${fechaCorta(c.vence)}` : '';
+  const vencido = c.vence && c.vence < hoyISO();
+  return `<div class="item">
+    ${badge(c)}
+    <div class="grow">
+      <p class="t">${esc(c.icono)} ${esc(c.etiqueta)} · ${esc(c.titulo)}</p>
+      <p class="s">${extra}${esc(c.horario)}${vence ? ' · ' + vence : ''}</p>
+      <p class="s"><span class="chip ${c.activo && !vencido ? 'ok' : 'off'}">${!c.activo ? 'Pausado' : vencido ? 'Vencido' : 'Visible'}</span> ${c.pedidos} pedidos · ${c.usados} canjeados · 🔥 ${c.votos.hot} / ❄️ ${c.votos.frio}</p>
+    </div>
+    <div class="acts">
+      <button type="button" class="btn ghost sm" data-edit="${c.id}">Editar</button>
+      <button type="button" class="btn ghost sm" data-toggle="${c.id}">${c.activo ? 'Pausar' : 'Activar'}</button>
+      <button type="button" class="btn danger sm" data-del="${c.id}">Borrar</button>
+    </div>
+  </div>`;
+}
+
+// ---------- Formulario de cupón ----------
+let editando = null;
+function abrirFormCupon(c, opciones = {}){
+  editando = c ? c.id : null;
+  $('cf-title').textContent = c ? 'Editar cupón' : 'Nuevo cupón';
+  $('cf-alert').hidden = true;
+  $('cf-local-w').hidden = !opciones.locales;
+  if(opciones.locales) $('cf-local').innerHTML = opciones.locales.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
+  if(opciones.locales) $('cf-local').value = c ? c.local : (opciones.localPorDefecto || opciones.locales[0]?.id || '');
+  $('cf-etiqueta').value = c ? c.etiqueta : '';
+  $('cf-icono').value = c ? c.icono : '🎟️';
+  $('cf-titulo').value = c ? c.titulo : '';
+  $('cf-descripcion').value = c ? c.descripcion : '';
+  $('cf-condiciones').value = c ? c.condiciones : '';
+  $$('#cf-dias input').forEach(i => i.checked = !!(c && c.dias && c.dias.includes(+i.value)));
+  $('cf-desde').value = c && c.hora_desde ? c.hora_desde : '';
+  $('cf-hasta').value = c && c.hora_hasta ? c.hora_hasta : '';
+  $('cf-vence').value = c && c.vence ? c.vence : '';
+  $('cf-activo').checked = c ? c.activo : true;
+  abrirHoja('sheet-cupon');
+  setTimeout(() => $('cf-etiqueta').focus(), 250);
+}
+function leerFormCupon(){
+  const dias = $$('#cf-dias input:checked').map(i => +i.value);
+  return {
+    id: editando, local: $('cf-local-w').hidden ? null : +$('cf-local').value,
+    etiqueta: $('cf-etiqueta').value.trim(), icono: $('cf-icono').value.trim(), titulo: $('cf-titulo').value.trim(),
+    descripcion: $('cf-descripcion').value.trim(), condiciones: $('cf-condiciones').value.trim(),
+    dias: dias.length && dias.length < 7 ? dias : null,
+    hora_desde: $('cf-desde').value || null, hora_hasta: $('cf-hasta').value || null,
+    vence: $('cf-vence').value || null, activo: $('cf-activo').checked,
+  };
+}
+function avisoCupon(msg){ $('cf-alert').textContent = msg; $('cf-alert').hidden = !msg; if(msg) $('cf-alert').scrollIntoView({block:'nearest'}); }
+
+
+// ---------- Sesión del local (se guarda solo en esta pestaña) ----------
+let yo = null, pin = '', cupones = [];
+try{ const s = JSON.parse(sessionStorage.getItem('tucupon.local') || 'null'); if(s){ yo = s.yo; pin = s.pin; } }catch(e){}
+
+async function cargarLocales(){
+  try{
+    const ls = await rpc('tc_locales_para_panel');
+    $('l-local').innerHTML = '<option value="">Elegí tu local</option>' + ls.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
+    let ult = null; try{ ult = localStorage.getItem('tucupon.ultimoLocal'); }catch(e){}
+    if(ult && ls.some(l => String(l.id) === ult)) $('l-local').value = ult;
+  }catch(e){ $('l-local').innerHTML = '<option value="">No se pudieron cargar</option>'; avisoLogin(e.message); }
+}
+function avisoLogin(m){ $('l-alert').textContent = m || ''; $('l-alert').hidden = !m; }
+$('f-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = +$('l-local').value, p = $('l-pin').value.trim();
+  if(!id){ avisoLogin('Elegí tu local.'); return $('l-local').focus(); }
+  if(!/^\d{6}$/.test(p)){ avisoLogin('El PIN tiene 6 números.'); return $('l-pin').focus(); }
+  avisoLogin('');
+  await conBoton(e.submitter || e.target.querySelector('.btn'), async () => {
+    try{
+      const r = await rpc('tc_local_login', {p_local_id: id, p_pin: p});
+      if(!r.ok){ avisoLogin(r.error || 'PIN incorrecto'); $('l-pin').select(); return; }
+      yo = r; pin = p;
+      try{ sessionStorage.setItem('tucupon.local', JSON.stringify({yo, pin})); localStorage.setItem('tucupon.ultimoLocal', String(id)); }catch(_){}
+      entrar();
+    }catch(err){ avisoLogin(err.message); }
+  });
+});
+function entrar(){
+  $('login').hidden = true; $('app').hidden = false;
+  $('w-nombre').textContent = `${yo.icono || ''} ${yo.nombre}`;
+  $('aj-info').innerHTML = `<h2>Tu local</h2><p style="margin-top:8px"><b>${esc(yo.nombre)}</b></p><p class="muted">${esc(yo.dir || '')}${yo.barrio ? ', ' + esc(yo.barrio) : ''}</p><p class="muted" style="font-size:.85rem;margin-top:8px">Para cambiar el nombre, la dirección o el rubro, escribile al equipo de Tucupón.</p>`;
+  $('l-pin').value = '';
+  tab('canjear');
+}
+function salir(){
+  yo = null; pin = ''; cupones = [];
+  try{ sessionStorage.removeItem('tucupon.local'); }catch(e){}
+  $('app').hidden = true; $('login').hidden = false; $('c-result').innerHTML = ''; $('c-codigo').value = '';
+}
+$('btn-salir').addEventListener('click', salir);
+// Si el PIN cambió en otro lado o se bloqueó, vuelve al ingreso
+function manejarError(err){
+  if(/PIN incorrecto/i.test(err.message)){ salir(); avisoLogin('Tu PIN cambió. Ingresá de nuevo.'); return; }
+  toast(err.message);
+}
+
+// ---------- Pestañas ----------
+function tab(t){
+  $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+  ['canjear', 'hoy', 'cupones', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  if(t === 'canjear') setTimeout(() => $('c-codigo').focus(), 50);
+  if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
+  if(t === 'cupones') cargarCupones();
+}
+$$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
+
+// ---------- Canjear ----------
+const limpio = v => v.toUpperCase().replace(/[^A-Z0-9]/g, '');
+$('c-codigo').addEventListener('input', e => { const p = e.target.selectionStart; e.target.value = limpio(e.target.value); e.target.setSelectionRange(p, p); });
+$('f-codigo').addEventListener('submit', async e => {
+  e.preventDefault();
+  const cod = limpio($('c-codigo').value);
+  if(cod.length < 6){ $('c-result').innerHTML = '<div class="alert">El código tiene 6 caracteres.</div>'; return; }
+  await conBoton(e.target.querySelector('.btn'), async () => {
+    try{
+      const r = await rpc('tc_verificar_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: cod});
+      pintarVerificado(r);
+    }catch(err){ manejarError(err); }
+  });
+});
+function pintarVerificado(r){
+  if(!r.ok){ $('c-result').innerHTML = `<div class="alert">${esc(r.error)}</div>`; return; }
+  const usado = r.estado === 'usado';
+  let aviso = '', puede = !usado;
+  if(usado) aviso = `<div class="alert">Este código ya se usó el ${esc(fecha(r.usado_en))}.</div>`;
+  else if(!r.activo) { aviso = '<div class="alert">Este cupón está pausado. No se puede canjear.</div>'; puede = false; }
+  else if(r.vencido) { aviso = '<div class="alert">Este cupón está vencido.</div>'; puede = false; }
+  else if(!r.en_horario) { aviso = `<div class="alert warn">Fuera de horario. Este cupón vale: ${esc(r.horario)}.</div>`; puede = false; }
+  $('c-result').innerHTML = `<div class="card result">
+    <div class="item" style="padding:0">${badge(r)}<div class="grow"><p class="t">${esc(r.icono)} ${esc(r.etiqueta)} · ${esc(r.titulo)}</p><p class="s">Código <b class="mono">${esc(r.codigo)}</b> · Cliente ${esc(r.email)}</p></div></div>
+    ${r.condiciones ? `<p class="muted" style="font-size:.88rem"><b>Condiciones:</b> ${esc(r.condiciones)}</p>` : ''}
+    <p class="muted" style="font-size:.88rem"><b>Cuándo vale:</b> ${esc(r.horario)}</p>
+    ${aviso}
+    ${puede ? `<button type="button" id="c-ok" class="btn lima full" data-codigo="${esc(r.codigo)}">Confirmar canje y aplicar descuento</button>` : ''}
+    <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
+  </div>`;
+}
+document.addEventListener('click', async e => {
+  const ok = e.target.closest('#c-ok');
+  if(ok){
+    await conBoton(ok, async () => {
+      try{
+        const r = await rpc('tc_canjear_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: ok.dataset.codigo});
+        if(!r.ok){ $('c-result').insertAdjacentHTML('afterbegin', `<div class="alert">${esc(r.error)}</div>`); return; }
+        $('c-result').innerHTML = `<div class="card result" style="text-align:center">
+          <span class="stamp">CANJEADO</span>
+          <p class="t" style="font-weight:800;font-size:1.1rem">${esc(r.icono)} ${esc(r.etiqueta)} · ${esc(r.titulo)}</p>
+          <p class="muted">Aplicá el descuento. El cliente ya lo ve confirmado en su celular.</p>
+          <button type="button" class="btn full" id="c-otro">Canjear otro código</button></div>`;
+        try{ navigator.vibrate && navigator.vibrate(80); }catch(_){}
+      }catch(err){ manejarError(err); }
+    });
+  }
+  if(e.target.closest('#c-otro')){ $('c-result').innerHTML = ''; $('c-codigo').value = ''; $('c-codigo').focus(); }
+});
+
+// ---------- Canjes del día ----------
+async function cargarCanjes(){
+  const d = $('h-fecha').value || hoyISO();
+  $('h-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{
+    const r = await rpc('tc_local_canjes', {p_local_id: yo.id, p_pin: pin, p_desde: d, p_hasta: d});
+    $('h-usados').textContent = r.usados; $('h-pedidos').textContent = r.pedidos;
+    $('h-lista').innerHTML = r.lista.length ? r.lista.map(k => `<div class="item"><span class="badge" aria-hidden="true" style="font-size:.9rem">${esc(hora(k.usado_en))}</span><div class="grow"><p class="t">${esc(k.icono)} ${esc(k.etiqueta)} · ${esc(k.titulo)}</p><p class="s">Código <span class="mono">${esc(k.codigo)}</span> · ${esc(k.email)}</p></div></div>`).join('')
+      : '<div class="empty">No hubo canjes confirmados este día.</div>';
+  }catch(err){ manejarError(err); $('h-lista').innerHTML = ''; }
+}
+$('h-fecha').addEventListener('change', cargarCanjes);
+$('h-hoy').addEventListener('click', () => { $('h-fecha').value = hoyISO(); cargarCanjes(); });
+
+// ---------- Mis cupones ----------
+async function cargarCupones(){
+  $('cup-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{ cupones = await rpc('tc_local_cupones', {p_local_id: yo.id, p_pin: pin}); pintarCupones(); }
+  catch(err){ manejarError(err); $('cup-lista').innerHTML = ''; }
+}
+function pintarCupones(){
+  $('cup-lista').innerHTML = cupones.length ? cupones.map(c => itemCupon(c)).join('') : '<div class="empty">Todavía no tenés cupones. Creá el primero con “Nuevo cupón”.</div>';
+}
+$('btn-nuevo').addEventListener('click', () => abrirFormCupon(null));
+$('f-cupon').addEventListener('submit', async e => {
+  e.preventDefault();
+  avisoCupon('');
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{
+      await rpc('tc_local_guardar_cupon', {p_local_id: yo.id, p_pin: pin, p_cupon: leerFormCupon()});
+      cerrarHoja('sheet-cupon'); toast(editando ? 'Cupón actualizado' : 'Cupón creado. Ya lo ven los clientes.'); cargarCupones();
+    }catch(err){ if(/PIN incorrecto/i.test(err.message)) return manejarError(err); avisoCupon(err.message); }
+  });
+});
+let borrando = null;
+$('cup-lista').addEventListener('click', async e => {
+  const ed = e.target.closest('[data-edit]'), tg = e.target.closest('[data-toggle]'), dl = e.target.closest('[data-del]');
+  if(ed) abrirFormCupon(cupones.find(c => c.id === +ed.dataset.edit));
+  if(tg){
+    const c = cupones.find(x => x.id === +tg.dataset.toggle);
+    await conBoton(tg, async () => {
+      try{ await rpc('tc_local_guardar_cupon', {p_local_id: yo.id, p_pin: pin, p_cupon: {...c, activo: !c.activo}}); toast(c.activo ? 'Cupón pausado' : 'Cupón activado'); cargarCupones(); }
+      catch(err){ manejarError(err); }
+    });
+  }
+  if(dl){
+    const c = cupones.find(x => x.id === +dl.dataset.del); borrando = c.id;
+    $('del-s').textContent = `${c.etiqueta} · ${c.titulo}` + (c.pedidos ? '. Como ya tiene códigos pedidos, se va a pausar en vez de borrarse.' : '. No se puede deshacer.');
+    abrirHoja('sheet-del');
+  }
+});
+$('del-ok').addEventListener('click', async e => {
+  await conBoton(e.target, async () => {
+    try{ const r = await rpc('tc_local_borrar_cupon', {p_local_id: yo.id, p_pin: pin, p_cupon_id: borrando}); cerrarHoja('sheet-del'); toast(r.pausado ? 'Tenía códigos pedidos: lo pausamos' : 'Cupón borrado'); cargarCupones(); }
+    catch(err){ cerrarHoja('sheet-del'); manejarError(err); }
+  });
+});
+
+// ---------- PIN ----------
+$('f-pin').addEventListener('submit', async e => {
+  e.preventDefault();
+  const a = $('p-nuevo').value.trim(), b = $('p-nuevo2').value.trim(), al = $('p-alert');
+  al.className = 'alert';
+  if(!/^\d{6}$/.test(a)){ al.textContent = 'El PIN nuevo tiene que tener 6 números.'; al.hidden = false; return; }
+  if(a !== b){ al.textContent = 'Los PIN no coinciden.'; al.hidden = false; return; }
+  await conBoton(e.target.querySelector('.btn'), async () => {
+    try{
+      await rpc('tc_local_cambiar_pin', {p_local_id: yo.id, p_pin: pin, p_nuevo: a});
+      pin = a; try{ sessionStorage.setItem('tucupon.local', JSON.stringify({yo, pin})); }catch(_){}
+      al.className = 'alert ok'; al.textContent = 'Listo, tu PIN cambió. Usalo la próxima vez que ingreses.'; al.hidden = false;
+      $('p-nuevo').value = $('p-nuevo2').value = '';
+    }catch(err){ manejarError(err); }
+  });
+});
+
+cargarLocales();
+if(yo && pin) entrar();
+</script>
+</body>
+</html>

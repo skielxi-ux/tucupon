@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tucupón</title>
+<meta name="theme-color" content="#2B0F63">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Layout: app de una columna, pensada para el celular; encabezado de marca con tarjeta que lo pisa.
+   MARCA: para cambiar los colores y fuentes, tocá solo este bloque y los dos de modo oscuro. */
+:root{
+  --font-display:"Outfit",ui-sans-serif,system-ui,sans-serif;
+  --font-body:"Outfit",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+
+  --hero:#2B0F63;       /* fondo del encabezado (violeta profundo) */
+  --hero-2:#43198F;
+  --brand:#7B3FF0;      /* violeta principal (botones, filtros) */
+  --brand-deep:#4F1BB5; /* violeta oscuro (degradés) */
+  --on-brand:#FFFFFF;
+  --accent:#C4F04A;     /* verde lima (destacados, porcentajes) */
+  --on-accent:#1E0B45;
+  --heading:#3A1789;    /* títulos */
+
+  --bg:#F5F2FC; --surface:#FFFFFF; --surface-2:#EFEAF9; --ink:#22163F; --muted:#6E6585; --line:#E6E0F3;
+  --ok:#0B7A54; --ok-bg:#E1F4EA; --warn:#7A5200; --warn-bg:#FFF2D2; --cold:#1462AE; --cold-bg:#E2EEFA; --hot:#E5484D; --hot-bg:#FDE8EA;
+  --shadow:rgba(43,15,99,.14); --scrim:rgba(20,8,45,.55);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --hero:#1C0A42; --hero-2:#2E1270; --brand:#9B6BFF; --brand-deep:#5F28CF; --on-brand:#FFFFFF; --accent:#CDF55E; --on-accent:#1E0B45; --heading:#D6C8FF;
+  --bg:#120A24; --surface:#1C1233; --surface-2:#281C45; --ink:#F1EDFA; --muted:#A9A0C2; --line:#34285A;
+  --ok:#5AD7A2; --ok-bg:rgba(90,215,162,.13); --warn:#FFC56B; --warn-bg:rgba(255,197,107,.13); --cold:#86BEF4; --cold-bg:rgba(134,190,244,.13); --hot:#FF7A7E; --hot-bg:rgba(229,72,77,.16);
+  --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.65); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --hero:#1C0A42; --hero-2:#2E1270; --brand:#9B6BFF; --brand-deep:#5F28CF; --on-brand:#FFFFFF; --accent:#CDF55E; --on-accent:#1E0B45; --heading:#D6C8FF;
+  --bg:#120A24; --surface:#1C1233; --surface-2:#281C45; --ink:#F1EDFA; --muted:#A9A0C2; --line:#34285A;
+  --ok:#5AD7A2; --ok-bg:rgba(90,215,162,.13); --warn:#FFC56B; --warn-bg:rgba(255,197,107,.13); --cold:#86BEF4; --cold-bg:rgba(134,190,244,.13); --hot:#FF7A7E; --hot-bg:rgba(229,72,77,.16);
+  --shadow:rgba(0,0,0,.5); --scrim:rgba(0,0,0,.65); color-scheme:dark }
+
+*{box-sizing:border-box}
+html{-webkit-tap-highlight-color:transparent;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.45 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:30rem;margin-inline:auto;padding-inline:16px}
+.mono{font-family:var(--font-mono)}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- Acceso ---------- */
+#auth{min-height:100dvh;display:flex;flex-direction:column;background:linear-gradient(160deg,var(--hero),var(--hero-2));position:relative;overflow:hidden}
+.auth-top{position:relative;padding-block:28px 28px;text-align:center;color:#fff}
+.auth-top p{margin-top:8px;font:800 1.15rem var(--font-display)}
+.auth-card{position:relative;flex:1;width:100%;max-width:30rem;margin-inline:auto;background:var(--surface);border-radius:32px 32px 0 0;padding:26px 20px calc(env(safe-area-inset-bottom,0px) + 28px);box-shadow:0 -12px 40px var(--shadow)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface-2);border-radius:16px;padding:4px}
+.tab{border-radius:12px;padding:10px;font-weight:700;font-size:.9rem;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--brand);box-shadow:0 1px 3px var(--shadow)}
+.form{display:grid;gap:16px;margin-top:22px;animation:up .28s ease-out}
+.form h1{font-size:1.6rem;font-weight:800;color:var(--heading)}
+.label{display:block;font-weight:700;font-size:.9rem;margin-bottom:6px}
+.field-w{position:relative}
+.field-w svg{position:absolute;left:14px;top:50%;translate:0 -50%;width:20px;height:20px;color:var(--muted);pointer-events:none}
+.field{width:100%;border:2px solid var(--line);background:var(--surface-2);border-radius:16px;padding:13px 16px 13px 44px;font-size:1rem;outline:none;transition:border-color .15s,background .15s}
+.field:focus{border-color:var(--brand);background:var(--surface)}
+.field[aria-invalid="true"]{border-color:var(--hot)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;border-radius:16px;padding:15px;font-weight:800;font-size:1rem;background:var(--brand);color:var(--on-brand);box-shadow:0 8px 20px -8px var(--brand);transition:transform .1s,filter .15s}
+.btn:hover{filter:brightness(1.06)}.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.6;cursor:default}
+.link{font-weight:700;color:var(--brand);text-decoration:underline;text-underline-offset:4px}
+.alert{display:flex;gap:10px;margin-top:18px;border-radius:16px;padding:12px 14px;font-size:.9rem;font-weight:600;background:var(--hot-bg);color:var(--hot)}
+.alert.ok{background:var(--ok-bg);color:var(--ok)}
+.demo-note{margin-top:14px;font-size:.78rem;color:var(--muted);text-align:center}
+
+/* ---------- Encabezado ---------- */
+.hero{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--hero),var(--hero-2));color:#fff;padding-block:18px 84px}
+.blob{position:absolute;border-radius:999px;background:rgba(255,255,255,.1);pointer-events:none}
+.brandmark{display:inline-flex;align-items:center;gap:8px;font:900 1.55rem/1 var(--font-display);letter-spacing:-.02em;color:inherit}
+.brandmark em{font-style:normal;color:var(--accent)}
+.brandmark .tk{display:grid;place-items:center;width:38px;height:28px;background:var(--accent);color:var(--on-accent);border-radius:7px;rotate:-6deg;
+  -webkit-mask:radial-gradient(circle 5px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 5px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 5px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 5px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat}
+.brandmark .tk svg{width:16px;height:16px}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.saludo{border-radius:999px;background:rgba(255,255,255,.12);padding:5px 12px;font-size:.82rem;font-weight:700}
+.hero h1{position:relative;margin-top:18px;font-size:2.15rem;line-height:1.02;font-weight:800}
+.hero h1 span{display:inline-block;margin-top:4px;rotate:-1deg;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 10px 4px}
+.search{position:relative;margin-top:18px}
+.search svg{position:absolute;left:16px;top:50%;translate:0 -50%;width:20px;height:20px;color:var(--muted);pointer-events:none}
+.search input{width:100%;border:1px solid rgba(255,255,255,.25);border-radius:18px;background:var(--surface);color:var(--ink);padding:15px 44px 15px 46px;font-size:1rem;box-shadow:0 10px 24px -10px rgba(0,0,0,.35);outline:none}
+.search input::placeholder{color:var(--muted)}
+.search .clear{position:absolute;right:8px;top:50%;translate:0 -50%;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--muted)}
+
+/* ---------- Bloques ---------- */
+main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
+.who{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:24px;padding:14px;box-shadow:0 14px 32px -12px var(--shadow);border:1px solid var(--line)}
+.avatar{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--brand);color:var(--on-brand);font:800 1.1rem var(--font-display)}
+.who .min{min-width:0;flex:1}
+.who .mail{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-ghost{border:2px solid var(--line);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.88rem;color:var(--muted)}
+.sec{margin-top:30px}
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.sec-h h2{font-size:1.45rem;font-weight:800;color:var(--heading)}
+.count{font-size:.85rem;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:2px 16px}
+.chips::-webkit-scrollbar{display:none}
+.filtro{flex:none;display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.88rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.filtro[aria-pressed="true"]{border-color:var(--brand);background:var(--brand);color:var(--on-brand);box-shadow:0 6px 14px -6px var(--brand)}
+.dot{width:8px;height:8px;border-radius:99px;background:var(--ok);flex:none}
+
+/* Rubros */
+.rubros{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.rubro{position:relative;overflow:hidden;text-align:left;border-radius:24px;padding:16px;min-height:9.5rem;display:flex;flex-direction:column;justify-content:space-between;background:var(--surface);border:1px solid var(--line);transition:transform .12s}
+.rubro:active{transform:scale(.97)}
+.rubro .em{font-size:2.3rem;line-height:1}
+.rubro .bg{position:absolute;right:-18px;top:-18px;width:86px;height:86px;border-radius:999px;background:var(--rc);opacity:.16}
+.rubro b{font:800 1.05rem/1.15 var(--font-display);display:block;text-wrap:balance}
+.rubro small{display:block;margin-top:4px;font-size:.8rem;font-weight:700;color:var(--muted)}
+
+/* Locales */
+.locales{display:grid;gap:12px;margin-top:12px}
+.local{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:12px;text-align:left;width:100%}
+.logo{flex:none;display:grid;place-items:center;width:62px;height:62px;border-radius:18px;font-size:1.9rem;background:var(--lc);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+.local .min{min-width:0;flex:1}
+.local .ln{display:block;font:800 1.08rem/1.2 var(--font-display);color:var(--heading)}
+.local .dir{display:block;font-size:.82rem;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.local .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.fav{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;color:var(--muted);transition:transform .15s}
+.fav[aria-pressed="true"]{color:var(--hot)}
+.fav:active{transform:scale(.85)}
+.fav svg{width:24px;height:24px}
+.favs-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:2px 16px 6px}
+.favs-row::-webkit-scrollbar{display:none}
+.fav-pill{flex:none;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px 14px 8px 8px;font-weight:700;font-size:.92rem}
+.fav-pill .logo{width:38px;height:38px;border-radius:12px;font-size:1.25rem}
+.empty{border:2px dashed var(--line);border-radius:22px;padding:22px;text-align:center;font-size:.92rem;color:var(--muted)}
+
+/* Chips de estado */
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:.74rem;font-weight:800;white-space:nowrap}
+.chip svg{width:13px;height:13px}
+.c-hora{background:var(--warn-bg);color:var(--warn)}
+.c-ok{background:var(--ok-bg);color:var(--ok)}
+.c-off{background:var(--surface-2);color:var(--muted)}
+.c-vence{background:var(--hot-bg);color:var(--hot)}
+.c-brand{background:var(--brand);color:var(--on-brand)}
+.c-neutral{background:var(--surface-2);color:var(--ink)}
+
+/* Barra de vista interna */
+.bar{display:flex;align-items:center;gap:10px;position:relative}
+.back{display:inline-flex;align-items:center;gap:4px;border-radius:12px;padding:6px 12px 6px 6px;font-weight:800;font-size:.92rem;background:rgba(255,255,255,.12);color:#fff}
+.back svg{width:18px;height:18px}
+
+/* Ficha del local */
+.ficha{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:0 14px 32px -12px var(--shadow)}
+.ficha .top{display:flex;gap:14px;align-items:center}
+.ficha .logo{width:72px;height:72px;border-radius:22px;font-size:2.3rem}
+.ficha h2{font-size:1.5rem;font-weight:800;line-height:1.1;color:var(--heading)}
+.ficha dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:16px 0 0;font-size:.9rem}
+.ficha dt{color:var(--muted);font-weight:600}
+.ficha dd{margin:0;font-weight:700;min-width:0}
+
+/* Carrusel de cupones */
+.rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:12px -16px 0;padding:6px 16px 22px;scroll-padding-inline:16px}
+.rail::-webkit-scrollbar{display:none}
+.rail>*{scroll-snap-align:start;flex:0 0 min(84%,22rem)}
+.rail.solo>*{flex-basis:100%}
+.cupon{position:relative;display:flex;flex-direction:column;min-height:24rem;border-radius:28px;overflow:hidden;box-shadow:0 18px 36px -16px var(--shadow)}
+.cupon.usado{filter:grayscale(.7);opacity:.82}
+.t0{background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#fff}
+.t1{background:linear-gradient(135deg,#43198F,#1E0B45);color:#fff}
+.t2{background:linear-gradient(135deg,#D4F76A,#A8DB2C);color:#1E0B45}
+.t3{background:linear-gradient(135deg,#6A2FD6,#2B0F63);color:#fff}
+.t0 .big,.t1 .big,.t3 .big{color:#C4F04A}
+.t0 .cbtn,.t1 .cbtn,.t3 .cbtn{background:#C4F04A;color:#1E0B45}
+.t2 .cbtn{background:#2B0F63;color:#fff}
+.cupon .circ{position:absolute;border-radius:999px;background:rgba(255,255,255,.12);pointer-events:none}
+.cupon .body{position:relative;flex:1;padding:22px}
+.cupon .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:4px 10px;font-size:.74rem;font-weight:800;background:rgba(0,0,0,.2)}
+.t2 .pill{background:rgba(0,0,0,.1)}
+.pill svg{width:13px;height:13px}
+.cupon .em{font-size:2.8rem;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2))}
+.cupon .de{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-weight:800;font-size:.9rem;opacity:.95;text-align:left}
+.cupon .de:hover{text-decoration:underline;text-underline-offset:3px}
+.cupon .big{margin-top:6px;font:800 3.2rem/.95 var(--font-display);letter-spacing:-.03em;text-wrap:balance}
+.cupon h3{margin-top:10px;font:700 1.15rem/1.25 var(--font-body);text-wrap:balance}
+.cupon .ped{margin-top:4px;font-size:.84rem;font-weight:700;opacity:.8}
+.perf{position:relative;height:0}
+.perf::before{content:"";position:absolute;left:20px;right:20px;top:0;border-top:2px dashed currentColor;opacity:.3}
+.notch{position:absolute;top:-13px;width:26px;height:26px;border-radius:99px;background:var(--bg)}
+.notch.l{left:-13px}.notch.r{right:-13px}
+.cupon .foot{position:relative;padding:16px 20px 20px}
+.cond-link{display:inline-flex;align-items:center;gap:4px;margin-bottom:10px;font-size:.8rem;font-weight:800;opacity:.9}
+.cond-link:hover{text-decoration:underline;text-underline-offset:3px}
+.cond-link svg{width:15px;height:15px}
+.cbtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border-radius:16px;padding:14px;font-weight:800;box-shadow:0 8px 16px -8px rgba(0,0,0,.4);transition:transform .1s}
+.cbtn:active{transform:scale(.97)}
+.cbtn.done{background:rgba(255,255,255,.2)!important;color:inherit!important;box-shadow:none;cursor:default}
+
+/* Mis códigos */
+.codes{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:12px -16px 0;padding:2px 16px 6px}
+.codes::-webkit-scrollbar{display:none}
+.code-pill{flex:none;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px 16px 8px 8px;text-align:left}
+.code-pill .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--surface-2);font-size:1.3rem}
+.code-pill b{display:block;font:800 .95rem var(--font-mono);letter-spacing:.08em}
+.code-pill small{display:block;font-size:.76rem;color:var(--muted);font-weight:600}
+.code-pill.usado b{text-decoration:line-through;opacity:.5}
+.code-pill.usado small{color:var(--ok)}
+
+/* Cómo funciona */
+.how{margin-top:36px;background:var(--surface-2);border-radius:24px;padding:20px}
+.how h2{font-size:1.15rem;color:var(--heading)}
+.how ol{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:14px}
+.how li{display:flex;gap:12px;align-items:flex-start;font-size:.92rem;color:var(--muted)}
+.how li b{color:var(--ink)}
+.how .n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:99px;background:var(--brand);color:var(--on-brand);font-weight:800;font-size:.85rem}
+.fine{margin-top:22px;text-align:center;font-size:.78rem;color:var(--muted)}
+
+/* Hojas */
+.sheet-wrap{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:var(--scrim);transition:opacity .2s}
+.sheet-wrap[aria-hidden="true"]{opacity:0;pointer-events:none}
+.sheet{width:100%;max-width:30rem;max-height:92dvh;overflow-y:auto;background:var(--surface);border-radius:28px 28px 0 0;padding:12px 20px calc(env(safe-area-inset-bottom,0px) + 24px);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.sheet-wrap[aria-hidden="true"] .sheet{transform:translateY(105%)}
+.grip{width:40px;height:6px;border-radius:99px;background:var(--line);margin:0 auto 18px}
+.d-head{display:flex;gap:14px;align-items:center}
+.d-badge{flex:none;display:grid;place-items:center;width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#fff;box-shadow:0 8px 18px -8px #4F1BB5;text-align:center;line-height:1;padding:4px}
+.d-badge .b{font:800 1.45rem var(--font-display);letter-spacing:-.02em;color:#C4F04A}
+.d-badge .s{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;opacity:.85}
+.d-local{display:inline-flex;align-items:center;gap:4px;font-size:.85rem;font-weight:800;color:var(--brand)}
+.box{margin-top:12px;border-radius:18px;padding:14px 16px;background:var(--surface-2)}
+.box.ok{background:var(--ok-bg)}.box.warn{background:var(--warn-bg)}
+.box .k{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.box.ok .k,.box.ok .v2{color:var(--ok)}.box.warn .k,.box.warn .v2{color:var(--warn)}
+.box .k svg{width:14px;height:14px}
+.box .v{margin-top:4px;font:800 1.1rem var(--font-display)}
+.box .v2{margin-top:2px;font-size:.88rem}
+.box ul{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:.9rem}
+.box li{display:flex;gap:8px}
+.box li::before{content:"";flex:none;width:6px;height:6px;border-radius:99px;background:var(--brand);margin-top:8px}
+.votos{display:inline-flex;margin-top:10px;border-radius:16px;overflow:hidden;background:var(--surface);border:1px solid var(--line)}
+.votos button{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-weight:800;font-size:.88rem}
+.votos svg{width:16px;height:16px}
+.v-hot{color:var(--hot)}.v-hot[aria-pressed="true"]{background:var(--hot-bg)}
+.v-frio{color:var(--cold)}.v-frio[aria-pressed="true"]{background:var(--cold-bg)}
+.score{display:grid;place-items:center;min-width:52px;padding:0 10px;border-inline:1px solid var(--line);font:800 1rem var(--font-display);font-variant-numeric:tabular-nums;color:var(--muted)}
+.score.pos{color:var(--hot);background:var(--hot-bg)}.score.neg{color:var(--cold);background:var(--cold-bg)}
+.act{display:grid;gap:8px;margin-top:18px}
+.act .main{display:flex;align-items:center;justify-content:center;gap:6px;border-radius:16px;padding:15px;font-weight:800;background:var(--brand);color:var(--on-brand)}
+.act .main.done{background:var(--ok-bg);color:var(--ok);cursor:default}
+.act .sec-btn{padding:10px;font-weight:700;color:var(--muted)}
+
+/* Hoja del código */
+#sheet-code .sheet{text-align:center}
+.s-badge{display:grid;place-items:center;width:64px;height:64px;margin:0 auto;border-radius:18px;background:var(--surface-2);font-size:2.2rem}
+.s-code-w{position:relative;margin-top:18px}
+.s-code{border:2px dashed var(--brand);border-radius:18px;background:var(--surface-2);padding:18px 8px;font:800 clamp(2rem,11vw,3rem) var(--font-mono);letter-spacing:.16em;user-select:all;font-variant-numeric:tabular-nums}
+.stamp{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;animation:st .45s cubic-bezier(.2,1.6,.4,1)}
+.stamp span{rotate:-6deg;border:4px solid var(--ok);background:var(--surface);color:var(--ok);border-radius:12px;padding:4px 18px;font:800 1.8rem var(--font-display);letter-spacing:.06em}
+.status{display:inline-flex;align-items:center;gap:8px;margin-top:16px;border-radius:999px;padding:8px 16px;font-size:.88rem;font-weight:800;background:var(--warn-bg);color:var(--warn)}
+.status.ok{background:var(--ok-bg);color:var(--ok)}
+.pulse{width:8px;height:8px;border-radius:99px;background:currentColor;animation:pd 1.4s infinite}
+.s-hor{margin-top:14px;text-align:left}
+.demo-ok{margin-top:14px;display:inline-flex;align-items:center;gap:6px;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;font-size:.82rem;font-weight:700;color:var(--muted)}
+.btn-dark{margin-top:18px;width:100%;border-radius:16px;padding:15px;font-weight:800;font-size:1.05rem;background:var(--brand);color:var(--on-brand)}
+
+#toast{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:60;max-width:28rem;margin:0 auto;border-radius:16px;background:var(--ink);color:var(--bg);padding:12px 16px;text-align:center;font-size:.9rem;font-weight:700;box-shadow:0 12px 28px var(--shadow)}
+.spin{width:20px;height:20px;animation:sp .7s linear infinite}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
+@keyframes st{from{transform:scale(2.2) rotate(-12deg);opacity:0}}
+@keyframes pd{50%{opacity:.25}}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+.meter{display:flex;gap:6px;margin-top:8px}.meter span{height:6px;flex:1;border-radius:99px;background:var(--line)}
+.loading{display:grid;place-items:center;min-height:14rem;color:var(--muted);font-weight:700}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+</head>
+<body>
+
+<!-- ================= ACCESO ================= -->
+<section id="auth">
+  <div class="blob" style="left:-50px;top:150px;width:130px;height:130px"></div>
+  <div class="blob" style="right:-30px;top:40px;width:90px;height:90px"></div>
+  <div class="auth-top wrap">
+    <span class="brandmark" style="font-size:2.3rem"><span class="tk" style="width:52px;height:38px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em></span>
+    <p>Descuentos en gastronomía, todos en un lugar</p>
+  </div>
+  <div class="auth-card">
+    <div id="auth-tabs" class="tabs" role="tablist">
+      <button type="button" class="tab" role="tab" data-view="login">Ingresar</button>
+      <button type="button" class="tab" role="tab" data-view="signup">Crear cuenta</button>
+    </div>
+    <div id="auth-alert" class="alert" role="alert" hidden></div>
+
+    <form id="v-login" class="form" novalidate>
+      <div><h1>¡Hola de nuevo!</h1><p class="muted" style="margin-top:4px;font-size:.92rem">Ingresá para ver tus cupones.</p></div>
+      <div><label class="label" for="li-email">Email</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+        <input id="li-email" class="field" type="email" autocomplete="email" inputmode="email" placeholder="nombre@correo.com"></div></div>
+      <div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><label class="label" for="li-pass" style="margin:0">Contraseña</label><button type="button" class="link" style="font-size:.85rem" data-go="forgot">¿La olvidaste?</button></div>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="li-pass" class="field" type="password" autocomplete="current-password" placeholder="Tu contraseña"></div></div>
+      <button class="btn" type="submit">Ingresar</button>
+      <p class="muted" style="text-align:center;font-size:.9rem">¿No tenés cuenta? <button type="button" class="link" data-go="signup">Creala gratis</button></p>
+    </form>
+
+    <form id="v-signup" class="form" novalidate hidden>
+      <div><h1>Creá tu cuenta</h1><p class="muted" style="margin-top:4px;font-size:.92rem">Sumate y accedé a descuentos en locales adheridos.</p></div>
+      <div><label class="label" for="su-email">Email</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+        <input id="su-email" class="field" type="email" autocomplete="email" inputmode="email" placeholder="nombre@correo.com"></div></div>
+      <div><label class="label" for="su-pass">Contraseña</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="su-pass" class="field" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></div></div>
+      <div><label class="label" for="su-pass2">Repetí la contraseña</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="su-pass2" class="field" type="password" autocomplete="new-password" placeholder="La misma contraseña"></div></div>
+      <button class="btn" type="submit">Crear cuenta</button>
+    </form>
+
+    <form id="v-forgot" class="form" novalidate hidden>
+      <div><h1>¿Olvidaste tu contraseña?</h1><p class="muted" style="margin-top:4px;font-size:.92rem">Escribí tu email y te mandamos un link para crear una nueva.</p></div>
+      <div><label class="label" for="fo-email">Email</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+        <input id="fo-email" class="field" type="email" autocomplete="email" placeholder="nombre@correo.com"></div></div>
+      <button class="btn" type="submit">Enviar link</button>
+      <button type="button" class="link" data-go="login" style="justify-self:center">Volver a ingresar</button>
+    </form>
+
+    <div id="v-sent" class="form" hidden style="text-align:center;justify-items:center">
+      <h1>Revisá tu correo</h1>
+      <p id="sent-t" class="muted" style="max-width:34ch"></p>
+      <button type="button" class="btn" data-go="login">Volver a ingresar</button>
+    </div>
+    <form id="v-reset" class="form" novalidate hidden>
+      <div><h1>Elegí una contraseña nueva</h1><p class="muted" style="margin-top:4px;font-size:.92rem">Vas a usarla la próxima vez que ingreses.</p></div>
+      <div><label class="label" for="re-pass">Nueva contraseña</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="re-pass" class="field" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></div></div>
+      <div><label class="label" for="re-pass2">Repetí la contraseña</label>
+        <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+        <input id="re-pass2" class="field" type="password" autocomplete="new-password" placeholder="La misma contraseña"></div></div>
+      <button class="btn" type="submit">Guardar contraseña</button>
+    </form>
+    <p class="demo-note">Usamos tu email solo para tu cuenta y tus cupones.</p>
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app" hidden>
+  <header class="hero">
+    <div class="blob" style="right:-60px;top:-60px;width:220px;height:220px"></div>
+    <div class="blob" style="left:-40px;bottom:30px;width:110px;height:110px"></div>
+    <div class="wrap" id="hero-in"></div>
+  </header>
+
+  <main class="wrap">
+    <!-- INICIO -->
+    <div id="v-home">
+      <section class="who">
+        <div id="avatar" class="avatar">T</div>
+        <div class="min"><p class="muted" style="font-size:.78rem">Tu cuenta</p><p id="mail" class="mail"></p></div>
+        <button id="btn-salir" type="button" class="btn-ghost">Salir</button>
+      </section>
+
+      <div class="sec" style="margin-top:22px">
+        <p class="label" style="margin-bottom:8px">Barrio</p>
+        <div class="chips barrios" role="group" aria-label="Filtrar por barrio"></div>
+      </div>
+
+      <section id="resultados" class="sec" hidden>
+        <div class="sec-h"><h2>Resultados</h2><span id="res-count" class="count"></span></div>
+        <div id="res-list" class="locales"></div>
+      </section>
+
+      <div id="home-main">
+        <section class="sec">
+          <div class="sec-h"><h2>Elegí un rubro</h2><span id="total-locales" class="count"></span></div>
+          <div id="rubros" class="rubros"></div>
+        </section>
+
+        <section class="sec">
+          <div class="sec-h"><h2>Tus favoritos</h2><button type="button" class="count" data-go-favs style="color:var(--brand)">Ver todos</button></div>
+          <div id="favs-row"></div>
+        </section>
+
+        <section class="sec">
+          <div class="sec-h"><h2>Los más pedidos</h2><span class="chip c-brand">Top de la semana</span></div>
+          <div id="top-rail" class="rail"></div>
+        </section>
+      </div>
+
+      <section id="mis" class="sec" hidden>
+        <div class="sec-h"><h2>Mis códigos</h2></div>
+        <div id="mis-list" class="codes"></div>
+      </section>
+
+      <section class="how">
+        <h2>Cómo funciona</h2>
+        <ol>
+          <li><span class="n">1</span><p><b>Elegí un rubro y un local</b> y mirá todos sus descuentos.</p></li>
+          <li><span class="n">2</span><p><b>Tocá “Obtener código”</b> y mostralo cuando pidas.</p></li>
+          <li><span class="n">3</span><p><b>El local lo confirma</b> y el descuento se aplica en tu cuenta.</p></li>
+        </ol>
+      </section>
+      <p class="fine">Cada cupón se usa una vez por persona. Sujeto a disponibilidad de cada local.</p>
+      <p class="fine" style="margin-top:6px">¿Tenés un local adherido? <a href="local.html" class="link">Entrá a tu panel</a></p>
+    </div>
+
+    <!-- RUBRO / FAVORITOS -->
+    <div id="v-rubro" hidden>
+      <div class="ficha">
+        <div class="chips barrios" role="group" aria-label="Filtrar por barrio"></div>
+        <label class="label" for="orden" style="margin:14px 0 6px">Ordenar por</label>
+        <select id="orden" class="field" style="padding-left:14px">
+          <option value="pedidos">Más pedidos</option>
+          <option value="descuento">Mayor descuento</option>
+          <option value="nombre">Nombre (A–Z)</option>
+        </select>
+      </div>
+      <div class="sec-h sec" style="margin-top:20px"><h2 id="rubro-sub">Locales adheridos</h2><span id="rubro-count" class="count"></span></div>
+      <div id="rubro-list" class="locales"></div>
+    </div>
+
+    <!-- LOCAL -->
+    <div id="v-local" hidden>
+      <div id="ficha" class="ficha"></div>
+      <section class="sec">
+        <div class="sec-h"><h2>Descuentos</h2><span id="local-count" class="count"></span></div>
+        <div class="chips" role="group" aria-label="Filtrar descuentos" style="margin-top:10px">
+          <button type="button" class="filtro" data-filtro="todos" aria-pressed="true">Todos</button>
+          <button type="button" class="filtro" data-filtro="ahora" aria-pressed="false"><span class="dot"></span>Disponibles ahora</button>
+        </div>
+        <div id="local-rail" class="rail"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Hoja: detalle -->
+  <div id="sheet-det" class="sheet-wrap" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="d-title"><div class="grip"></div><div id="d-body"></div></div>
+  </div>
+  <!-- Hoja: código -->
+  <div id="sheet-code" class="sheet-wrap" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="s-title">
+      <div class="grip"></div>
+      <div id="s-badge" class="s-badge"></div>
+      <h3 id="s-title" style="margin-top:12px;font-size:1.25rem"></h3>
+      <p id="s-local" class="muted" style="margin-top:2px;font-weight:700;font-size:.9rem"></p>
+      <p id="s-sub" class="muted" style="margin-top:10px;font-size:.9rem">Mostrá este código cuando hagas tu pedido</p>
+      <div class="s-code-w"><div id="s-code" class="s-code"></div><div id="s-stamp" class="stamp" hidden><span>CANJEADO</span></div></div>
+      <div id="s-status" class="status"><span class="pulse"></span><span id="s-status-t">Esperando confirmación del local</span></div>
+      <div id="s-hor" class="box s-hor" hidden></div>
+      <p id="s-cond" class="muted" style="margin-top:12px;font-size:.8rem"></p>
+            <button type="button" class="btn-dark" data-close>Listo</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" hidden></div>
+
+<script>
+/* ====== CONFIGURACIÓN ====== */
+const SUPABASE_URL = "https://ulkcugdtqxuxjmsyqomy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_8tZa-AWxSmLJo729GPYmlA_tdgOTF1n"; // clave pública, segura para el navegador
+/* =========================== */
+
+const $ = id => document.getElementById(id);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fecha = iso => new Date(iso).toLocaleString('es-AR', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false});
+const fechaCorta = d => new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {day:'numeric', month:'long'});
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+function hoyAR(){ const d = new Date(new Date().toLocaleString('en-US', {timeZone:'America/Argentina/Buenos_Aires'})); d.setHours(0,0,0,0); return d; }
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sesion = null, email = '';
+async function rpc(fn, args = {}){
+  const headers = {apikey: SUPABASE_KEY, 'Content-Type': 'application/json'};
+  if(sesion) headers.Authorization = 'Bearer ' + sesion.access_token;
+  let r;
+  try{ r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {method:'POST', headers, body: JSON.stringify(args)}); }
+  catch(e){ throw new Error('No hay conexión. Revisá internet y probá de nuevo.'); }
+  const d = await r.json().catch(() => null);
+  if(!r.ok) throw new Error((d && d.message) || 'No pudimos conectar. Probá de nuevo.');
+  return d;
+}
+
+// Datos que vienen de la base
+let RUBROS = [], LOCALES = [], CUPONES = [], BARRIOS = [], favs = [], mios = {};
+const localDe = c => LOCALES.find(l => l.id === c.local);
+const rubroDe = id => RUBROS.find(r => r.id === id) || {nombre: '', icono: '🍽️', color: '#7B3FF0'};
+
+async function cargarCatalogo(){
+  const d = await rpc('tc_catalogo');
+  RUBROS = d.rubros || [];
+  CUPONES = d.cupones || [];
+  LOCALES = (d.locales || []).map(l => ({...l, cupones: CUPONES.filter(c => c.local === l.id)})).filter(l => l.cupones.length);
+  BARRIOS = [...new Set(LOCALES.map(l => l.barrio))].sort((a, b) => a.localeCompare(b, 'es'));
+  favs = d.favoritos || [];
+  if(barrio !== 'Todos' && !BARRIOS.includes(barrio)) barrio = 'Todos';
+}
+async function cargarMios(){
+  const rows = await rpc('tc_mis_codigos');
+  mios = {}; (rows || []).forEach(r => mios[r.cupon_id] = r);
+}
+
+let vista = 'home', rubroSel = null, localSel = null, barrio = 'Todos', q = '', filtro = 'todos', orden = 'pedidos', detalle = null, abierto = null, wake = null, poll = null, cargado = false;
+try{ barrio = localStorage.getItem('tucupon.barrio') || 'Todos'; }catch(e){}
+
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
+
+// ---------- Horarios (misma lógica que el servidor, hora de Argentina) ----------
+function ahoraAR(){
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', {timeZone:'America/Argentina/Buenos_Aires', weekday:'short', hour:'2-digit', minute:'2-digit', hourCycle:'h23'})
+    .formatToParts(new Date()).map(x => [x.type, x.value]));
+  return {dia: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday), min: (+p.hour % 24) * 60 + (+p.minute)};
+}
+const aMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+function enHorario(c){
+  if(!c.restringido) return true;
+  let {dia, min} = ahoraAR();
+  const d = c.hora_desde ? aMin(c.hora_desde) : null, h = c.hora_hasta ? aMin(c.hora_hasta) : null;
+  if(d !== null && d > h && min < h) dia = (dia + 6) % 7;
+  if(c.dias && !c.dias.includes(dia)) return false;
+  if(d === null) return true;
+  return d < h ? (min >= d && min < h) : (min >= d || min < h);
+}
+function partes(et){
+  let m = et.match(/^(.*?)(\d+\s?%)\s*(.*)$/);
+  if(m) return {pre: m[1].trim(), big: m[2].replace(/\s/g, ''), post: m[3].trim()};
+  m = et.match(/^(\$\s?[\d.,]+)\s*(.*)$/);
+  if(m) return {pre: '', big: m[1].replace(/\s/g, ''), post: m[2].trim()};
+  return {pre: '', big: et, post: ''};
+}
+const pct = c => { const m = c.etiqueta.match(/(\d+)\s?%/); return m ? +m[1] : /2x1/i.test(c.etiqueta) ? 50 : /3x2/i.test(c.etiqueta) ? 33 : 10; };
+
+// ---------- Íconos ----------
+const RELOJ = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.2l2.8 1.8" stroke-linecap="round"/></svg>';
+const FLECHA = '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.64l-3.72-3.72a.75.75 0 1 1 1.06-1.06l5 5a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 1 1-1.06-1.06l3.72-3.72H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd"/></svg>';
+const FLECHA_S = FLECHA.replace('<svg', '<svg style="width:14px;height:14px"');
+const PIN = '<svg viewBox="0 0 20 20" fill="currentColor" style="width:14px;height:14px;vertical-align:-2px"><path fill-rule="evenodd" d="M10 18s6-5.2 6-10A6 6 0 0 0 4 8c0 4.8 6 10 6 10Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd"/></svg>';
+const heart = on => `<svg viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-8-4.7-8-11A4.5 4.5 0 0 1 12 6.6a4.5 4.5 0 0 1 8 2.9c0 6.3-8 11-8 11Z"/></svg>`;
+const ATRAS = '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.8 4.2a.75.75 0 0 1 0 1.06L8.06 10l4.74 4.74a.75.75 0 1 1-1.06 1.06l-5.27-5.27a.75.75 0 0 1 0-1.06l5.27-5.27a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/></svg>';
+const TK = '<span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>';
+const SPINNER = '<svg class="spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+
+// ---------- Piezas ----------
+function venceChip(c){
+  if(!c.vence) return '';
+  const dias = Math.round((new Date(c.vence + 'T00:00:00') - hoyAR()) / 864e5);
+  const t = dias <= 0 ? 'Vence hoy' : dias === 1 ? 'Vence mañana' : dias <= 14 ? `Vence en ${dias} días` : `Hasta el ${fechaCorta(c.vence)}`;
+  return `<span class="pill">${RELOJ}${t}</span>`;
+}
+const pedidosTxt = n => n ? `🔥 ${n} ${n === 1 ? 'pedido' : 'pedidos'}` : 'Nuevo';
+const esFav = id => favs.includes(id);
+const favBtn = l => `<button type="button" class="fav" data-fav="${l.id}" aria-pressed="${esFav(l.id)}" aria-label="${esFav(l.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}: ${esc(l.nombre)}">${heart(esFav(l.id))}</button>`;
+const logo = l => `<span class="logo" style="--lc:${esc(l.color)}" aria-hidden="true">${esc(l.icono)}</span>`;
+const tema = c => 't' + ((c.local + c.id) % 4);
+const vacio = txt => `<div class="empty">${txt}</div>`;
+
+function localCard(l){
+  const top = l.cupones.slice().sort((a, b) => pct(b) - pct(a))[0];
+  const ahora = l.cupones.some(enHorario), n = l.cupones.length;
+  return `<div class="local">
+    <button type="button" data-local="${l.id}" style="display:flex;gap:14px;align-items:center;flex:1;min-width:0;text-align:left">
+      ${logo(l)}
+      <span class="min">
+        <span class="ln">${esc(l.nombre)}</span>
+        <span class="dir">${esc(l.barrio)} · ${esc(l.dir)}</span>
+        <span class="tags"><span class="chip c-brand">${esc(top.etiqueta)}</span><span class="chip c-neutral">${n} ${n === 1 ? 'descuento' : 'descuentos'}</span>${ahora ? '<span class="chip c-ok"><span class="dot"></span>Ahora</span>' : ''}</span>
+      </span>
+    </button>
+    ${favBtn(l)}
+  </div>`;
+}
+
+function tarjeta(c, puesto){
+  const l = localDe(c), m = mios[c.id], usado = m && m.estado === 'usado';
+  let accion;
+  if(usado) accion = `<div class="cbtn done">✓ Usado el ${esc(fecha(m.usado_en))}</div>`;
+  else if(m) accion = `<button type="button" class="cbtn" data-ver="${c.id}">Ver mi código · <span class="mono">${esc(m.codigo)}</span></button>`;
+  else accion = `<button type="button" class="cbtn" data-pedir="${c.id}">Obtener código</button>`;
+  const franja = c.restringido ? `<span class="pill">${RELOJ}${esc(c.horario)}</span>` : (c.vence ? venceChip(c) : '<span class="pill">Todos los días</span>');
+  return `<article class="cupon ${tema(c)} ${usado ? 'usado' : ''}">
+    <span class="circ" style="right:-36px;top:-36px;width:150px;height:150px"></span>
+    <span class="circ" style="right:44px;top:96px;width:56px;height:56px"></span>
+    <div class="body">
+      <div class="row">
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${puesto ? `<span class="pill" style="background:rgba(255,255,255,.92);color:#1E0B45">#${puesto} más pedido</span>` : ''}${franja}${c.restringido ? (enHorario(c) ? '<span class="pill">● Disponible ahora</span>' : '<span class="pill">Fuera de horario</span>') : ''}</div>
+        <span class="em" aria-hidden="true">${esc(c.icono)}</span>
+      </div>
+      ${vista !== 'local' ? `<button type="button" class="de" data-local="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)} ${FLECHA_S}</button>` : ''}
+      <p class="big" style="${vista === 'local' ? 'margin-top:18px' : ''}">${esc(c.etiqueta)}</p>
+      <h3>${esc(c.titulo)}</h3>
+      <p class="ped">${pedidosTxt(c.pedidos)}</p>
+    </div>
+    <div class="perf"><span class="notch l"></span><span class="notch r"></span></div>
+    <div class="foot">
+      <button type="button" class="cond-link" data-det="${c.id}">Ver condiciones ${FLECHA}</button>
+      ${accion}
+    </div>
+  </article>`;
+}
+
+// ---------- Vistas ----------
+function heroHome(){
+  const h = new Date().getHours();
+  return `<div class="topline"><span class="brandmark">${TK}Tu<em>cupón</em></span><span class="saludo">${h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches'}</span></div>
+    <h1>Descuentos para comer<br><span>cerca tuyo</span></h1>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label for="q" class="sr">Buscar local</label>
+      <input id="q" type="search" autocomplete="off" placeholder="Buscá un local por nombre" value="${esc(q)}">
+      <button type="button" class="clear" data-clear aria-label="Borrar búsqueda" ${q ? '' : 'hidden'}>✕</button>
+    </div>`;
+}
+function heroBar(titulo, sub){
+  return `<div class="bar"><button type="button" class="back" data-back>${ATRAS}Volver</button><span class="brandmark" style="margin-left:auto;font-size:1.2rem">${TK}Tu<em>cupón</em></span></div>
+    <h1 style="font-size:1.9rem">${titulo}</h1>${sub ? `<p style="position:relative;margin-top:8px;font-weight:600;opacity:.9">${sub}</p>` : ''}`;
+}
+const porBarrio = l => barrio === 'Todos' || l.barrio === barrio;
+function barrioChips(){
+  const html = ['Todos', ...BARRIOS].map(b => `<button type="button" class="filtro" data-barrio="${esc(b)}" aria-pressed="${b === barrio}">${b === 'Todos' ? 'Todos los barrios' : esc(b)}</button>`).join('');
+  $$('.barrios').forEach(el => el.innerHTML = html);
+}
+function ordenar(ls){
+  const tot = l => l.cupones.reduce((s, c) => s + c.pedidos, 0);
+  return ls.slice().sort(orden === 'nombre' ? (a, b) => a.nombre.localeCompare(b.nombre, 'es')
+    : orden === 'descuento' ? (a, b) => Math.max(...b.cupones.map(pct)) - Math.max(...a.cupones.map(pct)) || tot(b) - tot(a)
+    : (a, b) => tot(b) - tot(a) || a.nombre.localeCompare(b.nombre, 'es'));
+}
+
+function pintarHome(){
+  if(!cargado){ $('rubros').innerHTML = `<div class="loading" style="grid-column:1/-1">${SPINNER}</div>`; return; }
+  const qn = norm(q.trim());
+  $('resultados').hidden = !qn; $('home-main').hidden = !!qn;
+  if(qn){
+    const r = ordenar(LOCALES.filter(l => porBarrio(l) && (norm(l.nombre).includes(qn) || norm(rubroDe(l.rubro).nombre).includes(qn))));
+    $('res-count').textContent = `${r.length} ${r.length === 1 ? 'local' : 'locales'}`;
+    $('res-list').innerHTML = r.length ? r.map(localCard).join('') : vacio(`No encontramos locales con “${esc(q.trim())}”${barrio !== 'Todos' ? ' en ' + esc(barrio) : ''}. Probá con otro nombre o con “Todos los barrios”.`);
+  }else{
+    const vis = LOCALES.filter(porBarrio);
+    $('total-locales').textContent = `${vis.length} ${vis.length === 1 ? 'local adherido' : 'locales adheridos'}`;
+    $('rubros').innerHTML = RUBROS.length ? RUBROS.map(r => {
+      const ls = vis.filter(l => l.rubro === r.id), n = ls.length, d = ls.reduce((s, l) => s + l.cupones.length, 0);
+      return `<button type="button" class="rubro" data-rubro="${esc(r.id)}" style="--rc:${esc(r.color)}"><span class="bg"></span><span class="em" aria-hidden="true">${esc(r.icono)}</span><span><b>${esc(r.nombre)}</b><small>${n} ${n === 1 ? 'local' : 'locales'} · ${d} ${d === 1 ? 'descuento' : 'descuentos'}</small></span></button>`;
+    }).join('') : vacio('Todavía no hay rubros cargados.');
+    const fl = LOCALES.filter(l => esFav(l.id));
+    $('favs-row').innerHTML = fl.length ? `<div class="favs-row">${fl.map(l => `<button type="button" class="fav-pill" data-local="${l.id}">${logo(l)}${esc(l.nombre)}</button>`).join('')}</div>`
+      : vacio('Tocá el corazón de un local para tenerlo siempre a mano acá.');
+    $$('[data-go-favs]').forEach(b => b.hidden = !fl.length);
+    const top = CUPONES.filter(c => localDe(c) && porBarrio(localDe(c))).sort((a, b) => b.pedidos - a.pedidos || pct(b) - pct(a)).slice(0, 6);
+    $('top-rail').classList.toggle('solo', top.length === 1);
+    $('top-rail').innerHTML = top.length ? top.map((c, i) => tarjeta(c, c.pedidos ? i + 1 : 0)).join('') : vacio('No hay cupones en este barrio por ahora.');
+  }
+  pintarMios();
+}
+function pintarRubro(){
+  const esFavs = rubroSel === 'favs';
+  const ls = ordenar(LOCALES.filter(l => porBarrio(l) && (esFavs ? esFav(l.id) : l.rubro === rubroSel)));
+  $('rubro-sub').textContent = esFavs ? 'Tus locales' : 'Locales adheridos';
+  $('rubro-count').textContent = `${ls.length} ${ls.length === 1 ? 'local' : 'locales'}`;
+  $('rubro-list').innerHTML = ls.length ? ls.map(localCard).join('')
+    : vacio(esFavs ? 'Todavía no guardaste favoritos' + (barrio !== 'Todos' ? ' en ' + esc(barrio) : '') + '. Tocá el corazón de cualquier local.'
+                   : (barrio !== 'Todos' ? `No hay locales de este rubro en ${esc(barrio)} por ahora. Probá con “Todos los barrios”.` : 'Todavía no hay locales adheridos en este rubro.'));
+}
+function pintarLocal(){
+  const l = LOCALES.find(x => x.id === localSel); if(!l){ vista = 'home'; return render(true); }
+  const r = rubroDe(l.rubro);
+  $('ficha').innerHTML = `<div class="top">${logo(l)}<div style="min-width:0;flex:1"><p class="muted" style="font-size:.8rem;font-weight:800">${esc(r.icono)} ${esc(r.nombre)}</p><h2>${esc(l.nombre)}</h2></div>${favBtn(l)}</div>
+    <dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd>${l.horario ? `<dt>Horario</dt><dd>${esc(l.horario)}</dd>` : ''}</dl>`;
+  const cs = l.cupones.slice().sort((a, b) => b.pedidos - a.pedidos), vis = filtro === 'ahora' ? cs.filter(enHorario) : cs;
+  $('local-count').textContent = `${cs.length} ${cs.length === 1 ? 'cupón' : 'cupones'}`;
+  $$('[data-filtro]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.filtro === filtro)));
+  const rail = $('local-rail'); rail.classList.toggle('solo', vis.length === 1);
+  rail.innerHTML = vis.length ? vis.map(c => tarjeta(c)).join('') : vacio('Ahora ningún descuento de este local está en horario. Mirá “Todos” para ver cuándo se usan.');
+}
+function pintarMios(){
+  const mias = CUPONES.filter(c => mios[c.id] && localDe(c));
+  $('mis').hidden = !mias.length;
+  $('mis-list').innerHTML = mias.map(c => { const m = mios[c.id], u = m.estado === 'usado', l = localDe(c);
+    return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-ver="${c.id}"><span class="ic">${esc(c.icono)}</span><span><b>${esc(m.codigo)}</b><small>${u ? 'Usado · ' + esc(l.nombre) : esc(c.etiqueta) + ' · ' + esc(l.nombre)}</small></span></button>`; }).join('');
+}
+
+function render(scroll){
+  $('v-home').hidden = vista !== 'home'; $('v-rubro').hidden = vista !== 'rubro'; $('v-local').hidden = vista !== 'local';
+  barrioChips();
+  if(vista === 'home'){
+    if(!$('q')) $('hero-in').innerHTML = heroHome();
+    pintarHome();
+  }else if(vista === 'rubro'){
+    const esFavs = rubroSel === 'favs', r = rubroDe(rubroSel);
+    $('hero-in').innerHTML = heroBar(esFavs ? 'Tus favoritos' : `${esc(r.icono)} ${esc(r.nombre)}`, esFavs ? 'Los locales que guardaste' : 'Tocá un local para ver todos sus descuentos');
+    pintarRubro();
+  }else{
+    const l = LOCALES.find(x => x.id === localSel);
+    if(!l){ vista = 'home'; $('hero-in').innerHTML = ''; return render(true); }
+    $('hero-in').innerHTML = heroBar(esc(l.nombre), `${PIN} ${esc(l.barrio)} · ${esc(l.dir)}`);
+    pintarLocal();
+  }
+  if(scroll) window.scrollTo(0, 0);
+  if(detalle) verDetalle(detalle, true);
+}
+let pila = [];
+function ir(v, extra = {}){
+  pila.push({vista, rubroSel, localSel});
+  vista = v; if('rubro' in extra) rubroSel = extra.rubro; if('local' in extra){ localSel = extra.local; filtro = 'todos'; }
+  $('hero-in').innerHTML = ''; render(true);
+}
+function volver(){
+  const p = pila.pop() || {vista: 'home'};
+  vista = p.vista; rubroSel = p.rubroSel; localSel = p.localSel;
+  $('hero-in').innerHTML = ''; render(true);
+}
+
+// ---------- Hojas ----------
+const abrirHoja = id => $(id).setAttribute('aria-hidden', 'false');
+function cerrar(id){
+  $(id).setAttribute('aria-hidden', 'true');
+  if(id === 'sheet-det') detalle = null;
+  if(id === 'sheet-code'){ abierto = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
+}
+$$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrar(w.id); }));
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); } });
+
+function accionCupon(c){
+  const m = mios[c.id];
+  if(m && m.estado === 'usado') return `<div class="main done">✓ Usado el ${esc(fecha(m.usado_en))}</div>`;
+  if(m) return `<button type="button" class="main" data-ver="${c.id}">Ver mi código · <span class="mono">${esc(m.codigo)}</span></button>`;
+  return `<button type="button" class="main" data-pedir="${c.id}">Obtener código</button>`;
+}
+function verDetalle(id, soloPintar){
+  const c = CUPONES.find(x => x.id === id); if(!c){ cerrar('sheet-det'); return; }
+  detalle = id;
+  const l = localDe(c), e = partes(c.etiqueta), ya = enHorario(c), v = c.votos || {hot:0, frio:0, mi_voto:0}, score = v.hot - v.frio, sc = score > 0 ? '+' + score : String(score);
+  const conds = (c.condiciones || '').split(/\.\s+|\n/).filter(x => x.trim());
+  $('d-body').innerHTML = `
+    <div class="d-head">
+      <div class="d-badge"><span>${e.pre ? `<span class="s">${esc(e.pre)}</span><br>` : ''}<span class="b">${esc(e.big)}</span>${e.post ? `<br><span class="s">${esc(e.post)}</span>` : ''}</span></div>
+      <div style="min-width:0">
+        ${vista === 'local' && localSel === l.id ? `<p class="d-local">${esc(l.nombre)}</p>` : `<button type="button" class="d-local" data-local="${l.id}">${esc(l.nombre)} ${FLECHA_S}</button>`}
+        <h3 id="d-title" style="font-size:1.25rem;line-height:1.2">${esc(c.icono)} ${esc(c.titulo)}</h3>
+        <p class="muted" style="margin-top:2px;font-size:.88rem;font-weight:600">${pedidosTxt(c.pedidos)}</p>
+      </div>
+    </div>
+    ${c.descripcion ? `<p style="margin-top:14px">${esc(c.descripcion)}</p>` : ''}
+    <div class="box ${ya ? 'ok' : 'warn'}" style="margin-top:16px">
+      <p class="k">${RELOJ} Cuándo se puede usar</p>
+      <p class="v">${esc(c.horario)}</p>
+      <p class="v2">${!c.restringido ? 'Podés usarlo en cualquier momento del horario del local.' : ya ? 'Estás dentro del horario: podés usarlo ahora.' : 'Ahora está fuera de horario. Podés pedir el código igual y mostrarlo en esa franja.'}</p>
+    </div>
+    <div class="box">
+      <p class="k">Dónde</p>
+      <p class="v" style="font-size:1rem">${esc(l.dir)}, ${esc(l.barrio)}</p>
+      ${l.horario ? `<p class="muted" style="font-size:.85rem;margin-top:2px">${esc(l.horario)}</p>` : ''}
+    </div>
+    <div class="box">
+      <p class="k">Condiciones</p>
+      <ul>${conds.map(x => `<li>${esc(x.replace(/\.$/, ''))}.</li>`).join('')}<li>Un uso por cliente${c.vence ? `, válido hasta el ${esc(fechaCorta(c.vence))}` : ''}.</li></ul>
+    </div>
+    <div class="box">
+      <p style="font-size:.9rem"><b>¿Qué te parece esta oferta?</b> <span class="muted">Tu voto ayuda a otros a elegir.</span></p>
+      <div class="votos" role="group" aria-label="Votar esta oferta">
+        <button type="button" class="v-hot" data-votar="1" aria-pressed="${v.mi_voto === 1}"><svg viewBox="0 0 24 24" fill="${v.mi_voto === 1 ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 22c4.4 0 7-3 7-7 0-4.5-3.5-7-4.5-11-1.5 2-2.5 4-2.5 6-1-1-2-2.3-2.5-3.5C7.5 9 5 11.5 5 15c0 4 2.6 7 7 7Z"/></svg>Hot</button>
+        <span class="score ${score > 0 ? 'pos' : score < 0 ? 'neg' : ''}" aria-label="Puntaje ${sc}">${sc}</span>
+        <button type="button" class="v-frio" data-votar="-1" aria-pressed="${v.mi_voto === -1}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4.2 7l15.6 10M4.2 17 19.8 7M9 3.5 12 6l3-2.5M9 20.5l3-2.5 3 2.5"/></svg>Frío</button>
+      </div>
+      <p class="muted" style="font-size:.8rem;margin-top:8px">${v.mi_voto ? 'Gracias por votar. Tocá de nuevo para quitar tu voto.' : (v.hot + v.frio ? `${v.hot + v.frio} ${v.hot + v.frio === 1 ? 'persona votó' : 'personas votaron'}.` : 'Sé el primero en votar.')}</p>
+    </div>
+    <div class="act">${accionCupon(c)}<button type="button" class="sec-btn" data-close>Cerrar</button></div>`;
+  if(!soloPintar) abrirHoja('sheet-det');
+}
+let votando = false;
+async function votar(id, valor){
+  const c = CUPONES.find(x => x.id === id); if(!c || votando) return;
+  const antes = {...(c.votos || {hot:0, frio:0, mi_voto:0})}, nuevo = antes.mi_voto === valor ? 0 : valor, v = {...antes};
+  if(v.mi_voto === 1) v.hot--; if(v.mi_voto === -1) v.frio--;
+  if(nuevo === 1) v.hot++; if(nuevo === -1) v.frio++;
+  v.mi_voto = nuevo; c.votos = v; verDetalle(id, true);
+  votando = true;
+  try{ c.votos = await rpc('tc_votar', {p_cupon_id: id, p_valor: nuevo}); if(nuevo) toast(nuevo === 1 ? '🔥 ¡Gracias! Votaste Hot.' : '❄️ Gracias, lo tenemos en cuenta.'); }
+  catch(e){ c.votos = antes; toast(e.message); }
+  finally{ votando = false; if(detalle === id) verDetalle(id, true); }
+}
+async function toggleFav(id){
+  const on = !esFav(id), antes = favs.slice();
+  favs = on ? [...favs, id] : favs.filter(x => x !== id); render();
+  try{ favs = await rpc('tc_favorito', {p_local_id: id, p_on: on}); toast(on ? '❤️ Guardado en favoritos' : 'Quitado de favoritos'); }
+  catch(e){ favs = antes; toast(e.message); }
+  render();
+}
+
+// ---------- Códigos ----------
+async function pedir(id){
+  const bs = $$(`[data-pedir="${id}"]`);
+  bs.forEach(b => { b.disabled = true; b.textContent = 'Generando…'; });
+  try{
+    const r = await rpc('tc_pedir_cupon', {p_cupon_id: id});
+    const nuevo = !mios[id]; mios[id] = r;
+    const c = CUPONES.find(x => x.id === id); if(nuevo && c) c.pedidos++;
+    render(); abrir(id);
+  }catch(e){
+    bs.forEach(b => { b.disabled = false; b.textContent = 'Obtener código'; });
+    toast(e.message);
+  }
+}
+function pintarHoja(){
+  const c = CUPONES.find(x => x.id === abierto), m = mios[abierto]; if(!c || !m) return;
+  const l = localDe(c), ok = m.estado === 'usado';
+  $('s-badge').textContent = c.icono;
+  $('s-title').textContent = `${c.etiqueta} · ${c.titulo}`;
+  $('s-local').textContent = l ? `${l.nombre} · ${l.dir}, ${l.barrio}` : '';
+  $('s-code').textContent = m.codigo;
+  $('s-cond').textContent = c.condiciones ? c.condiciones.replace(/\.?$/, '.') : '';
+  $('s-stamp').hidden = !ok;
+  $('s-status').className = 'status' + (ok ? ' ok' : '');
+  $('s-status').querySelector('.pulse').hidden = ok;
+  $('s-status-t').textContent = ok ? `Confirmado el ${fecha(m.usado_en)} · ¡Que lo disfrutes!` : 'Esperando confirmación del local';
+  $('s-sub').textContent = ok ? 'El local ya aplicó tu descuento' : 'Mostrá este código cuando hagas tu pedido';
+  const hs = $('s-hor'); hs.hidden = ok || !c.restringido;
+  if(!ok && c.restringido){
+    const ya = enHorario(c);
+    hs.className = 'box s-hor ' + (ya ? 'ok' : 'warn');
+    hs.innerHTML = `<p class="k">${RELOJ} Válido: ${esc(c.horario)}</p><p class="v2">${ya ? 'Estás dentro del horario: mostralo ahora.' : 'Guardalo y mostralo en ese horario. Fuera de la franja el local no puede canjearlo.'}</p>`;
+  }
+}
+async function abrir(id){
+  abierto = id; pintarHoja(); abrirHoja('sheet-code');
+  try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    if(!abierto || !mios[abierto] || mios[abierto].estado === 'usado' || document.hidden) return;
+    try{
+      await cargarMios();
+      if(mios[abierto] && mios[abierto].estado === 'usado'){ pintarHoja(); render(); try{ navigator.vibrate && navigator.vibrate([60, 40, 60]); }catch(_){} }
+    }catch(e){}
+  }, 4000);
+}
+
+// ---------- Clics ----------
+document.addEventListener('click', ev => {
+  if($('app').hidden) return;
+  const t = s => ev.target.closest(s);
+  let b;
+  if((b = t('[data-fav]'))){ toggleFav(+b.dataset.fav); return; }
+  if((b = t('[data-votar]'))){ if(detalle) votar(detalle, +b.dataset.votar); return; }
+  if((b = t('[data-pedir]'))){ cerrar('sheet-det'); pedir(+b.dataset.pedir); return; }
+  if((b = t('[data-ver]'))){ cerrar('sheet-det'); abrir(+b.dataset.ver); return; }
+  if((b = t('[data-det]'))){ verDetalle(+b.dataset.det); return; }
+  if((b = t('[data-local]'))){ cerrar('sheet-det'); ir('local', {local: +b.dataset.local}); return; }
+  if((b = t('[data-rubro]'))){ ir('rubro', {rubro: b.dataset.rubro}); return; }
+  if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
+  if(t('[data-back]')){ volver(); return; }
+  if((b = t('[data-barrio]'))){ barrio = b.dataset.barrio; try{ localStorage.setItem('tucupon.barrio', barrio); }catch(e){} render(); return; }
+  if((b = t('[data-filtro]'))){ filtro = b.dataset.filtro; pintarLocal(); return; }
+  if(t('[data-clear]')){ q = ''; $('q').value = ''; t('[data-clear]').hidden = true; pintarHome(); $('q').focus(); return; }
+});
+document.addEventListener('input', e => {
+  if(e.target.id === 'q'){ q = e.target.value; document.querySelector('[data-clear]').hidden = !q; pintarHome(); }
+});
+$('orden').addEventListener('change', e => { orden = e.target.value; pintarRubro(); });
+
+// Se actualiza sola cada minuto y al volver a la pestaña
+let refrescando = false;
+async function refrescar(){
+  if(!sesion || refrescando || document.hidden) return;
+  refrescando = true;
+  try{
+    await cargarCatalogo(); await cargarMios();
+    const f = document.activeElement && document.activeElement.id;
+    render(); if(f === 'q') $('q').focus();
+    if(abierto) pintarHoja();
+  }catch(e){ /* sin conexión: se reintenta en la próxima vuelta */ }
+  finally{ refrescando = false; }
+}
+setInterval(refrescar, 60000);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) refrescar(); });
+
+// ---------- Acceso (Supabase Auth) ----------
+const emailOk = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
+const VISTAS = ['login', 'signup', 'forgot', 'sent', 'reset'];
+const volverA = () => location.origin + location.pathname;
+function vistaAuth(v){
+  VISTAS.forEach(x => $('v-' + x).hidden = x !== v);
+  $('auth-tabs').hidden = !(v === 'login' || v === 'signup');
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+  aviso();
+}
+function aviso(msg, ok){ const a = $('auth-alert'); a.hidden = !msg; a.textContent = msg || ''; a.classList.toggle('ok', !!ok); }
+function marcar(ids){ $$('#auth .field').forEach(i => i.removeAttribute('aria-invalid')); ids.forEach(id => $(id).setAttribute('aria-invalid', 'true')); if(ids[0]) $(ids[0]).focus(); }
+async function cargando(form, fn){
+  const b = form.querySelector('.btn'), txt = b.innerHTML;
+  b.disabled = true; b.innerHTML = SPINNER + '<span>Un momento…</span>';
+  try{ await fn(); } finally { b.disabled = false; b.innerHTML = txt; }
+}
+function traducir(err){
+  const m = (err && (err.message || err.msg || String(err))) || '';
+  if(/invalid login credentials/i.test(m)) return 'Email o contraseña incorrectos.';
+  if(/email not confirmed/i.test(m)) return 'Todavía no confirmaste tu email. Revisá tu correo y tocá el link que te mandamos.';
+  if(/already registered|already exists/i.test(m)) return 'Ya existe una cuenta con ese email. Ingresá o recuperá tu contraseña.';
+  if(/rate limit|security purposes|too many/i.test(m)) return 'Hiciste muchos intentos seguidos. Esperá un minuto y probá de nuevo.';
+  if(/password should|weak|at least/i.test(m)) return 'La contraseña es muy débil. Usá al menos 8 caracteres, con letras y números.';
+  if(/same.*password|different from the old/i.test(m)) return 'La contraseña nueva tiene que ser distinta de la anterior.';
+  if(/expired|invalid.*(token|link)|otp/i.test(m)) return 'El link venció o ya se usó. Pedí uno nuevo.';
+  if(/fetch|network/i.test(m)) return 'No hay conexión. Revisá internet y probá de nuevo.';
+  return 'Algo salió mal. Probá de nuevo en un momento.';
+}
+$$('.tab, [data-go]').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.view || b.dataset.go;
+  if(v === 'forgot' && emailOk($('li-email').value.trim())) $('fo-email').value = $('li-email').value.trim();
+  vistaAuth(v);
+}));
+$('v-login').addEventListener('submit', e => {
+  e.preventDefault();
+  const em = $('li-email').value.trim().toLowerCase(), pw = $('li-pass').value;
+  if(!emailOk(em)){ aviso('Escribí un email válido.'); return marcar(['li-email']); }
+  if(!pw){ aviso('Escribí tu contraseña.'); return marcar(['li-pass']); }
+  marcar([]);
+  return cargando(e.target, async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: em, password: pw });
+    if(error){ aviso(traducir(error)); marcar(['li-pass']); }
+  });
+});
+$('v-signup').addEventListener('submit', e => {
+  e.preventDefault();
+  const em = $('su-email').value.trim().toLowerCase(), pw = $('su-pass').value;
+  if(!emailOk(em)){ aviso('Escribí un email válido.'); return marcar(['su-email']); }
+  if(pw.length < 8){ aviso('La contraseña tiene que tener al menos 8 caracteres.'); return marcar(['su-pass']); }
+  if(pw !== $('su-pass2').value){ aviso('Las contraseñas no coinciden.'); return marcar(['su-pass2']); }
+  marcar([]);
+  return cargando(e.target, async () => {
+    const { data, error } = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: volverA() } });
+    if(error){ aviso(traducir(error)); return; }
+    if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
+      aviso('Ya existe una cuenta con ese email. Ingresá o recuperá tu contraseña.'); return;
+    }
+    if(!data.session){
+      $('sent-t').textContent = `Te mandamos un link a ${em} para confirmar tu cuenta. Tocalo y vas a entrar directo a Tucupón.`;
+      vistaAuth('sent');
+    }
+  });
+});
+$('v-forgot').addEventListener('submit', e => {
+  e.preventDefault();
+  const em = $('fo-email').value.trim().toLowerCase();
+  if(!emailOk(em)){ aviso('Escribí un email válido.'); return marcar(['fo-email']); }
+  marcar([]);
+  return cargando(e.target, async () => {
+    const { error } = await sb.auth.resetPasswordForEmail(em, { redirectTo: volverA() });
+    if(error){ aviso(traducir(error)); return; }
+    $('sent-t').textContent = `Si ${em} tiene una cuenta, en unos minutos te llega un link para crear una contraseña nueva.`;
+    vistaAuth('sent');
+  });
+});
+let recuperando = false;
+$('v-reset').addEventListener('submit', e => {
+  e.preventDefault();
+  const pw = $('re-pass').value;
+  if(pw.length < 8){ aviso('La contraseña tiene que tener al menos 8 caracteres.'); return marcar(['re-pass']); }
+  if(pw !== $('re-pass2').value){ aviso('Las contraseñas no coinciden.'); return marcar(['re-pass2']); }
+  marcar([]);
+  return cargando(e.target, async () => {
+    const { error } = await sb.auth.updateUser({ password: pw });
+    if(error){ aviso(traducir(error)); return; }
+    recuperando = false;
+    const { data } = await sb.auth.getSession();
+    entrar(data.session);
+    toast('Listo, tu contraseña quedó actualizada.');
+  });
+});
+$('btn-salir').addEventListener('click', async () => { await sb.auth.signOut(); });
+
+async function entrar(s){
+  if(!s || recuperando) return;
+  const primeraVez = !sesion || sesion.user.id !== s.user.id;
+  sesion = s; email = (s.user.email || '').toLowerCase();
+  $('mail').textContent = email; $('avatar').textContent = (email[0] || 'T').toUpperCase();
+  $('auth').hidden = true; $('app').hidden = false;
+  if(history.replaceState && location.hash) history.replaceState(null, '', location.pathname + location.search);
+  if(primeraVez){
+    vista = 'home'; pila = []; cargado = false; $('hero-in').innerHTML = ''; render(true);
+    try{ await cargarCatalogo(); await cargarMios(); }
+    catch(e){ toast(e.message); }
+    cargado = true; render();
+  }
+}
+function salir(){
+  sesion = null; email = ''; mios = {}; favs = [];
+  cerrar('sheet-code'); cerrar('sheet-det');
+  $('app').hidden = true; $('auth').hidden = false;
+  ['li-pass','su-pass','su-pass2','re-pass','re-pass2'].forEach(id => $(id).value = '');
+  vistaAuth('login');
+}
+sb.auth.onAuthStateChange((evento, s) => {
+  if(evento === 'PASSWORD_RECOVERY'){ recuperando = true; $('app').hidden = true; $('auth').hidden = false; vistaAuth('reset'); return; }
+  if(evento === 'SIGNED_OUT'){ salir(); return; }
+  if(s){ if(sesion && s.user.id === sesion.user.id) sesion = s; else entrar(s); }
+});
+(async function init(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  const { data } = await sb.auth.getSession();
+  if(recuperando) return;
+  if(data.session){ entrar(data.session); return; }
+  vistaAuth('login');
+  if(h.get('error_description')){
+    aviso(traducir({ message: h.get('error_description') }));
+    history.replaceState && history.replaceState(null, '', location.pathname + location.search);
+  }
+})();
+</script>
+</body>
+</html>
