@@ -228,8 +228,9 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
         </div>
         <div><label class="label" for="pf-nombre">Nombre del local</label><input id="pf-nombre" class="field" maxlength="60"></div>
         <div class="grid2">
-          <div><label class="label" for="pf-barrio">Barrio</label><input id="pf-barrio" class="field" list="pf-barrios" maxlength="40"><datalist id="pf-barrios"></datalist></div>
-          <div><label class="label" for="pf-rubro">Rubro</label><input id="pf-rubro" class="field" disabled><p class="hint">Para cambiarlo, escribile al equipo de Tucupón.</p></div>
+          <div><label class="label" for="pf-barrio">Barrio</label><select id="pf-barrio" class="field"></select>
+            <div data-otro hidden style="margin-top:8px"><label class="label" for="pf-barrio-otro">¿Qué barrio?</label><input id="pf-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
+          <div><label class="label" for="pf-rubro">Rubro</label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
         </div>
         <div><label class="label" for="pf-dir">Dirección</label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
         <div><label class="label" for="pf-horario">Horario de atención</label><input id="pf-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
@@ -416,6 +417,21 @@ const iniciales = n => String(n || '').replace(/[&]/g, ' ').split(/\s+/).filter(
 const logoHTML = (src, nombre, color, clase = '') => src
   ? `<span class="lg img ${clase}" aria-hidden="true"><img src="${src}" alt=""></span>`
   : `<span class="lg ${clase}" style="background:${esc(color || '#EFEAF9')}" aria-hidden="true">${esc(iniciales(nombre))}</span>`;
+
+// ---------- Barrios: lista fija + "Otro" ----------
+const BARRIOS = ['Yerba Buena', 'Centro', 'Barrio Sur', 'Barrio Norte', 'Mate de Luna'];
+function barrioSelectHTML(){ return BARRIOS.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('') + '<option value="__otro">Otro</option>'; }
+function ponerBarrio(sel, otro, valor){
+  sel.innerHTML = '<option value="">Elegí el barrio</option>' + barrioSelectHTML();
+  const conocido = BARRIOS.includes(valor);
+  sel.value = !valor ? '' : conocido ? valor : '__otro';
+  otro.value = conocido ? '' : (valor || '');
+  otro.closest('[data-otro]').hidden = sel.value !== '__otro';
+}
+function leerBarrio(sel, otro){ return sel.value === '__otro' ? otro.value.trim() : sel.value; }
+function unirBarrio(sel, otro){
+  sel.addEventListener('change', () => { const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro'; if(!w.hidden) otro.focus(); });
+}
 
 
 // ---------- Sesión del local (se guarda solo en esta pestaña) ----------
@@ -617,13 +633,15 @@ async function cargarPerfil(){
   avisoPerfil('');
   try{
     perfil = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); logoNuevo = undefined;
-    $('pf-nombre').value = perfil.nombre; $('pf-barrio').value = perfil.barrio; $('pf-rubro').value = perfil.rubro;
+    $('pf-nombre').value = perfil.nombre;
+    ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio);
+    $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
     $('pf-dir').value = perfil.dir; $('pf-horario').value = perfil.horario;
-    $('pf-barrios').innerHTML = perfil.barrios.map(b => `<option value="${esc(b)}">`).join('');
     pintarLogoPerfil();
   }catch(err){ manejarError(err); }
 }
 $('pf-nombre').addEventListener('input', () => perfil && pintarLogoPerfil());
+unirBarrio($('pf-barrio'), $('pf-barrio-otro'));
 $('pf-file').addEventListener('change', async e => {
   const f = e.target.files[0]; e.target.value = '';
   if(!f) return;
@@ -633,9 +651,9 @@ $('pf-file').addEventListener('change', async e => {
 $('pf-quitar').addEventListener('click', () => { logoNuevo = null; pintarLogoPerfil(); avisoPerfil('Tocá “Guardar perfil” para quitar el logo.', true); });
 $('f-perfil').addEventListener('submit', async e => {
   e.preventDefault(); avisoPerfil('');
-  const datos = {nombre: $('pf-nombre').value.trim(), barrio: $('pf-barrio').value.trim(), dir: $('pf-dir').value.trim(), horario: $('pf-horario').value.trim()};
+  const datos = {nombre: $('pf-nombre').value.trim(), barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), horario: $('pf-horario').value.trim()};
   if(!datos.nombre) return avisoPerfil('Poné el nombre del local.');
-  if(!datos.barrio) return avisoPerfil('Poné el barrio.');
+  if(!datos.barrio) return avisoPerfil($('pf-barrio').value === '__otro' ? 'Escribí el nombre del barrio.' : 'Elegí el barrio.');
   if(!datos.dir) return avisoPerfil('Poné la dirección.');
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
