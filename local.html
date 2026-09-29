@@ -165,6 +165,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .rel-box{border:2px dashed var(--brand);border-radius:16px;padding:14px;background:var(--surface-2)}
 .rel-box .switch{font-size:1.02rem}
 .chip.rel{background:#1E0B45;color:#C4F04A}
+.badge-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--hot);color:#fff;font-size:.72rem;font-weight:800;margin-left:4px}
+a.btn{text-decoration:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -256,6 +258,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
           <div><label class="label" for="pf-rubro">Rubro</label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
         </div>
         <div><label class="label" for="pf-dir">Dirección</label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+        <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto</label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
         <div><label class="label" for="pf-horario">Horario de atención</label><input id="pf-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
         <button type="submit" class="btn full">Guardar perfil</button>
       </form>
@@ -861,7 +864,7 @@ async function cargarPerfil(){
     $('pf-nombre').value = perfil.nombre;
     ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio);
     $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
-    $('pf-dir').value = perfil.dir; $('pf-horario').value = perfil.horario;
+    $('pf-dir').value = perfil.dir; $('pf-horario').value = perfil.horario; $('pf-tel').value = perfil.telefono || '';
     pintarLogoPerfil();
   }catch(err){ manejarError(err); }
 }
@@ -876,7 +879,7 @@ $('pf-file').addEventListener('change', async e => {
 $('pf-quitar').addEventListener('click', () => { logoNuevo = null; pintarLogoPerfil(); avisoPerfil('Tocá “Guardar perfil” para quitar el logo.', true); });
 $('f-perfil').addEventListener('submit', async e => {
   e.preventDefault(); avisoPerfil('');
-  const datos = {nombre: $('pf-nombre').value.trim(), barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), horario: $('pf-horario').value.trim()};
+  const datos = {nombre: $('pf-nombre').value.trim(), barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), horario: $('pf-horario').value.trim(), telefono: $('pf-tel').value.trim()};
   if(!datos.nombre) return avisoPerfil('Poné el nombre del local.');
   if(!datos.barrio) return avisoPerfil($('pf-barrio').value === '__otro' ? 'Escribí el nombre del barrio.' : 'Elegí el barrio.');
   if(!datos.dir) return avisoPerfil('Poné la dirección.');
