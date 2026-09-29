@@ -173,6 +173,18 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .rail.solo>*{flex-basis:100%}
 .cupon{position:relative;display:flex;flex-direction:column;min-height:24rem;border-radius:28px;overflow:hidden;box-shadow:0 18px 36px -16px var(--shadow)}
 .cupon.usado{filter:grayscale(.7);opacity:.82}
+/* Cupón con foto: la foto de fondo, velo oscuro para que el texto se lea */
+.cupon.con-foto{background:#1E0B45;color:#fff;aspect-ratio:4/5}
+.cupon .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cupon .velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,5,35,.5) 0%,rgba(15,5,35,.05) 30%,rgba(15,5,35,.55) 55%,rgba(15,5,35,.92) 100%)}
+.con-foto .body{display:flex;flex-direction:column;text-shadow:0 1px 10px rgba(0,0,0,.45)}
+.con-foto .body .row{margin-bottom:auto}
+.con-foto .big{color:#C4F04A}
+.con-foto .pill{background:rgba(15,5,35,.55);backdrop-filter:blur(4px)}
+.con-foto .cbtn{background:#C4F04A;color:#1E0B45}
+.con-foto .perf::before{opacity:.45}
+.d-foto{margin:0 0 16px;aspect-ratio:4/5;max-height:46dvh;width:100%;overflow:hidden;border-radius:20px;background:var(--surface-2)}
+.d-foto img{width:100%;height:100%;object-fit:cover;display:block}
 .t0{background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#fff}
 .t1{background:linear-gradient(135deg,#43198F,#1E0B45);color:#fff}
 .t2{background:linear-gradient(135deg,#D4F76A,#A8DB2C);color:#1E0B45}
@@ -399,7 +411,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       </div>
 
       <section id="mis" class="sec" hidden>
-        <div class="sec-h"><h2>Mis códigos</h2></div>
+        <div class="sec-h"><h2>Mis códigos</h2><button type="button" class="count" data-limpiar style="color:var(--brand)">Limpiar códigos</button></div>
         <div id="mis-list" class="codes"></div>
       </section>
 
@@ -447,6 +459,15 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   <!-- Hoja: detalle -->
   <div id="sheet-det" class="sheet-wrap" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="d-title"><div class="grip"></div><div id="d-body"></div></div>
+  </div>
+  <!-- Hoja: limpiar códigos -->
+  <div id="sheet-limpiar" class="sheet-wrap" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="lp-title">
+      <div class="grip"></div>
+      <h3 id="lp-title" style="font-size:1.3rem;color:var(--heading)">¿Limpiar tus códigos?</h3>
+      <p class="muted" style="margin-top:8px">Se borran los códigos que todavía no usaste. Si después querés alguno de esos cupones, pedís un código nuevo. Los que ya usaste dejan de verse en tu lista.</p>
+      <div class="act"><button type="button" class="main" id="lp-ok">Sí, limpiar códigos</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
+    </div>
   </div>
   <!-- Hoja: código -->
   <div id="sheet-code" class="sheet-wrap" aria-hidden="true">
@@ -515,6 +536,27 @@ async function cargarLogos(){
     try{ localStorage.setItem('tucupon.logos', JSON.stringify(LOGOS)); }catch(e){}
     render();
   }catch(e){ /* se reintenta en la próxima actualización */ }
+}
+// Fotos de cupones: se piden solo para los cupones que se muestran, y quedan en memoria
+const FOTOS = {}, pedidas = new Set();
+let faltanFotos = new Set(), timerFotos = null;
+function fotoDe(c){
+  const f = FOTOS[c.id];
+  if(f && f.v === c.foto_v) return f.foto;
+  if(!pedidas.has(c.id + ':' + c.foto_v)){ faltanFotos.add(c.id); clearTimeout(timerFotos); timerFotos = setTimeout(traerFotos, 30); }
+  return '';
+}
+async function traerFotos(){
+  const ids = [...faltanFotos]; faltanFotos = new Set();
+  if(!ids.length) return;
+  ids.forEach(id => { const c = CUPONES.find(x => x.id === id); if(c) pedidas.add(id + ':' + c.foto_v); });
+  try{
+    for(let i = 0; i < ids.length; i += 12){
+      const r = await rpc('tc_fotos', {p_ids: ids.slice(i, i + 12)});
+      Object.entries(r || {}).forEach(([id, x]) => FOTOS[id] = x);
+    }
+    render();
+  }catch(e){ ids.forEach(id => { const c = CUPONES.find(x => x.id === id); if(c) pedidas.delete(id + ':' + c.foto_v); }); }
 }
 async function cargarCatalogo(){
   const d = await rpc('tc_catalogo');
@@ -608,13 +650,15 @@ function tarjeta(c, puesto){
   else if(m) accion = `<button type="button" class="cbtn" data-ver="${c.id}">Ver mi código · <span class="mono">${esc(m.codigo)}</span></button>`;
   else accion = `<button type="button" class="cbtn" data-pedir="${c.id}">Obtener código</button>`;
   const franja = c.restringido ? `<span class="pill">${RELOJ}${esc(c.horario)}</span>` : (c.vence ? venceChip(c) : '<span class="pill">Todos los días</span>');
-  return `<article class="cupon ${tema(c)} ${usado ? 'usado' : ''}">
-    <span class="circ" style="right:-36px;top:-36px;width:150px;height:150px"></span>
-    <span class="circ" style="right:44px;top:96px;width:56px;height:56px"></span>
+  const conFoto = !!c.foto_v, foto = conFoto ? fotoDe(c) : '';
+  const fondo = conFoto ? `${foto ? `<img class="ph" src="${foto}" alt="" decoding="async">` : ''}<span class="velo"></span>`
+    : `<span class="circ" style="right:-36px;top:-36px;width:150px;height:150px"></span><span class="circ" style="right:44px;top:96px;width:56px;height:56px"></span>`;
+  return `<article class="cupon ${conFoto ? 'con-foto' : tema(c)} ${usado ? 'usado' : ''}">
+    ${fondo}
     <div class="body">
       <div class="row">
         <div style="display:flex;flex-wrap:wrap;gap:6px">${puesto ? `<span class="pill" style="background:rgba(255,255,255,.92);color:#1E0B45">#${puesto} más pedido</span>` : ''}${franja}${c.restringido ? (enHorario(c) ? '<span class="pill">● Disponible ahora</span>' : '<span class="pill">Fuera de horario</span>') : ''}</div>
-        <span class="em" aria-hidden="true">${esc(c.icono)}</span>
+        ${conFoto ? '' : `<span class="em" aria-hidden="true">${esc(c.icono)}</span>`}
       </div>
       ${vista !== 'local' ? `<button type="button" class="de" data-local="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)} ${FLECHA_S}</button>` : ''}
       <p class="big" style="${vista === 'local' ? 'margin-top:18px' : ''}">${esc(c.etiqueta)}</p>
@@ -703,7 +747,7 @@ function pintarLocal(){
   rail.innerHTML = vis.length ? vis.map(c => tarjeta(c)).join('') : vacio('Ahora ningún descuento de este local está en horario. Mirá “Todos” para ver cuándo se usan.');
 }
 function pintarMios(){
-  const mias = CUPONES.filter(c => mios[c.id] && localDe(c));
+  const mias = CUPONES.filter(c => mios[c.id] && !mios[c.id].oculto && localDe(c));
   $('mis').hidden = !mias.length;
   $('mis-list').innerHTML = mias.map(c => { const m = mios[c.id], u = m.estado === 'usado', l = localDe(c);
     return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-ver="${c.id}"><span class="ic">${esc(c.icono)}</span><span><b>${esc(m.codigo)}</b><small>${u ? 'Usado · ' + esc(l.nombre) : esc(c.etiqueta) + ' · ' + esc(l.nombre)}</small></span></button>`; }).join('');
@@ -761,7 +805,9 @@ function verDetalle(id, soloPintar){
   detalle = id;
   const l = localDe(c), e = partes(c.etiqueta), ya = enHorario(c), v = c.votos || {hot:0, frio:0, mi_voto:0}, score = v.hot - v.frio, sc = score > 0 ? '+' + score : String(score);
   const conds = (c.condiciones || '').split(/\.\s+|\n/).filter(x => x.trim());
+  const dfoto = c.foto_v ? fotoDe(c) : '';
   $('d-body').innerHTML = `
+    ${dfoto ? `<div class="d-foto"><img src="${dfoto}" alt="${esc(c.titulo)}"></div>` : ''}
     <div class="d-head">
       <div class="d-badge"><span>${e.pre ? `<span class="s">${esc(e.pre)}</span><br>` : ''}<span class="b">${esc(e.big)}</span>${e.post ? `<br><span class="s">${esc(e.post)}</span>` : ''}</span></div>
       <div style="min-width:0">
@@ -864,6 +910,16 @@ async function abrir(id){
   }, 4000);
 }
 
+async function limpiarCodigos(b){
+  b.disabled = true; b.textContent = 'Limpiando…';
+  try{
+    await rpc('tc_limpiar_codigos');
+    await cargarMios(); cerrar('sheet-limpiar'); render();
+    toast('Listo, tu lista de códigos quedó vacía.');
+  }catch(e){ toast(e.message); }
+  finally{ b.disabled = false; b.textContent = 'Sí, limpiar códigos'; }
+}
+
 // ---------- Clics ----------
 document.addEventListener('click', ev => {
   if($('app').hidden) return;
@@ -877,6 +933,8 @@ document.addEventListener('click', ev => {
   if((b = t('[data-local]'))){ cerrar('sheet-det'); ir('local', {local: +b.dataset.local}); return; }
   if((b = t('[data-rubro]'))){ ir('rubro', {rubro: b.dataset.rubro}); return; }
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
+  if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
+  if((b = t('#lp-ok'))){ limpiarCodigos(b); return; }
   if(t('[data-back]')){ volver(); return; }
   if((b = t('[data-barrio]'))){ barrio = b.dataset.barrio; try{ localStorage.setItem('tucupon.barrio', barrio); }catch(e){} render(); return; }
   if((b = t('[data-filtro]'))){ filtro = b.dataset.filtro; pintarLocal(); return; }
