@@ -201,6 +201,24 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .con-foto .pill{background:rgba(15,5,35,.55);backdrop-filter:blur(4px)}
 .con-foto .cbtn{background:#C4F04A;color:#1E0B45}
 .con-foto .perf::before{opacity:.45}
+.pie{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);display:grid;gap:14px}
+.pie-ayuda{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 16px;transition:border-color .15s}
+.pie-ayuda:hover{border-color:var(--brand)}
+.pie-ayuda .ic{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--surface-2);font-size:1.3rem}
+.pie-ayuda b{display:block;color:var(--heading);font-size:.98rem;line-height:1.25}
+.pie-ayuda small{display:block;color:var(--muted);font-size:.82rem;margin-top:2px}
+.pie-links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;font-size:.85rem;font-weight:700}
+.pie-links a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.pie-links a:hover{color:var(--brand)}
+.rc-campos{display:grid;gap:14px;margin-top:16px}
+.rc-sel,.rc-txt{width:100%;border:2px solid var(--line);background:var(--surface-2);border-radius:14px;padding:11px 14px;font-size:1rem;outline:none;color:var(--ink)}
+.rc-sel:focus,.rc-txt:focus{border-color:var(--brand);background:var(--surface)}
+.rc-txt{min-height:96px;resize:vertical}
+.rc-motivos{border:0;margin:0;padding:0;min-width:0}
+#rc-motivos{display:grid;gap:8px}
+.rc-op{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;font-weight:600;font-size:.92rem}
+.rc-op input{accent-color:var(--brand);width:18px;height:18px;flex:none;margin:0}
+.rc-op:has(input:checked){border-color:var(--brand);background:var(--surface-2)}
 .d-foto{margin:0 0 16px;aspect-ratio:4/5;max-height:46dvh;width:100%;overflow:hidden;border-radius:20px;background:var(--surface-2)}
 .d-foto img{width:100%;height:100%;object-fit:cover;display:block}
 .t0{background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#fff}
@@ -354,6 +372,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
         <input id="su-pass2" class="field" type="password" autocomplete="new-password" placeholder="La misma contraseña"></div></div>
       <button class="btn" type="submit">Crear cuenta</button>
+      <p class="muted" style="font-size:.8rem;text-align:center">Al crear tu cuenta aceptás los <a class="link" href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a class="link" href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.</p>
     </form>
 
     <form id="v-forgot" class="form" novalidate hidden>
@@ -447,7 +466,6 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         </ol>
       </section>
       <p class="fine">Cada cupón se usa una vez por persona. Sujeto a disponibilidad de cada local.</p>
-      <p class="fine" style="margin-top:6px">¿Tenés un local adherido? <a href="local.html" class="link">Entrá a tu panel</a></p>
     </div>
 
     <!-- RUBRO / FAVORITOS -->
@@ -477,11 +495,39 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         <div id="local-rail" class="rail"></div>
       </section>
     </div>
+    <footer class="pie">
+      <button type="button" class="pie-ayuda" data-reclamo>
+        <span class="ic" aria-hidden="true">💬</span>
+        <span><b>¿Tuviste algún inconveniente con un descuento?</b><small>Contanos qué pasó y lo resolvemos con el local.</small></span>
+      </button>
+      <nav class="pie-links" aria-label="Información legal">
+        <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>
+        <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>
+        <a href="local.html">Soy un local adherido</a>
+      </nav>
+      <p class="fine" style="margin-top:10px">© Tucupón · Hecho en Tucumán</p>
+    </footer>
   </main>
 
   <!-- Hoja: detalle -->
   <div id="sheet-det" class="sheet-wrap" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="d-title"><div class="grip"></div><div id="d-body"></div></div>
+  </div>
+  <!-- Hoja: reclamo -->
+  <div id="sheet-reclamo" class="sheet-wrap" aria-hidden="true">
+    <form id="f-reclamo" class="sheet" role="dialog" aria-modal="true" aria-labelledby="rc-title" novalidate>
+      <div class="grip"></div>
+      <h3 id="rc-title" style="font-size:1.3rem;color:var(--heading)">¿Qué pasó con tu descuento?</h3>
+      <p class="muted" style="margin-top:6px;font-size:.9rem">Lo revisa el equipo de Tucupón y hablamos con el local. Te respondemos a <b id="rc-mail"></b>.</p>
+      <div id="rc-alert" class="alert" hidden></div>
+      <div class="rc-campos">
+        <div><label class="label" for="rc-local">Local</label><select id="rc-local" class="field rc-sel"></select></div>
+        <div><label class="label" for="rc-cupon">Cupón <span class="muted" style="font-weight:600">(si lo recordás)</span></label><select id="rc-cupon" class="field rc-sel"></select></div>
+        <fieldset class="rc-motivos"><legend class="label">Motivo</legend><div id="rc-motivos"></div></fieldset>
+        <div><label class="label" for="rc-coment">Comentarios</label><textarea id="rc-coment" class="field rc-txt" maxlength="1000" placeholder="Contanos qué pasó: día, hora aproximada, qué te dijeron…"></textarea></div>
+      </div>
+      <div class="act"><button type="submit" class="main">Enviar</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
+    </form>
   </div>
   <!-- Hoja: limpiar códigos -->
   <div id="sheet-limpiar" class="sheet-wrap" aria-hidden="true">
@@ -995,6 +1041,50 @@ async function limpiarCodigos(b){
   finally{ b.disabled = false; b.textContent = 'Sí, limpiar códigos'; }
 }
 
+// ---------- Reclamos ----------
+const MOTIVOS = [
+  'No me aceptaron el código',
+  'No me aplicaron el descuento completo',
+  'Me dijeron que el código ya estaba usado',
+  'El local estaba cerrado en el horario del cupón',
+  'La promo no era como estaba publicada',
+  'Me cobraron algo que no correspondía',
+  'Otro',
+];
+function abrirReclamo(){
+  $('rc-mail').textContent = email; $('rc-alert').hidden = true; $('rc-coment').value = '';
+  $('rc-motivos').innerHTML = MOTIVOS.map((m, i) => `<label class="rc-op"><input type="radio" name="rc-motivo" value="${esc(m)}" id="rc-m${i}">${esc(m)}</label>`).join('');
+  // Primero los locales donde el cliente tiene códigos
+  const conCodigo = new Set(CUPONES.filter(c => mios[c.id]).map(c => c.local));
+  const ls = LOCALES.slice().sort((a, b) => conCodigo.has(b.id) - conCodigo.has(a.id) || a.nombre.localeCompare(b.nombre, 'es'));
+  $('rc-local').innerHTML = '<option value="">Elegí el local</option>' + ls.map(l => `<option value="${l.id}">${esc(l.nombre)}${conCodigo.has(l.id) ? ' · tenés un código' : ''}</option>`).join('');
+  if(vista === 'local' && localSel) $('rc-local').value = String(localSel);
+  pintarCuponesReclamo();
+  abrirHoja('sheet-reclamo');
+}
+function pintarCuponesReclamo(){
+  const id = +$('rc-local').value, cs = CUPONES.filter(c => c.local === id);
+  $('rc-cupon').innerHTML = '<option value="">No lo recuerdo / otro</option>' + cs.map(c => `<option value="${c.id}">${esc(c.etiqueta)} · ${esc(c.titulo)}${mios[c.id] ? ' · código ' + esc(mios[c.id].codigo) : ''}</option>`).join('');
+  const mio = cs.find(c => mios[c.id]); if(mio) $('rc-cupon').value = String(mio.id);
+  $('rc-cupon').disabled = !id;
+}
+$('rc-local').addEventListener('change', pintarCuponesReclamo);
+$('f-reclamo').addEventListener('submit', async e => {
+  e.preventDefault();
+  const al = $('rc-alert'), motivo = (document.querySelector('[name=rc-motivo]:checked') || {}).value, local = +$('rc-local').value, com = $('rc-coment').value.trim();
+  const err = m => { al.textContent = m; al.hidden = false; al.scrollIntoView({block: 'nearest'}); };
+  if(!local) return err('Elegí el local.');
+  if(!motivo) return err('Elegí qué pasó.');
+  if(motivo === 'Otro' && com.length < 5) return err('Contanos brevemente qué pasó.');
+  al.hidden = true;
+  const b = e.target.querySelector('.main'); b.disabled = true; b.textContent = 'Enviando…';
+  try{
+    await rpc('tc_enviar_reclamo', {p_local_id: local, p_cupon_id: +$('rc-cupon').value || null, p_motivo: motivo, p_comentario: com});
+    cerrar('sheet-reclamo'); toast('¡Gracias! Recibimos tu consulta y te vamos a escribir por email.');
+  }catch(x){ err(x.message); }
+  finally{ b.disabled = false; b.textContent = 'Enviar'; }
+});
+
 // ---------- Clics ----------
 document.addEventListener('click', ev => {
   if($('app').hidden) return;
@@ -1009,6 +1099,7 @@ document.addEventListener('click', ev => {
   if((b = t('[data-rubro]'))){ ir('rubro', {rubro: b.dataset.rubro}); return; }
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
   if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
+  if(t('[data-reclamo]')){ abrirReclamo(); return; }
   if((b = t('#lp-ok'))){ limpiarCodigos(b); return; }
   if(t('[data-back]')){ volver(); return; }
   if((b = t('[data-barrio]'))){ barrio = b.dataset.barrio; try{ localStorage.setItem('tucupon.barrio', barrio); }catch(e){} render(); return; }
