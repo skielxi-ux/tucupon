@@ -165,6 +165,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .rel-box{border:2px dashed var(--brand);border-radius:16px;padding:14px;background:var(--surface-2)}
 .rel-box .switch{font-size:1.02rem}
 .chip.rel{background:#1E0B45;color:#C4F04A}
+.badge-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--hot);color:#fff;font-size:.72rem;font-weight:800;margin-left:4px}
+a.btn{text-decoration:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -191,6 +193,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
       <button type="button" class="tab" role="tab" data-tab="numeros" aria-selected="true">Números</button>
       <button type="button" class="tab" role="tab" data-tab="locales" aria-selected="false">Locales</button>
       <button type="button" class="tab" role="tab" data-tab="rubros" aria-selected="false">Rubros</button>
+      <button type="button" class="tab" role="tab" data-tab="reclamos" aria-selected="false">Reclamos <span id="rec-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="canjes" aria-selected="false">Canjes</button>
       <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
     </nav>
@@ -230,6 +233,18 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
     </section>
 
     <!-- Canjes -->
+    <!-- Reclamos -->
+    <section id="t-reclamos" class="panel" hidden>
+      <div class="row"><h2 class="grow">Reclamos de clientes</h2></div>
+      <div class="row" role="group" aria-label="Filtrar reclamos" style="gap:6px">
+        <button type="button" class="tab" data-rest="nuevo" aria-selected="true">Nuevos</button>
+        <button type="button" class="tab" data-rest="en_curso" aria-selected="false">En curso</button>
+        <button type="button" class="tab" data-rest="resuelto" aria-selected="false">Resueltos</button>
+        <button type="button" class="tab" data-rest="" aria-selected="false">Todos</button>
+      </div>
+      <div id="rec-lista" style="display:grid;gap:12px"></div>
+    </section>
+
     <section id="t-canjes" class="panel" hidden>
       <div class="card grid2">
         <div><label class="label" for="cj-desde">Desde</label><input id="cj-desde" class="field" type="date"></div>
@@ -274,6 +289,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
         <div data-otro hidden style="margin-top:8px"><label class="label" for="lo-barrio-otro">¿Qué barrio?</label><input id="lo-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
     </div>
     <div><label class="label" for="lo-dir">Dirección</label><input id="lo-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+    <div><label class="label" for="lo-tel">Teléfono / WhatsApp de contacto</label><input id="lo-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">Solo lo ves vos, para resolver reclamos.</p></div>
     <div><label class="label" for="lo-horario">Horario del local</label><input id="lo-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
     <div class="grid2">
       <div><label class="label" for="lo-color">Color de fondo (si no tiene logo)</label><input id="lo-color" class="field" type="color" style="height:48px;padding:4px"></div>
@@ -734,13 +750,13 @@ $('btn-salir').addEventListener('click', () => salir());
 function manejarError(err){ if(/PIN incorrecto/i.test(err.message)) return salir('Tu sesión venció. Ingresá de nuevo.'); toast(err.message); }
 
 async function recargar(){
-  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarFiltros(); pintarTab(); cargarLogosAdmin(); }
+  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarBadge(D.reclamos_nuevos); pintarFiltros(); pintarTab(); cargarLogosAdmin(); }
   catch(err){ manejarError(err); }
 }
 function tab(t){
   tabActual = t;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['numeros', 'locales', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['numeros', 'locales', 'reclamos', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   pintarTab();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -748,6 +764,7 @@ function pintarTab(){
   if(tabActual === 'numeros') cargarKpis();
   if(tabActual === 'locales') pintarLocales();
   if(tabActual === 'rubros') pintarRubros();
+  if(tabActual === 'reclamos') cargarReclamos();
   if(tabActual === 'canjes'){ if(!$('cj-desde').value){ $('cj-desde').value = $('cj-hasta').value = hoyISO(); } cargarCanjes(); }
 }
 function pintarFiltros(){
@@ -782,7 +799,8 @@ function pintarLocales(){
     return `<div class="item">
       ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
       <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)} · ${esc(l.dir)}</p>
-        <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Activo' : 'Pausado'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} ${n === 1 ? 'cupón activo' : 'cupones activos'} · ${l.pedidos} pedidos · ${l.usados} canjes</p>
+        <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Activo' : 'Pausado'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} ${n === 1 ? 'cupón activo' : 'cupones activos'} · ${l.pedidos} pedidos · ${l.usados} canjes${l.reclamos ? ` · <b style="color:var(--hot)">${l.reclamos} ${l.reclamos === 1 ? 'reclamo' : 'reclamos'}</b>` : ''}</p>
+        <p class="s">${l.telefono ? '📞 ' + esc(l.telefono) : '<span style="color:var(--warn)">Sin teléfono cargado</span>'}</p>
         ${!l.activo && l.motivo_pausa ? `<p class="s" style="color:var(--hot)"><b>Motivo:</b> ${esc(l.motivo_pausa)}</p>` : ''}</div>
       <div class="acts">
         <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
@@ -815,7 +833,7 @@ function abrirLocal(l){
   localEdit = l ? l.id : null;
   $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
   $('lo-nombre').value = l ? l.nombre : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
-  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-horario').value = l ? l.horario : '';
+  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-horario').value = l ? l.horario : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
   logoOrig = l ? (LOGOS[l.id] || null) : null; logoNuevo = undefined; pintarLogoLocal();
   $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
   abrirHoja('sheet-local'); setTimeout(() => $('lo-nombre').focus(), 250);
@@ -825,7 +843,7 @@ unirBarrio($('lo-barrio'), $('lo-barrio-otro'));
 $('f-local').addEventListener('submit', async e => {
   e.preventDefault(); $('lo-alert').hidden = true;
   const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), rubro: $('lo-rubro').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
-    horario: $('lo-horario').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
+    horario: $('lo-horario').value.trim(), telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
     try{
@@ -861,6 +879,53 @@ $('loc-lista').addEventListener('click', e => {
 });
 
 // ---------- Cupones ----------
+// ---------- Reclamos ----------
+let recFiltro = 'nuevo', RECLAMOS = [];
+const MOTIVO_ESTADO = {nuevo: ['Nuevo', 'off'], en_curso: ['En curso', ''], resuelto: ['Resuelto', 'ok']};
+function pintarBadge(n){ const b = $('rec-badge'); b.hidden = !n; b.textContent = n; }
+async function cargarReclamos(){
+  $$('[data-rest]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.rest === recFiltro)));
+  $('rec-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{
+    const r = await rpc('tc_admin_reclamos', {p_pin: pin, p_estado: recFiltro || null});
+    RECLAMOS = r.lista; pintarBadge(r.nuevos);
+    $('rec-lista').innerHTML = RECLAMOS.length ? RECLAMOS.map(tarjetaReclamo).join('')
+      : `<div class="empty">${recFiltro === 'nuevo' ? '¡Sin reclamos nuevos! 🎉' : 'No hay reclamos en esta lista.'}</div>`;
+  }catch(err){ manejarError(err); }
+}
+function tarjetaReclamo(r){
+  const [et, cl] = MOTIVO_ESTADO[r.estado], tel = (r.local_tel || '').replace(/[^\d]/g, '');
+  const canje = r.codigo ? `Código <b class="mono">${esc(r.codigo)}</b> · ${r.canje_estado === 'usado' ? `el local lo canjeó el ${esc(fecha(r.canje_usado_en))}` : r.canje_estado === 'pendiente' ? 'el local no lo canjeó' : 'código borrado'}` : 'Sin código asociado';
+  return `<article class="card" style="display:grid;gap:10px">
+    <div class="row"><span class="chip ${cl}">${et}</span><span class="muted grow" style="font-size:.82rem">${esc(fecha(r.creado))} · #${r.id}</span></div>
+    <p style="font-weight:800;font-size:1.05rem;color:var(--heading)">${esc(r.motivo)}</p>
+    ${r.comentario ? `<p style="white-space:pre-wrap;background:var(--surface-2);border-radius:12px;padding:10px 12px">${esc(r.comentario)}</p>` : ''}
+    <div class="grid2" style="font-size:.88rem">
+      <div><p class="label" style="margin-bottom:2px">Cliente</p><p class="mono" style="font-size:.82rem;overflow-wrap:anywhere">${esc(r.email)}</p></div>
+      <div><p class="label" style="margin-bottom:2px">Local</p><p><b>${esc(r.local || '(borrado)')}</b>${r.local_dir ? ` · ${esc(r.local_dir)}, ${esc(r.local_barrio)}` : ''}</p>
+        <p>${r.local_tel ? `📞 <span class="mono">${esc(r.local_tel)}</span>${tel ? ` · <a class="link" href="tel:${esc(tel)}">Llamar</a>` : ''}` : '<span style="color:var(--warn)">El local no cargó teléfono</span>'}</p>
+        ${r.reclamos_local > 1 ? `<p style="color:var(--hot);font-weight:700">${r.reclamos_local} reclamos en total sobre este local</p>` : ''}</div>
+    </div>
+    <p class="s muted" style="font-size:.85rem">${r.cupon ? `Cupón: <b>${esc(r.cupon)}</b> · ` : ''}${canje}</p>
+    <div><label class="label" for="rn-${r.id}">Nota interna</label><textarea id="rn-${r.id}" class="field" style="min-height:60px" maxlength="1000" placeholder="Qué hablaste con el local, cómo se resolvió…">${esc(r.nota)}</textarea></div>
+    <div class="acts">
+      <a class="btn ghost sm" href="mailto:${esc(r.email)}?subject=${encodeURIComponent('Tu consulta en Tucupón #' + r.id)}">Escribir al cliente</a>
+      ${r.estado !== 'en_curso' ? `<button type="button" class="btn ghost sm" data-rec="${r.id}" data-est="en_curso">Marcar en curso</button>` : ''}
+      ${r.estado !== 'resuelto' ? `<button type="button" class="btn lima sm" data-rec="${r.id}" data-est="resuelto">Marcar resuelto</button>` : `<button type="button" class="btn ghost sm" data-rec="${r.id}" data-est="en_curso">Reabrir</button>`}
+      <button type="button" class="btn ghost sm" data-rec="${r.id}" data-est="${r.estado}">Guardar nota</button>
+    </div>
+  </article>`;
+}
+$$('[data-rest]').forEach(b => b.addEventListener('click', () => { recFiltro = b.dataset.rest; cargarReclamos(); }));
+$('rec-lista').addEventListener('click', async e => {
+  const b = e.target.closest('[data-rec]'); if(!b) return;
+  const id = +b.dataset.rec, est = b.dataset.est;
+  await conBoton(b, async () => {
+    try{ await rpc('tc_admin_reclamo_estado', {p_pin: pin, p_id: id, p_estado: est, p_nota: $('rn-' + id).value}); toast(est === 'resuelto' ? 'Reclamo resuelto ✓' : 'Guardado'); cargarReclamos(); }
+    catch(err){ manejarError(err); }
+  });
+});
+
 // ---------- Pausar / reactivar local ----------
 let pausando = null;
 function abrirPausa(l){
