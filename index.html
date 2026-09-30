@@ -78,6 +78,12 @@ p{margin:0}
 .link{font-weight:700;color:var(--brand);text-decoration:underline;text-underline-offset:4px}
 .alert{display:flex;gap:10px;margin-top:18px;border-radius:16px;padding:12px 14px;font-size:.9rem;font-weight:600;background:var(--hot-bg);color:var(--hot)}
 .alert.ok{background:var(--ok-bg);color:var(--ok)}
+.sumar-local{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px 16px;border-radius:18px;border:2px dashed var(--line);text-decoration:none;color:var(--ink);transition:border-color .15s,background .15s}
+.sumar-local:hover{border-color:#25D366;background:var(--surface-2)}
+.sumar-local .ic{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#25D366;color:#fff}
+.sumar-local .ic svg{width:24px;height:24px}
+.sumar-local b{display:block;color:var(--heading);font-size:1rem}
+.sumar-local small{display:block;color:var(--muted);font-size:.82rem;margin-top:1px}
 .demo-note{margin-top:14px;font-size:.78rem;color:var(--muted);text-align:center}
 
 /* ---------- Encabezado ---------- */
@@ -405,6 +411,10 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <button class="btn" type="submit">Guardar contraseña</button>
     </form>
     <p class="demo-note">Usamos tu email solo para tu cuenta y tus cupones.</p>
+    <a class="sumar-local" href="https://wa.me/5493816335234?text=Hola%20Tucupon%2C%20quiero%20solicitar%20informaci%C3%B3n%20para%20sumarme%20como%20local%20adherido%20al%20sistema." target="_blank" rel="noopener">
+      <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg></span>
+      <span><b>Quiero sumar mi local</b><small>Escribinos por WhatsApp y te contamos cómo adherirte</small></span>
+    </a>
   </div>
 </section>
 
