@@ -106,7 +106,7 @@ textarea.field{min-height:84px;resize:vertical}
 .item .t{font-weight:800;line-height:1.25}
 .item .s{font-size:.82rem;color:var(--muted);margin-top:2px}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(6.5rem,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
 .stat b{display:block;font:800 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
 .stat span{font-size:.82rem;color:var(--muted);font-weight:700}
@@ -203,6 +203,18 @@ a.btn{text-decoration:none}
 .kp-ley .n1{background:#DDD0FF}.kp-ley .n2{background:#B794FF}.kp-ley .n3{background:#8A5CF0}.kp-ley .n4{background:#4F1BB5}
 .kp-ley .promo-i{background:var(--surface-2);border:2px solid #9BD12A}
 @media (max-width:420px){.kp-card b{font-size:1.6rem}.kp-card{padding:12px}}
+.alta-edit{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:12px}
+.alta-edit .btn{height:48px}
+.btn.wa{background:#25D366;color:#fff;flex:none}
+.btn.wa svg{margin-right:2px}
+@media (max-width:460px){.alta-edit{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}.alta-edit input[type=date]{padding-inline:10px}.alta-edit .btn{grid-column:1/-1;height:auto}}
+#al-lista,#rec-lista,#ref-lista{grid-template-columns:minmax(0,1fr)}
+.card{min-width:0}
+.alta .item{flex-wrap:wrap}
+.alta .item .grow{flex:1 1 10rem}
+.alta-edit .field{min-width:0;width:100%}
+.req{color:var(--hot);font-weight:800}
+.field[aria-invalid="true"]{border-color:var(--hot)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -229,6 +241,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="numeros" aria-selected="true">Números</button>
       <button type="button" class="tab" role="tab" data-tab="locales" aria-selected="false">Locales</button>
       <button type="button" class="tab" role="tab" data-tab="rubros" aria-selected="false">Rubros</button>
+      <button type="button" class="tab" role="tab" data-tab="altas" aria-selected="false">Alta <span id="alta-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="reclamos" aria-selected="false">Reclamos <span id="rec-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="referidos" aria-selected="false">Referidos <span id="ref-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="canjes" aria-selected="false">Canjes</button>
@@ -282,6 +295,23 @@ a.btn{text-decoration:none}
       <div id="rec-lista" style="display:grid;gap:12px"></div>
     </section>
 
+    <!-- Alta -->
+    <section id="t-altas" class="panel" hidden>
+      <div><h2>Alta de locales</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Fecha de alta y meses gratis de cada local, para saber cuándo empieza a pagar.</p></div>
+      <div class="stats">
+        <div class="stat"><b id="al-gratis">–</b><span>En período gratis</span></div>
+        <div class="stat"><b id="al-pronto" style="color:var(--warn)">–</b><span>Vence en 15 días o menos</span></div>
+        <div class="stat"><b id="al-pagan" style="color:var(--hot)">–</b><span>Ya deben pagar</span></div>
+      </div>
+      <div class="row" role="group" aria-label="Filtrar" style="gap:6px">
+        <button type="button" class="tab" data-alf="" aria-selected="true">Todos</button>
+        <button type="button" class="tab" data-alf="pronto" aria-selected="false">Vencen pronto</button>
+        <button type="button" class="tab" data-alf="paga" aria-selected="false">Deben pagar</button>
+        <button type="button" class="tab" data-alf="gratis" aria-selected="false">Gratis</button>
+      </div>
+      <div id="al-lista" style="display:grid;gap:10px"></div>
+    </section>
+
     <!-- Referidos -->
     <section id="t-referidos" class="panel" hidden>
       <div class="row"><h2 class="grow">Locales referidos</h2></div>
@@ -332,7 +362,10 @@ a.btn{text-decoration:none}
         <div style="display:grid;gap:8px"><label class="btn ghost sm file-btn">Subir logo<input id="lo-file" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="lo-quitar" class="btn ghost sm">Quitar logo</button></div></div>
       <p class="hint"><b>Ideal: 512 × 512 px, cuadrado.</b> El local también puede cargarlo desde su panel, en “Mi perfil”.</p>
     </div>
-    <div><label class="label" for="lo-nombre">Nombre</label><input id="lo-nombre" class="field" maxlength="60"></div>
+    <div class="grid2">
+      <div><label class="label" for="lo-nombre">Nombre del local</label><input id="lo-nombre" class="field" maxlength="60"></div>
+      <div><label class="label" for="lo-resp">Nombre y Apellido del responsable</label><input id="lo-resp" class="field" maxlength="80"></div>
+    </div>
     <div class="grid2">
       <div><label class="label" for="lo-rubro">Rubro</label><select id="lo-rubro" class="field"></select></div>
       <div><label class="label" for="lo-barrio">Barrio</label><select id="lo-barrio" class="field"></select>
@@ -800,13 +833,13 @@ $('btn-salir').addEventListener('click', () => salir());
 function manejarError(err){ if(/PIN incorrecto/i.test(err.message)) return salir('Tu sesión venció. Ingresá de nuevo.'); toast(err.message); }
 
 async function recargar(){
-  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarBadge(D.reclamos_nuevos); pintarBadgeRef(D.referidos_nuevos); pintarFiltros(); pintarTab(); cargarLogosAdmin(); }
+  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarBadge(D.reclamos_nuevos); pintarBadgeRef(D.referidos_nuevos); if(tabActual !== 'altas') cargarAltas(true); pintarFiltros(); pintarTab(); cargarLogosAdmin(); }
   catch(err){ manejarError(err); }
 }
 function tab(t){
   tabActual = t;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['numeros', 'locales', 'reclamos', 'referidos', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['numeros', 'locales', 'altas', 'reclamos', 'referidos', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   pintarTab();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -814,6 +847,7 @@ function pintarTab(){
   if(tabActual === 'numeros') cargarKpis();
   if(tabActual === 'locales') pintarLocales();
   if(tabActual === 'rubros') pintarRubros();
+  if(tabActual === 'altas') cargarAltas();
   if(tabActual === 'reclamos') cargarReclamos();
   if(tabActual === 'referidos') cargarReferidos();
   if(tabActual === 'canjes'){ if(!$('cj-desde').value){ $('cj-desde').value = $('cj-hasta').value = hoyISO(); } cargarCanjes(); }
@@ -851,7 +885,7 @@ function pintarLocales(){
       ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
       <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)} · ${esc(l.dir)}</p>
         <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Activo' : 'Pausado'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} ${n === 1 ? 'cupón activo' : 'cupones activos'} · ${l.pedidos} pedidos · ${l.usados} canjes${l.reclamos ? ` · <b style="color:var(--hot)">${l.reclamos} ${l.reclamos === 1 ? 'reclamo' : 'reclamos'}</b>` : ''}</p>
-        <p class="s">${l.telefono ? '📞 ' + esc(l.telefono) : '<span style="color:var(--warn)">Sin teléfono cargado</span>'}</p>
+        <p class="s">${l.responsable ? '👤 ' + esc(l.responsable) + ' · ' : ''}${l.telefono ? '📞 ' + esc(l.telefono) : '<span style="color:var(--warn)">Sin teléfono cargado</span>'}</p>
         ${!l.activo && l.motivo_pausa ? `<p class="s" style="color:var(--hot)"><b>Motivo:</b> ${esc(l.motivo_pausa)}</p>` : ''}</div>
       <div class="acts">
         <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
@@ -883,7 +917,7 @@ async function cargarLogosAdmin(){
 function abrirLocal(l){
   localEdit = l ? l.id : null;
   $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
-  $('lo-nombre').value = l ? l.nombre : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
+  $('lo-nombre').value = l ? l.nombre : ''; $('lo-resp').value = l ? (l.responsable || '') : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
   ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
   logoOrig = l ? (LOGOS[l.id] || null) : null; logoNuevo = undefined; pintarLogoLocal();
   $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
@@ -893,7 +927,7 @@ $('btn-nuevo-local').addEventListener('click', () => abrirLocal(null));
 unirBarrio($('lo-barrio'), $('lo-barrio-otro'));
 $('f-local').addEventListener('submit', async e => {
   e.preventDefault(); $('lo-alert').hidden = true;
-  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), rubro: $('lo-rubro').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
+  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), responsable: $('lo-resp').value.trim(), rubro: $('lo-rubro').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
     telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
@@ -973,6 +1007,69 @@ $('rec-lista').addEventListener('click', async e => {
   const id = +b.dataset.rec, est = b.dataset.est;
   await conBoton(b, async () => {
     try{ await rpc('tc_admin_reclamo_estado', {p_pin: pin, p_id: id, p_estado: est, p_nota: $('rn-' + id).value}); toast(est === 'resuelto' ? 'Reclamo resuelto ✓' : 'Guardado'); cargarReclamos(); }
+    catch(err){ manejarError(err); }
+  });
+});
+
+// ---------- Alta ----------
+let ALTAS = [], alFiltro = '';
+const WA_ICO = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>';
+function diasHasta(iso){ return Math.round((new Date(iso + 'T00:00:00') - new Date(hoyISO() + 'T00:00:00')) / 864e5); }
+function estadoAlta(l){ const d = diasHasta(l.fin_gratis); return d < 0 ? 'paga' : d <= 15 ? 'pronto' : 'gratis'; }
+function sumarMeses(iso, m){ const [y, mo, d] = iso.split('-').map(Number); const f = new Date(Date.UTC(y, mo - 1 + m, d)); if(f.getUTCDate() !== d) f.setUTCDate(0); return f.toISOString().slice(0, 10); }
+// Número de WhatsApp: agrega 549 si es un celular argentino cargado sin código de país
+function waNumero(tel){
+  let n = String(tel || '').replace(/\D/g, '');
+  if(!n) return '';
+  if(n.startsWith('0')) n = n.slice(1);
+  if(n.startsWith('54')) return n.startsWith('549') ? n : '549' + n.slice(2);
+  if(n.length === 12) n = n.replace(/^(\d{2,4})15/, '$1');   // quita el 15 del celular (área + 15 + número)
+  return '549' + n;
+}
+async function cargarAltas(soloBadge){
+  try{ ALTAS = await rpc('tc_admin_altas', {p_pin: pin}); }catch(err){ return manejarError(err); }
+  const pronto = ALTAS.filter(l => estadoAlta(l) === 'pronto').length, paga = ALTAS.filter(l => estadoAlta(l) === 'paga').length;
+  const b = $('alta-badge'); b.hidden = !(pronto + paga); b.textContent = pronto + paga;
+  if(soloBadge) return;
+  $('al-gratis').textContent = ALTAS.filter(l => estadoAlta(l) === 'gratis').length; $('al-pronto').textContent = pronto; $('al-pagan').textContent = paga;
+  pintarAltas();
+}
+function pintarAltas(){
+  $$('[data-alf]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.alf === alFiltro)));
+  const ls = ALTAS.filter(l => !alFiltro || estadoAlta(l) === alFiltro);
+  $('al-lista').innerHTML = ls.length ? ls.map(l => {
+    const est = estadoAlta(l), d = diasHasta(l.fin_gratis), wa = waNumero(l.telefono);
+    const chip = est === 'paga' ? `<span class="chip off">Debe pagar desde el ${fechaCorta(l.fin_gratis)}</span>`
+      : est === 'pronto' ? `<span class="chip" style="background:var(--warn-bg);color:var(--warn)">Gratis ${d === 0 ? 'hasta hoy' : d === 1 ? '1 día más' : d + ' días más'}</span>`
+      : `<span class="chip ok">Gratis hasta el ${fechaCorta(l.fin_gratis)}</span>`;
+    return `<article class="card alta" data-al="${l.id}">
+      <div class="item" style="padding:0;border:0">
+        ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
+        <div class="grow"><p class="t">${esc(l.nombre)}${l.activo ? '' : ' <span class="chip off">Pausado</span>'}</p><p class="s">${esc(l.barrio)}${l.responsable ? ' · 👤 ' + esc(l.responsable) : ''}${l.telefono ? ' · 📞 ' + esc(l.telefono) : ''}</p><p class="s" style="margin-top:4px">${chip}</p></div>
+        ${wa ? `<a class="btn sm wa" href="https://wa.me/${wa}" target="_blank" rel="noopener" aria-label="WhatsApp a ${esc(l.responsable || l.nombre)}">${WA_ICO}WhatsApp</a>` : '<span class="chip" style="color:var(--warn)">Sin teléfono</span>'}
+      </div>
+      <div class="alta-edit">
+        <div><label class="label" for="al-f-${l.id}">Fecha de alta</label><input id="al-f-${l.id}" class="field" type="date" value="${esc(l.fecha_alta)}"></div>
+        <div><label class="label" for="al-m-${l.id}">Meses gratis</label><input id="al-m-${l.id}" class="field" type="number" min="0" max="36" step="1" inputmode="numeric" value="${l.meses_gratis}"></div>
+        <button type="button" class="btn sm" data-alsave="${l.id}">Guardar</button>
+      </div>
+      <p class="hint" id="al-h-${l.id}">Empieza a pagar el <b>${fechaCorta(l.fin_gratis)}</b>.</p>
+    </article>`;
+  }).join('') : '<div class="empty">No hay locales en esta lista.</div>';
+}
+$$('[data-alf]').forEach(b => b.addEventListener('click', () => { alFiltro = b.dataset.alf; pintarAltas(); }));
+$('al-lista').addEventListener('input', e => {
+  const card = e.target.closest('[data-al]'); if(!card) return;
+  const id = card.dataset.al, f = $('al-f-' + id).value, m = parseInt($('al-m-' + id).value, 10);
+  if(f && m >= 0 && m <= 36) $('al-h-' + id).innerHTML = `Empieza a pagar el <b>${fechaCorta(sumarMeses(f, m))}</b>. Tocá Guardar para confirmar.`;
+});
+$('al-lista').addEventListener('click', async e => {
+  const b = e.target.closest('[data-alsave]'); if(!b) return;
+  const id = +b.dataset.alsave, f = $('al-f-' + id).value, m = parseInt($('al-m-' + id).value, 10);
+  if(!f) return toast('Poné la fecha de alta.');
+  if(!(m >= 0 && m <= 36)) return toast('Los meses gratis van de 0 a 36.');
+  await conBoton(b, async () => {
+    try{ await rpc('tc_admin_guardar_alta', {p_pin: pin, p_local_id: id, p_fecha: f, p_meses: m}); toast('Guardado'); cargarAltas(); }
     catch(err){ manejarError(err); }
   });
 });

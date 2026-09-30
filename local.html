@@ -106,7 +106,7 @@ textarea.field{min-height:84px;resize:vertical}
 .item .t{font-weight:800;line-height:1.25}
 .item .s{font-size:.82rem;color:var(--muted);margin-top:2px}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(6.5rem,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
 .stat b{display:block;font:800 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
 .stat span{font-size:.82rem;color:var(--muted);font-weight:700}
@@ -203,6 +203,18 @@ a.btn{text-decoration:none}
 .kp-ley .n1{background:#DDD0FF}.kp-ley .n2{background:#B794FF}.kp-ley .n3{background:#8A5CF0}.kp-ley .n4{background:#4F1BB5}
 .kp-ley .promo-i{background:var(--surface-2);border:2px solid #9BD12A}
 @media (max-width:420px){.kp-card b{font-size:1.6rem}.kp-card{padding:12px}}
+.alta-edit{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:12px}
+.alta-edit .btn{height:48px}
+.btn.wa{background:#25D366;color:#fff;flex:none}
+.btn.wa svg{margin-right:2px}
+@media (max-width:460px){.alta-edit{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}.alta-edit input[type=date]{padding-inline:10px}.alta-edit .btn{grid-column:1/-1;height:auto}}
+#al-lista,#rec-lista,#ref-lista{grid-template-columns:minmax(0,1fr)}
+.card{min-width:0}
+.alta .item{flex-wrap:wrap}
+.alta .item .grow{flex:1 1 10rem}
+.alta-edit .field{min-width:0;width:100%}
+.req{color:var(--hot);font-weight:800}
+.field[aria-invalid="true"]{border-color:var(--hot)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -323,14 +335,18 @@ a.btn{text-decoration:none}
           </div>
           <p class="hint"><b>Ideal: 512 × 512 px, cuadrado.</b> Si tu logo tiene fondo de color, que llegue hasta los bordes. Si es transparente, dejale un pequeño margen.</p>
         </div>
-        <div><label class="label" for="pf-nombre">Nombre del local</label><input id="pf-nombre" class="field" maxlength="60"></div>
         <div class="grid2">
-          <div><label class="label" for="pf-barrio">Barrio</label><select id="pf-barrio" class="field"></select>
-            <div data-otro hidden style="margin-top:8px"><label class="label" for="pf-barrio-otro">¿Qué barrio?</label><input id="pf-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
-          <div><label class="label" for="pf-rubro">Rubro</label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
+          <div><label class="label" for="pf-nombre">Nombre del local <span class="req">*</span></label><input id="pf-nombre" class="field" maxlength="60" required></div>
+          <div><label class="label" for="pf-resp">Nombre y Apellido <span class="req">*</span></label><input id="pf-resp" class="field" maxlength="80" autocomplete="name" placeholder="Quién maneja el local" required></div>
         </div>
-        <div><label class="label" for="pf-dir">Dirección</label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
-        <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto</label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
+        <div class="grid2">
+          <div><label class="label" for="pf-barrio">Barrio <span class="req">*</span></label><select id="pf-barrio" class="field"></select>
+            <div data-otro hidden style="margin-top:8px"><label class="label" for="pf-barrio-otro">¿Qué barrio?</label><input id="pf-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
+          <div><label class="label" for="pf-rubro">Rubro <span class="req">*</span></label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
+        </div>
+        <div><label class="label" for="pf-dir">Dirección <span class="req">*</span></label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+        <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto <span class="req">*</span></label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
+        <p class="hint" style="margin-top:-4px"><span class="req">*</span> Campos obligatorios</p>
         <button type="submit" class="btn full">Guardar perfil</button>
       </form>
     </section>
@@ -1059,7 +1075,7 @@ async function cargarPerfil(){
   avisoPerfil('');
   try{
     perfil = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); logoNuevo = undefined;
-    $('pf-nombre').value = perfil.nombre;
+    $('pf-nombre').value = perfil.nombre; $('pf-resp').value = perfil.responsable || '';
     ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio);
     $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
     $('pf-dir').value = perfil.dir; $('pf-tel').value = perfil.telefono || '';
@@ -1077,10 +1093,15 @@ $('pf-file').addEventListener('change', async e => {
 $('pf-quitar').addEventListener('click', () => { logoNuevo = null; pintarLogoPerfil(); avisoPerfil('Tocá “Guardar perfil” para quitar el logo.', true); });
 $('f-perfil').addEventListener('submit', async e => {
   e.preventDefault(); avisoPerfil('');
-  const datos = {nombre: $('pf-nombre').value.trim(), barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), telefono: $('pf-tel').value.trim()};
-  if(!datos.nombre) return avisoPerfil('Poné el nombre del local.');
-  if(!datos.barrio) return avisoPerfil($('pf-barrio').value === '__otro' ? 'Escribí el nombre del barrio.' : 'Elegí el barrio.');
-  if(!datos.dir) return avisoPerfil('Poné la dirección.');
+  const datos = {nombre: $('pf-nombre').value.trim(), responsable: $('pf-resp').value.trim(), barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), telefono: $('pf-tel').value.trim()};
+  $$('#f-perfil .field').forEach(i => i.removeAttribute('aria-invalid'));
+  const falta = (m, id) => { avisoPerfil(m); if(id){ $(id).setAttribute('aria-invalid', 'true'); $(id).focus(); } };
+  if(!datos.nombre) return falta('Poné el nombre del local.', 'pf-nombre');
+  if(!datos.responsable) return falta('Poné tu nombre y apellido.', 'pf-resp');
+  if(!datos.barrio) return falta($('pf-barrio').value === '__otro' ? 'Escribí el nombre del barrio.' : 'Elegí el barrio.', $('pf-barrio').value === '__otro' ? 'pf-barrio-otro' : 'pf-barrio');
+  if(!datos.rubro) return falta('Elegí el rubro.', 'pf-rubro');
+  if(!datos.dir) return falta('Poné la dirección.', 'pf-dir');
+  if(datos.telefono.replace(/\D/g, '').length < 8) return falta('Poné un teléfono o WhatsApp con código de área.', 'pf-tel');
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
     try{
