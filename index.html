@@ -236,6 +236,8 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .cupon .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:4px 10px;font-size:.74rem;font-weight:800;background:rgba(0,0,0,.2)}
 .t2 .pill{background:rgba(0,0,0,.1)}
+.pill.p-ok,.con-foto .pill.p-ok{background:#D6F5E6;color:#0B5E40;backdrop-filter:none}
+.pill.p-off,.con-foto .pill.p-off{background:#FDE0E0;color:#B42323;backdrop-filter:none}
 .pill svg{width:13px;height:13px}
 .cupon .em{font-size:2.8rem;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2))}
 .cupon .de{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-weight:800;font-size:.9rem;opacity:.95;text-align:left}
@@ -761,7 +763,7 @@ function tarjeta(c, puesto){
     ${fondo}
     <div class="body">
       <div class="row">
-        <div style="display:flex;flex-wrap:wrap;gap:6px">${puesto ? `<span class="pill" style="background:rgba(255,255,255,.92);color:#1E0B45">#${puesto} más pedido</span>` : ''}${franja}${!rel && c.restringido ? (enHorario(c) ? '<span class="pill">● Disponible ahora</span>' : '<span class="pill">Fuera de horario</span>') : ''}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${puesto ? `<span class="pill" style="background:rgba(255,255,255,.92);color:#1E0B45">#${puesto} más pedido</span>` : ''}${franja}${!rel && c.restringido ? (enHorario(c) ? '<span class="pill p-ok">● Disponible ahora</span>' : '<span class="pill p-off">Fuera de horario</span>') : ''}</div>
         ${conFoto ? '' : `<span class="em" aria-hidden="true">${esc(c.icono)}</span>`}
       </div>
       ${vista !== 'local' ? `<button type="button" class="de" data-local="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)} ${FLECHA_S}</button>` : ''}
@@ -849,7 +851,7 @@ function pintarLocal(){
   const l = LOCALES.find(x => x.id === localSel); if(!l){ vista = 'home'; return render(true); }
   const r = rubroDe(l.rubro);
   $('ficha').innerHTML = `<div class="top">${logo(l)}<div style="min-width:0;flex:1"><p class="muted" style="font-size:.8rem;font-weight:800">${esc(r.icono)} ${esc(r.nombre)}</p><h2>${esc(l.nombre)}</h2></div>${favBtn(l)}</div>
-    <dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd>${l.horario ? `<dt>Horario</dt><dd>${esc(l.horario)}</dd>` : ''}</dl>`;
+    <dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`;
   const cs = l.cupones.slice().sort((a, b) => b.pedidos - a.pedidos), vis = filtro === 'ahora' ? cs.filter(enHorario) : cs;
   $('local-count').textContent = cs.length ? `${cs.length} ${cs.length === 1 ? 'cupón' : 'cupones'}` : '';
   $('local-filtros').hidden = !cs.length;
@@ -940,12 +942,11 @@ function verDetalle(id, soloPintar){
     </div>` : `<div class="box ${ya ? 'ok' : 'warn'}" style="margin-top:16px">
       <p class="k">${RELOJ} Cuándo se puede usar</p>
       <p class="v">${esc(c.horario)}</p>
-      <p class="v2">${!c.restringido ? 'Podés usarlo en cualquier momento del horario del local.' : ya ? 'Estás dentro del horario: podés usarlo ahora.' : 'Ahora está fuera de horario. Podés pedir el código igual y mostrarlo en esa franja.'}</p>
+      <p class="v2">${!c.restringido ? 'Podés usarlo cualquier día, mientras el local esté abierto.' : ya ? 'Estás dentro del horario: podés usarlo ahora.' : 'Ahora está fuera de horario. Podés pedir el código igual y mostrarlo en esa franja.'}</p>
     </div>`}
     <div class="box">
       <p class="k">Dónde</p>
       <p class="v" style="font-size:1rem">${esc(l.dir)}, ${esc(l.barrio)}</p>
-      ${l.horario ? `<p class="muted" style="font-size:.85rem;margin-top:2px">${esc(l.horario)}</p>` : ''}
     </div>
     <div class="box">
       <p class="k">Condiciones</p>
