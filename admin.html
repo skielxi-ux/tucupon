@@ -230,6 +230,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="locales" aria-selected="false">Locales</button>
       <button type="button" class="tab" role="tab" data-tab="rubros" aria-selected="false">Rubros</button>
       <button type="button" class="tab" role="tab" data-tab="reclamos" aria-selected="false">Reclamos <span id="rec-badge" class="badge-n" hidden></span></button>
+      <button type="button" class="tab" role="tab" data-tab="referidos" aria-selected="false">Referidos <span id="ref-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="canjes" aria-selected="false">Canjes</button>
       <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
     </nav>
@@ -279,6 +280,19 @@ a.btn{text-decoration:none}
         <button type="button" class="tab" data-rest="" aria-selected="false">Todos</button>
       </div>
       <div id="rec-lista" style="display:grid;gap:12px"></div>
+    </section>
+
+    <!-- Referidos -->
+    <section id="t-referidos" class="panel" hidden>
+      <div class="row"><h2 class="grow">Locales referidos</h2></div>
+      <div class="row" role="group" aria-label="Filtrar referidos" style="gap:6px">
+        <button type="button" class="tab" data-refest="nuevo" aria-selected="true">Nuevos</button>
+        <button type="button" class="tab" data-refest="contactado" aria-selected="false">Contactados</button>
+        <button type="button" class="tab" data-refest="sumado" aria-selected="false">Se sumaron</button>
+        <button type="button" class="tab" data-refest="no_interesa" aria-selected="false">No les interesó</button>
+        <button type="button" class="tab" data-refest="" aria-selected="false">Todos</button>
+      </div>
+      <div id="ref-lista" style="display:grid;gap:12px"></div>
     </section>
 
     <section id="t-canjes" class="panel" hidden>
@@ -786,13 +800,13 @@ $('btn-salir').addEventListener('click', () => salir());
 function manejarError(err){ if(/PIN incorrecto/i.test(err.message)) return salir('Tu sesión venció. Ingresá de nuevo.'); toast(err.message); }
 
 async function recargar(){
-  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarBadge(D.reclamos_nuevos); pintarFiltros(); pintarTab(); cargarLogosAdmin(); }
+  try{ D = await rpc('tc_admin_datos', {p_pin: pin}); pintarBadge(D.reclamos_nuevos); pintarBadgeRef(D.referidos_nuevos); pintarFiltros(); pintarTab(); cargarLogosAdmin(); }
   catch(err){ manejarError(err); }
 }
 function tab(t){
   tabActual = t;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['numeros', 'locales', 'reclamos', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['numeros', 'locales', 'reclamos', 'referidos', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   pintarTab();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -801,6 +815,7 @@ function pintarTab(){
   if(tabActual === 'locales') pintarLocales();
   if(tabActual === 'rubros') pintarRubros();
   if(tabActual === 'reclamos') cargarReclamos();
+  if(tabActual === 'referidos') cargarReferidos();
   if(tabActual === 'canjes'){ if(!$('cj-desde').value){ $('cj-desde').value = $('cj-hasta').value = hoyISO(); } cargarCanjes(); }
 }
 function pintarFiltros(){
@@ -958,6 +973,50 @@ $('rec-lista').addEventListener('click', async e => {
   const id = +b.dataset.rec, est = b.dataset.est;
   await conBoton(b, async () => {
     try{ await rpc('tc_admin_reclamo_estado', {p_pin: pin, p_id: id, p_estado: est, p_nota: $('rn-' + id).value}); toast(est === 'resuelto' ? 'Reclamo resuelto ✓' : 'Guardado'); cargarReclamos(); }
+    catch(err){ manejarError(err); }
+  });
+});
+
+// ---------- Referidos ----------
+let refFiltro = 'nuevo';
+const REF_ESTADO = {nuevo: ['Nuevo', 'off'], contactado: ['Contactado', ''], sumado: ['Se sumó', 'ok'], no_interesa: ['No le interesó', '']};
+function pintarBadgeRef(n){ const b = $('ref-badge'); b.hidden = !n; b.textContent = n; }
+async function cargarReferidos(){
+  $$('[data-refest]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.refest === refFiltro)));
+  $('ref-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{
+    const r = await rpc('tc_admin_referidos', {p_pin: pin, p_estado: refFiltro || null});
+    pintarBadgeRef(r.nuevos);
+    $('ref-lista').innerHTML = r.lista.length ? r.lista.map(tarjetaReferido).join('') : '<div class="empty">No hay referidos en esta lista.</div>';
+  }catch(err){ manejarError(err); }
+}
+function tarjetaReferido(r){
+  const [et, cl] = REF_ESTADO[r.estado], tel = (r.telefono || '').replace(/[^\d]/g, '');
+  const btn = (est, txt, clase = 'ghost') => r.estado === est ? '' : `<button type="button" class="btn ${clase} sm" data-ref="${r.id}" data-est="${est}">${txt}</button>`;
+  return `<article class="card" style="display:grid;gap:10px">
+    <div class="row"><span class="chip ${cl}">${et}</span><span class="muted grow" style="font-size:.82rem">${esc(fecha(r.creado))} · #${r.id}</span></div>
+    <p style="font-weight:800;font-size:1.1rem;color:var(--heading)">${esc(r.local)}${r.rubro ? ` <span class="chip" style="vertical-align:2px">${esc(r.rubro)}</span>` : ''}</p>
+    <div class="grid2" style="font-size:.9rem">
+      <div><p class="label" style="margin-bottom:2px">Contacto</p><p><b>${esc(r.contacto)}</b></p>
+        <p>📞 <span class="mono">${esc(r.telefono)}</span>${tel ? ` · <a class="link" href="tel:${esc(tel)}">Llamar</a>` : ''}</p></div>
+      <div><p class="label" style="margin-bottom:2px">Lo refirió</p><p><b>${esc(r.refiere || '(local borrado)')}</b>${r.refiere_barrio ? ` · ${esc(r.refiere_barrio)}` : ''}</p>
+        ${r.refiere_tel ? `<p class="muted">📞 ${esc(r.refiere_tel)}</p>` : ''}
+        ${r.refiere_total > 1 ? `<p style="color:var(--ok);font-weight:700">Ya refirió ${r.refiere_total} locales</p>` : ''}</div>
+    </div>
+    ${r.comentario ? `<p style="white-space:pre-wrap;background:var(--surface-2);border-radius:12px;padding:10px 12px">${esc(r.comentario)}</p>` : ''}
+    <div><label class="label" for="refn-${r.id}">Nota interna</label><textarea id="refn-${r.id}" class="field" style="min-height:56px" maxlength="1000" placeholder="Cuándo lo llamaste, qué te dijo…">${esc(r.nota)}</textarea></div>
+    <div class="acts">
+      ${btn('contactado', 'Marcar contactado')}${btn('sumado', 'Se sumó ✓', 'lima')}${btn('no_interesa', 'No le interesó')}
+      <button type="button" class="btn ghost sm" data-ref="${r.id}" data-est="${r.estado}">Guardar nota</button>
+    </div>
+  </article>`;
+}
+$$('[data-refest]').forEach(b => b.addEventListener('click', () => { refFiltro = b.dataset.refest; cargarReferidos(); }));
+$('ref-lista').addEventListener('click', async e => {
+  const b = e.target.closest('[data-ref]'); if(!b) return;
+  const id = +b.dataset.ref, est = b.dataset.est;
+  await conBoton(b, async () => {
+    try{ await rpc('tc_admin_referido_estado', {p_pin: pin, p_id: id, p_estado: est, p_nota: $('refn-' + id).value}); toast(est === 'sumado' ? '¡Genial, un local más! 🎉' : 'Guardado'); cargarReferidos(); }
     catch(err){ manejarError(err); }
   });
 });

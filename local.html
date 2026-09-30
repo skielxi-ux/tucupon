@@ -236,6 +236,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="kpis" aria-selected="false">KPIs</button>
       <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
       <button type="button" class="tab" role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
+      <button type="button" class="tab" role="tab" data-tab="referir" aria-selected="false">Referir</button>
       <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">PIN</button>
     </nav>
 
@@ -331,6 +332,28 @@ a.btn{text-decoration:none}
         <div><label class="label" for="pf-dir">Dirección</label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
         <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto</label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
         <button type="submit" class="btn full">Guardar perfil</button>
+      </form>
+    </section>
+
+    <!-- Referir -->
+    <section id="t-referir" class="panel" hidden>
+      <form id="f-ref" class="card" style="display:grid;gap:14px" novalidate>
+        <div>
+          <h2>Referí un local</h2>
+          <p class="muted" style="font-size:.92rem;margin-top:4px">¿Conocés un comercio gastronómico que le vendría bien estar en Tucupón? Dejanos sus datos y el equipo de Tucupón se contacta.</p>
+        </div>
+        <div id="rf-alert" class="alert" hidden></div>
+        <div class="grid2">
+          <div><label class="label" for="rf-local">Nombre del local</label><input id="rf-local" class="field" maxlength="80" placeholder="Ej.: Pizzería Don Pepe"></div>
+          <div><label class="label" for="rf-contacto">Persona de contacto</label><input id="rf-contacto" class="field" maxlength="80" autocomplete="off" placeholder="Nombre y apellido"></div>
+        </div>
+        <div class="grid2">
+          <div><label class="label" for="rf-tel">Teléfono / WhatsApp</label><input id="rf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"></div>
+          <div><label class="label" for="rf-rubro">Rubro</label><select id="rf-rubro" class="field"></select></div>
+        </div>
+        <div><label class="label" for="rf-com">Comentario (opcional)</label><textarea id="rf-com" class="field" maxlength="600" placeholder="Ej.: es el dueño, ya le conté de Tucupón y le interesa"></textarea></div>
+        <button type="submit" class="btn full">Enviar referido</button>
+        <p class="muted" style="font-size:.8rem;text-align:center">Antes de enviar, avisale a la persona que la vamos a contactar.</p>
       </form>
     </section>
 
@@ -787,11 +810,12 @@ function manejarError(err){
 // ---------- Pestañas ----------
 function tab(t){
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['canjear', 'hoy', 'kpis', 'cupones', 'perfil', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['canjear', 'hoy', 'kpis', 'cupones', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   if(t === 'canjear') setTimeout(() => $('c-codigo').focus(), 50);
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
   if(t === 'cupones') cargarCupones();
   if(t === 'kpis') cargarKpis();
+  if(t === 'referir') prepararReferir();
   if(t === 'perfil') cargarPerfil();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -996,6 +1020,32 @@ function pintarMapa(){
   };
 }
 $$('[data-per]').forEach(b => b.addEventListener('click', () => { kpPer = +b.dataset.per; cargarMapa(); }));
+
+// ---------- Referir ----------
+async function prepararReferir(){
+  $('rf-alert').hidden = true;
+  if($('rf-rubro').options.length) return;
+  try{
+    const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin});
+    $('rf-rubro').innerHTML = '<option value="">Elegí el rubro</option>' + p.rubros.map(r => `<option value="${esc(r.nombre)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('') + '<option value="Otro">Otro</option>';
+  }catch(err){ manejarError(err); }
+}
+$('f-ref').addEventListener('submit', async e => {
+  e.preventDefault();
+  const al = $('rf-alert'), d = {local: $('rf-local').value.trim(), contacto: $('rf-contacto').value.trim(), telefono: $('rf-tel').value.trim(), rubro: $('rf-rubro').value, comentario: $('rf-com').value.trim()};
+  const err = (m, id) => { al.className = 'alert'; al.textContent = m; al.hidden = false; if(id) $(id).focus(); };
+  if(!d.local) return err('Poné el nombre del local que recomendás.', 'rf-local');
+  if(!d.contacto) return err('Poné el nombre de la persona de contacto.', 'rf-contacto');
+  if(d.telefono.replace(/\D/g, '').length < 8) return err('Poné un teléfono o WhatsApp con código de área.', 'rf-tel');
+  if(!d.rubro) return err('Elegí el rubro.', 'rf-rubro');
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{
+      await rpc('tc_local_referir', {p_local_id: yo.id, p_pin: pin, p_ref: d});
+      ['rf-local', 'rf-contacto', 'rf-tel', 'rf-com'].forEach(id => $(id).value = ''); $('rf-rubro').value = '';
+      al.className = 'alert ok'; al.textContent = `¡Gracias! Recibimos tu recomendación de ${d.local}. El equipo de Tucupón se va a contactar.`; al.hidden = false;
+    }catch(x){ if(/PIN incorrecto/i.test(x.message)) return manejarError(x); err(x.message); }
+  });
+});
 
 // ---------- Mi perfil ----------
 let perfil = null, logoNuevo;   // logoNuevo: undefined = sin cambios, null = quitar, texto = imagen nueva
