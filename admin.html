@@ -161,7 +161,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .ic-grid button{aspect-ratio:1;border-radius:12px;font-size:1.7rem;line-height:1;background:var(--surface-2);border:2px solid transparent;transition:transform .1s}
 .ic-grid button:hover{transform:scale(1.08)}
 .ic-grid button[aria-pressed="true"]{border-color:var(--brand);background:var(--surface)}
-.hora{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.hora{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .hora select{padding:11px 8px;text-align:center}
 .hint.ok{color:var(--ok);font-weight:700}
 .rel-box{border:2px dashed var(--brand);border-radius:16px;padding:14px;background:var(--surface-2)}
@@ -173,6 +173,36 @@ a.btn{text-decoration:none}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo-claro{display:none}:root:not([data-theme="light"]) .logo-noche{display:inline}}
 :root[data-theme="dark"] .logo-claro{display:none}:root[data-theme="dark"] .logo-noche{display:inline}
 .login .card img{justify-self:start}
+.kp-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kp-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 16px;min-width:0}
+.kp-card span{display:block;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kp-card b{display:block;margin-top:6px;font:900 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
+.kp-card.dest{background:linear-gradient(135deg,#7B3FF0,#4F1BB5);border-color:transparent}
+.kp-card.dest span{color:#C4F04A}.kp-card.dest b{color:#fff}
+.kp-sem{display:grid;gap:10px;margin-top:14px}
+.kp-fila{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border-radius:16px;padding:14px 16px}
+.kp-fila .t{font-weight:800;font-size:1.02rem;color:var(--heading)}
+.kp-fila .s{font-size:.86rem;color:var(--muted);margin-top:2px}
+.kp-fila > b{font:900 1.8rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
+.kp-cmp{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:8px;font-size:.8rem;color:var(--muted)}
+.kp-tr{display:inline-flex;border-radius:999px;padding:2px 9px;font-weight:800}
+.kp-tr.sube{background:var(--ok-bg);color:var(--ok)}.kp-tr.baja{background:var(--hot-bg);color:var(--hot)}.kp-tr.cero{padding:0;font-weight:700}
+.kp-per{display:flex;gap:4px;flex-wrap:wrap}
+.kp-per button{border:2px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:700;font-size:.82rem;color:var(--muted);background:var(--surface)}
+.kp-per button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.kp-mapa{display:grid;grid-template-columns:34px repeat(7,minmax(34px,1fr));gap:4px;min-width:320px}
+.kp-dia{text-align:center;font-size:.74rem;font-weight:800;color:var(--muted)}
+.kp-h{font-size:.72rem;font-weight:700;color:var(--muted);text-align:right;padding-right:4px;align-self:center}
+.kp-c{height:24px;border-radius:6px;background:var(--surface-2);border:2px solid transparent}
+.kp-c.promo{border-color:#9BD12A}
+.kp-c.n1{background:#DDD0FF}.kp-c.n2{background:#B794FF}.kp-c.n3{background:#8A5CF0}.kp-c.n4{background:#4F1BB5}
+.kp-c.sel{outline:3px solid var(--ink);outline-offset:1px}
+.kp-det{margin-top:12px;text-align:center;font-size:.9rem;font-weight:600;color:var(--ink);min-height:1.4em}
+.kp-ley{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);font-weight:700}
+.kp-ley i{display:inline-block;width:18px;height:14px;border-radius:4px}
+.kp-ley .n1{background:#DDD0FF}.kp-ley .n2{background:#B794FF}.kp-ley .n3{background:#8A5CF0}.kp-ley .n4{background:#4F1BB5}
+.kp-ley .promo-i{background:var(--surface-2);border:2px solid #9BD12A}
+@media (max-width:420px){.kp-card b{font-size:1.6rem}.kp-card{padding:12px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -392,7 +422,7 @@ a.btn{text-decoration:none}
       <div class="dias" id="cf-dias">
         <label><input type="checkbox" value="1"><span>Lun</span></label><label><input type="checkbox" value="2"><span>Mar</span></label><label><input type="checkbox" value="3"><span>Mié</span></label><label><input type="checkbox" value="4"><span>Jue</span></label><label><input type="checkbox" value="5"><span>Vie</span></label><label><input type="checkbox" value="6"><span>Sáb</span></label><label><input type="checkbox" value="0"><span>Dom</span></label>
       </div>
-      <p class="hint">Si marcás todos (o ninguno), vale todos los días. AM = de medianoche a mediodía · PM = de mediodía a medianoche.</p>
+      <p class="hint">Si marcás todos (o ninguno), vale todos los días. Horarios en formato de 24 h: 13 = 1 de la tarde, 20 = 8 de la noche, 24 = medianoche.</p>
     </div>
     <div class="grid2">
       <div><span class="label" id="cf-desde-l">Desde (opcional)</span><input id="cf-desde" type="hidden"><div class="hora" data-hora="cf-desde" aria-labelledby="cf-desde-l"></div></div>
@@ -406,7 +436,7 @@ a.btn{text-decoration:none}
         <div><span class="label" id="cf-desde2-l">Desde</span><input id="cf-desde2" type="hidden"><div class="hora" data-hora="cf-desde2" aria-labelledby="cf-desde2-l"></div></div>
         <div><span class="label" id="cf-hasta2-l">Hasta</span><input id="cf-hasta2" type="hidden"><div class="hora" data-hora="cf-hasta2" aria-labelledby="cf-hasta2-l"></div></div>
       </div>
-      <p id="cf-res2" class="hint">Por ejemplo, para la noche: 8:00 PM a 11:30 PM.</p>
+      <p id="cf-res2" class="hint">Por ejemplo, para la noche: 20:00 a 23:30 h.</p>
     </div>
     </div>
     <div class="grid2">
@@ -672,29 +702,30 @@ $('cf-mas-horario').addEventListener('click', () => {
 });
 $('cf-quitar-horario').addEventListener('click', () => { ponerHora('cf-desde2', ''); ponerHora('cf-hasta2', ''); resumenHorarios(); mostrarFranja2(false); });
 
-// ---------- Selector de hora con AM / PM (guarda HH:MM de 24 h en el campo oculto) ----------
-const hh12 = t => { if(!t) return null; let [h, m] = t.split(':').map(Number); const pm = h >= 12; h = h % 12 || 12; return {h, m, pm}; };
-const texto12 = t => { const x = hh12(t); return x ? `${x.h}:${String(x.m).padStart(2, '0')} ${x.pm ? 'PM' : 'AM'}` : ''; };
+// ---------- Selector de hora en formato 24 h (00 a 24) ----------
+const HORAS24 = [...Array(25)].map((_, i) => String(i).padStart(2, '0'));
 function armarHora(el){
   const id = el.dataset.hora;
-  el.innerHTML = `<select class="field" data-p="h" aria-label="Hora"><option value="">Hora</option>${[...Array(12)].map((_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}</select>
-    <select class="field" data-p="m" aria-label="Minutos">${['00','15','30','45'].map(m => `<option value="${m}">${m}</option>`).join('')}</select>
-    <select class="field" data-p="a" aria-label="AM o PM"><option value="am">AM</option><option value="pm">PM</option></select>`;
+  el.innerHTML = `<select class="field" data-p="h" aria-label="Hora"><option value="">Hora</option>${HORAS24.map(h => `<option value="${h}">${h}</option>`).join('')}</select>
+    <select class="field" data-p="m" aria-label="Minutos">${['00','15','30','45'].map(m => `<option value="${m}">${m}</option>`).join('')}</select>`;
   el.addEventListener('change', () => {
-    const h = el.querySelector('[data-p=h]').value, m = el.querySelector('[data-p=m]').value, a = el.querySelector('[data-p=a]').value;
-    $(id).value = h ? `${String((+h % 12) + (a === 'pm' ? 12 : 0)).padStart(2, '0')}:${m}` : '';
+    const sh = el.querySelector('[data-p=h]'), sm = el.querySelector('[data-p=m]');
+    if(sh.value === '24') sm.value = '00';            // 24 solo existe como 24:00
+    sm.disabled = sh.value === '24';
+    // "24" como hora de inicio es lo mismo que las 00
+    const h = sh.value === '24' && /desde/.test(id) ? '00' : sh.value;
+    $(id).value = h ? `${h}:${sm.value}` : '';
     resumenHorarios();
   });
 }
 function ponerHora(id, valor){
   const el = document.querySelector(`[data-hora="${id}"]`); $(id).value = valor || '';
-  const x = hh12(valor), sm = el.querySelector('[data-p=m]');
-  el.querySelector('[data-p=h]').value = x ? String(x.h) : '';
-  const mm = x ? String(x.m).padStart(2, '0') : '00';
-  if(![...sm.options].some(o => o.value === mm)) sm.insertAdjacentHTML('beforeend', `<option value="${mm}">${mm}</option>`);
-  sm.value = mm;
-  el.querySelector('[data-p=a]').value = x && x.pm ? 'pm' : 'am';
+  const [h, m] = valor ? valor.split(':') : ['', '00'], sm = el.querySelector('[data-p=m]');
+  el.querySelector('[data-p=h]').value = h;
+  if(![...sm.options].some(o => o.value === m)) sm.insertAdjacentHTML('beforeend', `<option value="${m}">${m}</option>`);
+  sm.value = m; sm.disabled = h === '24';
 }
+const texto12 = t => t ? t + ' h' : '';
 function resumenFranja(d, h, el, vacio){
   if(!d && !h){ el.textContent = vacio; el.className = 'hint'; return; }
   if(!d || !h){ el.textContent = 'Completá las dos horas.'; el.className = 'hint warn'; return; }
@@ -705,7 +736,7 @@ function resumenFranja(d, h, el, vacio){
 }
 function resumenHorarios(){
   resumenFranja($('cf-desde').value, $('cf-hasta').value, $('cf-res1'), 'Sin horario: vale todo el día.');
-  resumenFranja($('cf-desde2').value, $('cf-hasta2').value, $('cf-res2'), 'Por ejemplo, para la noche: 8:00 PM a 11:30 PM.');
+  resumenFranja($('cf-desde2').value, $('cf-hasta2').value, $('cf-res2'), 'Por ejemplo, para la noche: 20:00 a 23:30 h.');
 }
 $$('[data-hora]').forEach(armarHora);
 
