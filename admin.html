@@ -296,7 +296,6 @@ a.btn{text-decoration:none}
     </div>
     <div><label class="label" for="lo-dir">Dirección</label><input id="lo-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
     <div><label class="label" for="lo-tel">Teléfono / WhatsApp de contacto</label><input id="lo-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">Solo lo ves vos, para resolver reclamos.</p></div>
-    <div><label class="label" for="lo-horario">Horario del local</label><input id="lo-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
     <div class="grid2">
       <div><label class="label" for="lo-color">Color de fondo (si no tiene logo)</label><input id="lo-color" class="field" type="color" style="height:48px;padding:4px"></div>
     </div>
@@ -839,7 +838,7 @@ function abrirLocal(l){
   localEdit = l ? l.id : null;
   $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
   $('lo-nombre').value = l ? l.nombre : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
-  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-horario').value = l ? l.horario : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
+  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
   logoOrig = l ? (LOGOS[l.id] || null) : null; logoNuevo = undefined; pintarLogoLocal();
   $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
   abrirHoja('sheet-local'); setTimeout(() => $('lo-nombre').focus(), 250);
@@ -849,7 +848,7 @@ unirBarrio($('lo-barrio'), $('lo-barrio-otro'));
 $('f-local').addEventListener('submit', async e => {
   e.preventDefault(); $('lo-alert').hidden = true;
   const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), rubro: $('lo-rubro').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
-    horario: $('lo-horario').value.trim(), telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
+    telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
     try{
