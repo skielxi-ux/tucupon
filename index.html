@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tucupón</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icono.png">
+
 <meta name="theme-color" content="#2B0F63">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -338,7 +341,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   <div class="blob" style="left:-50px;top:150px;width:130px;height:130px"></div>
   <div class="blob" style="right:-30px;top:40px;width:90px;height:90px"></div>
   <div class="auth-top wrap">
-    <span class="brandmark" style="font-size:2.3rem"><span class="tk" style="width:52px;height:38px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em></span>
+    <h1 class="sr" style="position:absolute">Tucupón</h1><img src="logo.png" alt="Tucupón" class="logo-img" style="height:64px;width:auto;display:block;margin:0 auto;max-width:100%" width="656" height="160">
     <p>Descuentos en gastronomía, todos en un lugar</p>
   </div>
   <div class="auth-card">
@@ -777,7 +780,7 @@ function tarjeta(c, puesto){
 // ---------- Vistas ----------
 function heroHome(){
   const h = new Date().getHours();
-  return `<div class="topline"><span class="brandmark">${TK}Tu<em>cupón</em></span><span class="saludo">${h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches'}</span></div>
+  return `<div class="topline"><img src="logo.png" alt="Tucupón" class="logo-img" style="height:40px;width:auto;display:block;max-width:62vw" width="656" height="160"><span class="saludo">${h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches'}</span></div>
     <h1>Descuentos para comer<br><span>cerca tuyo</span></h1>
     <div class="search" role="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -787,7 +790,7 @@ function heroHome(){
     </div>`;
 }
 function heroBar(titulo, sub){
-  return `<div class="bar"><button type="button" class="back" data-back>${ATRAS}Volver</button><span class="brandmark" style="margin-left:auto;font-size:1.2rem">${TK}Tu<em>cupón</em></span></div>
+  return `<div class="bar"><button type="button" class="back" data-back>${ATRAS}Volver</button><img src="logo.png" alt="Tucupón" class="logo-img" style="height:30px;width:auto;display:block;margin-left:auto;max-width:45vw" width="656" height="160"></div>
     <h1 style="font-size:1.9rem">${titulo}</h1>${sub ? `<p style="position:relative;margin-top:8px;font-weight:600;opacity:.9">${sub}</p>` : ''}`;
 }
 const porBarrio = l => barrio === 'Todos' || l.barrio === barrio;
