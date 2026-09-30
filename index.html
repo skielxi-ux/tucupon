@@ -1194,7 +1194,7 @@ $('v-signup').addEventListener('submit', e => {
   if(pw !== $('su-pass2').value){ aviso('Las contraseñas no coinciden.'); return marcar(['su-pass2']); }
   marcar([]);
   return cargando(e.target, async () => {
-    const { data, error } = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: volverA() } });
+    const { data, error } = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: volverA(), data: { app: 'tucupon' } } });
     if(error){ aviso(traducir(error)); return; }
     if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
       aviso('Ya existe una cuenta con ese email. Ingresá o recuperá tu contraseña.'); return;
