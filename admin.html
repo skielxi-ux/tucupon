@@ -216,6 +216,13 @@ a.btn{text-decoration:none}
 .req{color:var(--hot);font-weight:800}
 .field[aria-invalid="true"]{border-color:var(--hot)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.bn-prev{aspect-ratio:3/1;border-radius:16px;overflow:hidden;background:var(--surface-2);border:2px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-weight:700;font-size:.9rem}
+.bn-prev img{width:100%;height:100%;object-fit:cover;display:block}
+.bn-prev:has(img){border:0}
+.bn-nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.bn-nums div{background:var(--surface-2);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
+.bn-nums b{display:block;font-size:1.1rem;color:var(--heading)}
+.bn-nums span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;line-height:1.2}
 </style>
 
 </head>
@@ -244,6 +251,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="altas" aria-selected="false">Alta <span id="alta-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="reclamos" aria-selected="false">Reclamos <span id="rec-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="referidos" aria-selected="false">Referidos <span id="ref-badge" class="badge-n" hidden></span></button>
+      <button type="button" class="tab" role="tab" data-tab="publicidad" aria-selected="false">Publicidad</button>
       <button type="button" class="tab" role="tab" data-tab="canjes" aria-selected="false">Canjes</button>
       <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
     </nav>
@@ -337,6 +345,19 @@ a.btn{text-decoration:none}
       <div id="ref-lista" style="display:grid;gap:12px"></div>
     </section>
 
+    <!-- Publicidad -->
+    <section id="t-publicidad" class="panel" hidden>
+      <div class="row"><h2 class="grow">Publicidad</h2><button type="button" id="btn-nuevo-banner" class="btn">+ Nuevo banner</button></div>
+      <p class="muted" style="font-size:.9rem;margin-top:-4px">Banners de marcas en la app. Si no hay ninguno vigente, el espacio no se muestra.</p>
+      <div class="stats">
+        <div class="stat"><b id="bn-activos">–</b><span>Banners al aire</span></div>
+        <div class="stat"><b id="bn-vistas7">–</b><span>Vistas (últimos 7 días)</span></div>
+        <div class="stat"><b id="bn-clics7">–</b><span>Clics (últimos 7 días)</span></div>
+      </div>
+      <div id="bn-lista" style="display:grid;gap:12px"></div>
+      <p class="hint">Las vistas y los clics se cuentan una vez por persona por día, así los números no se inflan si alguien entra muchas veces. “Personas” es la cantidad de usuarios distintos que lo vieron alguna vez.</p>
+    </section>
+
     <section id="t-canjes" class="panel" hidden>
       <div class="card grid2">
         <div><label class="label" for="cj-desde">Desde</label><input id="cj-desde" class="field" type="date"></div>
@@ -392,6 +413,35 @@ a.btn{text-decoration:none}
       <div><label class="label" for="lo-color">Color de fondo (si no tiene logo)</label><input id="lo-color" class="field" type="color" style="height:48px;padding:4px"></div>
     </div>
     <button type="submit" class="btn full">Guardar local</button>
+  </form>
+</div>
+
+<!-- Hoja: banner -->
+<div id="sheet-banner" class="sheet-wrap" aria-hidden="true">
+  <form id="f-banner" class="sheet" role="dialog" aria-modal="true" aria-labelledby="bn-title" novalidate>
+    <div class="row"><h2 id="bn-title" class="grow">Nuevo banner</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="bn-alert" class="alert" hidden></div>
+    <div><label class="label" for="bn-anunciante">Anunciante</label><input id="bn-anunciante" class="field" maxlength="80" placeholder="Ej.: Cervecería Norte"><p class="hint">Solo lo ves vos. A los usuarios les sirve de texto alternativo de la imagen.</p></div>
+    <div>
+      <span class="label">Imagen</span>
+      <div id="bn-prev" class="bn-prev"><span>Sin imagen</span></div>
+      <div class="row" style="margin-top:8px"><label class="btn ghost sm file-btn">Subir imagen<input id="bn-file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
+      <p class="hint"><b>Tamaño ideal: 1200 × 400 px</b> (3 a 1, horizontal). Si la imagen tiene otra forma, la recortamos al centro. Dejá el texto importante lejos de los bordes y fuera de la esquina de arriba a la derecha: ahí va la etiqueta “Publicidad”.</p>
+      <p id="bn-aviso" class="hint warn" hidden></p>
+    </div>
+    <div><label class="label" for="bn-link">Link (opcional)</label><input id="bn-link" class="field" type="url" inputmode="url" maxlength="500" placeholder="https://… o https://wa.me/549…"><p class="hint">A dónde va la persona al tocar el banner. Sin link, el banner no se puede tocar.</p></div>
+    <div class="grid2">
+      <div><label class="label" for="bn-ubic">Dónde aparece</label><select id="bn-ubic" class="field"><option value="inicio">Inicio (debajo de los rubros)</option><option value="rubro">Arriba de un rubro</option></select></div>
+      <div id="bn-rubro-w" hidden><label class="label" for="bn-rubro">Rubro</label><select id="bn-rubro" class="field"></select></div>
+    </div>
+    <div><label class="label" for="bn-prov">Provincia</label><select id="bn-prov" class="field"></select><p class="hint">Solo lo ven los usuarios que están mirando esa provincia.</p></div>
+    <div class="grid2">
+      <div><label class="label" for="bn-desde">Desde</label><input id="bn-desde" class="field" type="date"></div>
+      <div><label class="label" for="bn-hasta">Hasta (opcional)</label><input id="bn-hasta" class="field" type="date"><p class="hint">Último día que se muestra.</p></div>
+    </div>
+    <label class="switch"><input id="bn-activo" type="checkbox" checked>Activo</label>
+    <p class="hint" style="margin-top:-6px">Si hay varios banners en el mismo lugar, cada usuario ve uno distinto al azar en cada visita.</p>
+    <button type="submit" class="btn full">Guardar banner</button>
   </form>
 </div>
 
@@ -867,7 +917,7 @@ async function recargar(){
 function tab(t){
   tabActual = t;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['numeros', 'locales', 'altas', 'reclamos', 'referidos', 'rubros', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['numeros', 'locales', 'altas', 'reclamos', 'referidos', 'rubros', 'publicidad', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   pintarTab();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -878,6 +928,7 @@ function pintarTab(){
   if(tabActual === 'altas') cargarAltas();
   if(tabActual === 'reclamos') cargarReclamos();
   if(tabActual === 'referidos') cargarReferidos();
+  if(tabActual === 'publicidad') cargarBanners();
   if(tabActual === 'canjes'){ if(!$('cj-desde').value){ $('cj-desde').value = $('cj-hasta').value = hoyISO(); } cargarCanjes(); }
 }
 function pintarFiltros(){
@@ -893,6 +944,142 @@ function pintarFiltros(){
 $('lf-prov').addEventListener('change', pintarLocales);
 $('lo-prov').innerHTML = provinciaSelectHTML();
 $('lf-rubro').addEventListener('change', pintarLocales);
+
+// ---------- Publicidad ----------
+let BANNERS = [], bannerEdit = null, bannerImg;   // bannerImg: undefined = sin cambios, texto = imagen nueva
+function prepararBanner(file){
+  return new Promise((ok, mal) => {
+    if(!file || !/^image\//.test(file.type)) return mal(new Error('Elegí una imagen (JPG, PNG o WebP).'));
+    if(file.size > 25e6) return mal(new Error('La imagen es muy pesada. Probá con una de menos de 25 MB.'));
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const w0 = img.width, h0 = img.height, r = 3;
+      let sw = w0, sh = h0;
+      if(w0 / h0 > r) sw = Math.round(h0 * r); else sh = Math.round(w0 / r);
+      const sx = Math.round((w0 - sw) / 2), sy = Math.round((h0 - sh) / 2);
+      const hacer = (W, q) => {
+        const k = Math.min(1, W / sw), w = Math.round(sw * k), h = Math.round(sh * k);
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        const cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+        let d = cv.toDataURL('image/webp', q);
+        if(!d.startsWith('data:image/webp')) d = cv.toDataURL('image/jpeg', q);
+        return d;
+      };
+      let d = hacer(1200, .82);
+      if(d.length > 390000) d = hacer(1200, .66);
+      if(d.length > 390000) d = hacer(900, .66);
+      if(d.length > 390000) return mal(new Error('No pudimos achicar esta imagen. Probá con otra.'));
+      const avisos = [];
+      if(w0 < 900 || h0 < 300) avisos.push(`Tu imagen mide ${w0} × ${h0} px: es chica y puede verse pixelada. Mejor 1200 × 400 px.`);
+      if(Math.abs(w0 / h0 - r) > .25) avisos.push('Tu imagen no tiene la forma ideal (3 a 1): la recortamos al centro. Revisá la vista previa.');
+      ok({data: d, avisos});
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No pudimos leer esa imagen. Probá con otra.')); };
+    img.src = url;
+  });
+}
+function estadoBanner(b){
+  const hoy = hoyISO();
+  if(!b.activo) return ['Pausado', 'off'];
+  if(b.desde > hoy) return ['Empieza el ' + fechaCorta(b.desde), ''];
+  if(b.hasta && b.hasta < hoy) return ['Terminó', 'off'];
+  return ['Al aire', 'ok'];
+}
+const lugarBanner = b => b.ubicacion === 'inicio' ? 'Inicio' : 'Rubro ' + rubroNombre(b.rubro);
+const ctr = (c, v) => v ? (Math.round(c / v * 1000) / 10).toLocaleString('es-AR') + '%' : '–';
+async function cargarBanners(){
+  try{ BANNERS = await rpc('tc_admin_banners', {p_pin: pin}); pintarBanners(); }
+  catch(err){ manejarError(err); }
+}
+function pintarBanners(){
+  const vivos = BANNERS.filter(b => b.vivo);
+  $('bn-activos').textContent = vivos.length;
+  $('bn-vistas7').textContent = BANNERS.reduce((s, b) => s + b.vistas7, 0);
+  $('bn-clics7').textContent = BANNERS.reduce((s, b) => s + b.clics7, 0);
+  $('bn-lista').innerHTML = BANNERS.length ? BANNERS.map(b => {
+    const [et, cl] = estadoBanner(b);
+    return `<article class="card" style="display:grid;gap:10px">
+      <div class="bn-prev sm"><img src="${b.imagen}" alt="${esc(b.anunciante)}"></div>
+      <div class="row" style="flex-wrap:wrap"><p class="grow" style="font-weight:800;font-size:1.05rem;color:var(--heading)">${esc(b.anunciante)}</p><span class="chip ${cl}">${et}</span></div>
+      <p class="muted" style="font-size:.85rem">📍 ${esc(lugarBanner(b))} · ${esc(b.provincia || 'Todas las provincias')} · ${fechaCorta(b.desde)} ${b.hasta ? 'al ' + fechaCorta(b.hasta) : 'sin fecha de fin'}</p>
+      ${b.link ? `<p style="font-size:.85rem;overflow-wrap:anywhere"><a class="link" href="${esc(b.link)}" target="_blank" rel="noopener">${esc(b.link)}</a></p>` : '<p class="muted" style="font-size:.85rem">Sin link</p>'}
+      <div class="bn-nums">
+        <div><b>${b.vistas}</b><span>Vistas</span></div>
+        <div><b>${b.personas}</b><span>Personas</span></div>
+        <div><b>${b.clics}</b><span>Clics</span></div>
+        <div><b>${ctr(b.clics, b.vistas)}</b><span>Clics / vistas</span></div>
+      </div>
+      <p class="muted" style="font-size:.8rem">Últimos 7 días: ${b.vistas7} vistas · ${b.clics7} clics</p>
+      <div class="acts">
+        <button type="button" class="btn ghost sm" data-bedit="${b.id}">Editar</button>
+        <button type="button" class="btn sm ${b.activo ? 'ghost' : 'lima'}" data-bact="${b.id}">${b.activo ? 'Pausar' : 'Activar'}</button>
+        <button type="button" class="btn ghost sm" data-bcopy="${b.id}">Copiar números</button>
+        <button type="button" class="btn danger sm" data-bdel="${b.id}">Borrar</button>
+      </div>
+    </article>`; }).join('') : '<div class="empty">Todavía no cargaste banners. Tocá “+ Nuevo banner” cuando tengas el primer anunciante.</div>';
+}
+function pintarPrevBanner(src){ $('bn-prev').innerHTML = src ? `<img src="${src}" alt="">` : '<span>Sin imagen</span>'; }
+function abrirBanner(b){
+  bannerEdit = b ? b.id : null; bannerImg = undefined;
+  $('bn-title').textContent = b ? 'Editar banner' : 'Nuevo banner'; $('bn-alert').hidden = true; $('bn-aviso').hidden = true;
+  $('bn-anunciante').value = b ? b.anunciante : ''; $('bn-link').value = b ? (b.link || '') : '';
+  $('bn-rubro').innerHTML = D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
+  $('bn-ubic').value = b ? b.ubicacion : 'inicio'; $('bn-rubro').value = b && b.rubro ? b.rubro : (D.rubros[0]?.id || '');
+  $('bn-rubro-w').hidden = $('bn-ubic').value !== 'rubro';
+  $('bn-prov').innerHTML = provinciaSelectHTML('Todas las provincias'); $('bn-prov').value = b ? (b.provincia || '') : 'Tucumán';
+  $('bn-desde').value = b ? b.desde : hoyISO(); $('bn-hasta').value = b && b.hasta ? b.hasta : '';
+  $('bn-activo').checked = b ? b.activo : true;
+  pintarPrevBanner(b ? b.imagen : null);
+  abrirHoja('sheet-banner'); setTimeout(() => $('bn-anunciante').focus(), 250);
+}
+$('btn-nuevo-banner').addEventListener('click', () => abrirBanner(null));
+$('bn-ubic').addEventListener('change', () => $('bn-rubro-w').hidden = $('bn-ubic').value !== 'rubro');
+$('bn-file').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  const av = $('bn-aviso');
+  try{ const r = await prepararBanner(f); bannerImg = r.data; pintarPrevBanner(bannerImg); av.textContent = r.avisos.join(' '); av.hidden = !r.avisos.length; }
+  catch(err){ av.textContent = err.message; av.hidden = false; }
+});
+$('f-banner').addEventListener('submit', async e => {
+  e.preventDefault();
+  const al = $('bn-alert'), err = m => { al.textContent = m; al.hidden = false; al.scrollIntoView({block: 'nearest'}); };
+  const datos = {id: bannerEdit, anunciante: $('bn-anunciante').value.trim(), link: $('bn-link').value.trim(), ubicacion: $('bn-ubic').value,
+    rubro: $('bn-ubic').value === 'rubro' ? $('bn-rubro').value : null, provincia: $('bn-prov').value || null,
+    desde: $('bn-desde').value, hasta: $('bn-hasta').value || null, activo: $('bn-activo').checked};
+  if(!datos.anunciante) return err('Poné el nombre del anunciante.');
+  if(!bannerEdit && bannerImg === undefined) return err('Subí la imagen del banner.');
+  if(datos.link && !/^https?:\/\/\S+$/i.test(datos.link)){
+    if(/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(datos.link)){ datos.link = 'https://' + datos.link; $('bn-link').value = datos.link; }
+    else return err('El link tiene que ser una dirección web, por ejemplo https://instagram.com/marca');
+  }
+  if(datos.hasta && datos.desde && datos.hasta < datos.desde) return err('La fecha de fin no puede ser antes del inicio.');
+  if(bannerImg !== undefined) datos.imagen = bannerImg;
+  al.hidden = true;
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{ await rpc('tc_admin_guardar_banner', {p_pin: pin, p_banner: datos}); cerrarHoja('sheet-banner'); toast(bannerEdit ? 'Banner actualizado' : 'Banner creado'); cargarBanners(); }
+    catch(x){ if(/PIN incorrecto/i.test(x.message)) return manejarError(x); err(x.message); }
+  });
+});
+$('bn-lista').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const id = +(b.dataset.bedit || b.dataset.bact || b.dataset.bdel || b.dataset.bcopy), ban = BANNERS.find(x => x.id === id); if(!ban) return;
+  if(b.dataset.bedit) return abrirBanner(ban);
+  if(b.dataset.bcopy){
+    const txt = `Banner ${ban.anunciante} en Tucupón (${lugarBanner(ban)}, ${ban.provincia || 'todas las provincias'})\nDel ${fechaCorta(ban.desde)} ${ban.hasta ? 'al ' + fechaCorta(ban.hasta) : 'a hoy'}\n` +
+      `Vistas: ${ban.vistas} · Personas distintas: ${ban.personas}\nClics: ${ban.clics} · Clics/vistas: ${ctr(ban.clics, ban.vistas)}\nÚltimos 7 días: ${ban.vistas7} vistas y ${ban.clics7} clics`;
+    try{ await navigator.clipboard.writeText(txt); toast('Números copiados: pegalos en el WhatsApp del anunciante'); }catch(_){ prompt('Copiá los números:', txt); }
+    return;
+  }
+  if(b.dataset.bdel && !confirm(`¿Borrar el banner de ${ban.anunciante}? También se borran sus números.`)) return;
+  await conBoton(b, async () => {
+    try{
+      if(b.dataset.bact) await rpc('tc_admin_banner_estado', {p_pin: pin, p_id: id, p_activo: !ban.activo});
+      else await rpc('tc_admin_borrar_banner', {p_pin: pin, p_id: id});
+      toast(b.dataset.bdel ? 'Banner borrado' : ban.activo ? 'Banner pausado' : 'Banner activado'); cargarBanners();
+    }catch(x){ manejarError(x); }
+  });
+});
 
 // ---------- Números ----------
 async function cargarUsuarios(){
