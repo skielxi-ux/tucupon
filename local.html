@@ -216,6 +216,13 @@ a.btn{text-decoration:none}
 .req{color:var(--hot);font-weight:800}
 .field[aria-invalid="true"]{border-color:var(--hot)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.bn-prev{aspect-ratio:3/1;border-radius:16px;overflow:hidden;background:var(--surface-2);border:2px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-weight:700;font-size:.9rem}
+.bn-prev img{width:100%;height:100%;object-fit:cover;display:block}
+.bn-prev:has(img){border:0}
+.bn-nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.bn-nums div{background:var(--surface-2);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
+.bn-nums b{display:block;font-size:1.1rem;color:var(--heading)}
+.bn-nums span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;line-height:1.2}
 </style>
 
 </head>
@@ -230,14 +237,14 @@ a.btn{text-decoration:none}
     <div><label class="label" for="l-local">Tu local</label><select id="l-local" class="field"><option value="">Cargando locales…</option></select></div>
     <div><label class="label" for="l-pin">PIN</label><input id="l-pin" class="field mono" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" placeholder="6 números" style="letter-spacing:.3em"></div>
     <button type="submit" class="btn full">Ingresar</button>
-    <p class="muted" style="font-size:.82rem;text-align:center">¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
+    <p class="muted" style="font-size:.82rem;text-align:center">Entrá con tu PIN de dueño o con el PIN de caja.<br>¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
   </form>
 </section>
 
 <!-- ============ PANEL ============ -->
 <div id="app" hidden>
   <header class="top"><div class="wrap">
-    <span class="brandmark"><img src="logo.png" alt="Tucupón" class="logo-img" style="height:34px;width:auto;display:block" width="656" height="160"><span class="tag">Local</span></span>
+    <span class="brandmark"><img src="logo.png" alt="Tucupón" class="logo-img" style="height:34px;width:auto;display:block" width="656" height="160"><span class="tag" id="w-tag">Local</span></span>
     <span class="who"><span id="w-nombre"></span><button type="button" id="btn-salir" class="btn-top">Salir</button></span>
   </div></header>
   <main class="wrap">
@@ -249,7 +256,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
       <button type="button" class="tab" role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
       <button type="button" class="tab" role="tab" data-tab="referir" aria-selected="false">Referir</button>
-      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">PIN</button>
+      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">PINs</button>
     </nav>
 
     <!-- KPIs -->
@@ -300,7 +307,7 @@ a.btn{text-decoration:none}
 
     <!-- Canjes del día -->
     <section id="t-hoy" class="panel" hidden>
-      <div class="card row">
+      <div class="card row" id="h-filtro">
         <div class="grow"><label class="label" for="h-fecha">Día</label><input id="h-fecha" class="field" type="date"></div>
         <button type="button" class="btn ghost" id="h-hoy" style="align-self:flex-end">Hoy</button>
       </div>
@@ -376,8 +383,23 @@ a.btn{text-decoration:none}
 
     <!-- PIN -->
     <section id="t-ajustes" class="panel" hidden>
+      <div class="card" style="display:grid;gap:12px">
+        <div><h2>PIN de caja</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Para tus mozos y cajeros. Con este PIN solo pueden <b>confirmar descuentos</b> y ver los canjes del día. No pueden tocar tus cupones, tu perfil, tus números ni tu PIN.</p></div>
+        <div id="pc-estado"></div>
+        <div id="pc-nuevo" hidden>
+          <p class="label" style="margin-bottom:6px">Nuevo PIN de caja</p>
+          <p id="pc-valor" class="mono" style="font-size:2.2rem;font-weight:800;letter-spacing:.2em;text-align:center;user-select:all;background:var(--surface-2);border-radius:16px;padding:12px"></p>
+          <p class="hint">Anotalo y pasáselo a tu equipo. Por seguridad no se puede volver a ver: si se pierde, generás otro.</p>
+          <button type="button" id="pc-copiar" class="btn ghost sm" style="justify-self:start">Copiar PIN</button>
+        </div>
+        <div class="row" style="flex-wrap:wrap;gap:8px">
+          <button type="button" id="pc-generar" class="btn">Crear PIN de caja</button>
+          <button type="button" id="pc-quitar" class="btn ghost" hidden>Desactivar</button>
+        </div>
+        <p class="hint" style="margin:0">Si un empleado deja de trabajar con vos, generá uno nuevo: el anterior deja de funcionar en el momento.</p>
+      </div>
       <form id="f-pin" class="card" style="display:grid;gap:12px" novalidate>
-        <h2>Cambiar PIN</h2>
+        <div><h2>Tu PIN de dueño</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Con este PIN se maneja todo el panel. No lo compartas con tu equipo.</p></div>
         <div id="p-alert" class="alert" hidden></div>
         <div><label class="label" for="p-nuevo">PIN nuevo</label><input id="p-nuevo" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="6 números"></div>
         <div><label class="label" for="p-nuevo2">Repetí el PIN</label><input id="p-nuevo2" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="6 números"></div>
@@ -807,14 +829,22 @@ $('f-login').addEventListener('submit', async e => {
     try{
       const r = await rpc('tc_local_login', {p_local_id: id, p_pin: p});
       if(!r.ok){ avisoLogin(r.error || 'PIN incorrecto'); $('l-pin').select(); return; }
-      yo = r; pin = p; guardarSesion();
+      yo = r; pin = r.token || p; delete yo.token; guardarSesion();
       try{ localStorage.setItem('tucupon.ultimoLocal', String(id)); }catch(_){}
       entrar();
     }catch(err){ avisoLogin(err.message); }
   });
 });
+const SOLO_DUENO = ['kpis', 'cupones', 'perfil', 'referir', 'ajustes'];
+const esCaja = () => yo && yo.rol === 'caja';
+function aplicarRol(){
+  $$('[data-tab]').forEach(b => b.hidden = esCaja() && SOLO_DUENO.includes(b.dataset.tab));
+  $('w-tag').textContent = esCaja() ? 'Caja' : 'Local';
+  $('h-filtro').hidden = esCaja();
+}
 function entrar(){
   $('login').hidden = true; $('app').hidden = false;
+  aplicarRol();
   pintarCabecera();
   $('l-pin').value = '';
   tab('canjear');
@@ -833,12 +863,14 @@ function salir(){
 $('btn-salir').addEventListener('click', salir);
 // Si el PIN cambió en otro lado o se bloqueó, vuelve al ingreso
 function manejarError(err){
-  if(/PIN incorrecto/i.test(err.message)){ salir(); avisoLogin('Tu PIN cambió. Ingresá de nuevo.'); return; }
+  if(/solo el dueño/i.test(err.message)){ toast(err.message); return; }
+  if(/PIN incorrecto/i.test(err.message)){ salir(); avisoLogin('Tu sesión se cerró (el PIN cambió o venció). Ingresá de nuevo.'); return; }
   toast(err.message);
 }
 
 // ---------- Pestañas ----------
 function tab(t){
+  if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
   ['canjear', 'hoy', 'kpis', 'cupones', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   if(t === 'canjear') setTimeout(() => $('c-codigo').focus(), 50);
@@ -847,6 +879,7 @@ function tab(t){
   if(t === 'kpis') cargarKpis();
   if(t === 'referir') prepararReferir();
   if(t === 'perfil') cargarPerfil();
+  if(t === 'ajustes') cargarPinCaja();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
 
@@ -860,6 +893,7 @@ $('f-codigo').addEventListener('submit', async e => {
   await conBoton(e.target.querySelector('.btn'), async () => {
     try{
       const r = await rpc('tc_verificar_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: cod});
+      if(r.error === 'PIN incorrecto') return manejarError(new Error(r.error));
       pintarVerificado(r);
     }catch(err){ manejarError(err); }
   });
@@ -887,6 +921,7 @@ document.addEventListener('click', async e => {
     await conBoton(ok, async () => {
       try{
         const r = await rpc('tc_canjear_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: ok.dataset.codigo});
+        if(r.error === 'PIN incorrecto') return manejarError(new Error(r.error));
         if(!r.ok){ $('c-result').insertAdjacentHTML('afterbegin', `<div class="alert">${esc(r.error)}</div>`); return; }
         $('c-result').innerHTML = `<div class="card result" style="text-align:center">
           <span class="stamp">CANJEADO</span>
@@ -902,7 +937,7 @@ document.addEventListener('click', async e => {
 
 // ---------- Canjes del día ----------
 async function cargarCanjes(){
-  const d = $('h-fecha').value || hoyISO();
+  const d = esCaja() ? hoyISO() : ($('h-fecha').value || hoyISO());
   $('h-lista').innerHTML = '<p class="muted">Cargando…</p>';
   try{
     const r = await rpc('tc_local_canjes', {p_local_id: yo.id, p_pin: pin, p_desde: d, p_hasta: d});
@@ -959,6 +994,41 @@ $('del-ok').addEventListener('click', async e => {
 });
 
 // ---------- PIN ----------
+// ---------- PIN de caja ----------
+function pintarPinCaja(tiene){
+  $('pc-estado').innerHTML = tiene ? '<span class="chip ok">Activo</span> <span class="muted" style="font-size:.88rem">Tu equipo puede ingresar con el PIN de caja.</span>'
+    : '<span class="chip">Sin PIN de caja</span> <span class="muted" style="font-size:.88rem">Por ahora solo se ingresa con tu PIN.</span>';
+  $('pc-generar').textContent = tiene ? 'Generar uno nuevo' : 'Crear PIN de caja';
+  $('pc-quitar').hidden = !tiene;
+}
+async function cargarPinCaja(){
+  $('pc-nuevo').hidden = true;
+  try{ const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); pintarPinCaja(!!p.tiene_pin_caja); }catch(err){ manejarError(err); }
+}
+$('pc-generar').addEventListener('click', async e => {
+  if(!$('pc-quitar').hidden && !confirm('¿Generar un PIN de caja nuevo? El actual deja de funcionar y tu equipo va a tener que ingresar con el nuevo.')) return;
+  let ok = false;
+  await conBoton(e.target, async () => {
+    try{
+      const r = await rpc('tc_local_pin_caja', {p_local_id: yo.id, p_pin: pin, p_activar: true});
+      $('pc-valor').textContent = r.pin; $('pc-nuevo').hidden = false; ok = true;
+    }catch(err){ manejarError(err); }
+  });
+  if(ok){ pintarPinCaja(true); $('pc-nuevo').scrollIntoView({block: 'nearest'}); }
+});
+$('pc-quitar').addEventListener('click', async e => {
+  if(!confirm('¿Desactivar el PIN de caja? Tu equipo no va a poder ingresar hasta que generes uno nuevo.')) return;
+  let ok = false;
+  await conBoton(e.target, async () => {
+    try{ await rpc('tc_local_pin_caja', {p_local_id: yo.id, p_pin: pin, p_activar: false}); ok = true; }
+    catch(err){ manejarError(err); }
+  });
+  if(ok){ $('pc-nuevo').hidden = true; pintarPinCaja(false); toast('PIN de caja desactivado'); }
+});
+$('pc-copiar').addEventListener('click', async () => {
+  try{ await navigator.clipboard.writeText($('pc-valor').textContent); toast('PIN copiado'); }catch(_){ toast('Mantené apretado el PIN para copiarlo'); }
+});
+
 $('f-pin').addEventListener('submit', async e => {
   e.preventDefault();
   const a = $('p-nuevo').value.trim(), b = $('p-nuevo2').value.trim(), al = $('p-alert');
@@ -968,7 +1038,7 @@ $('f-pin').addEventListener('submit', async e => {
   await conBoton(e.target.querySelector('.btn'), async () => {
     try{
       await rpc('tc_local_cambiar_pin', {p_local_id: yo.id, p_pin: pin, p_nuevo: a});
-      pin = a; guardarSesion();
+      if(!/^t\./.test(pin)){ pin = a; guardarSesion(); }
       al.className = 'alert ok'; al.textContent = 'Listo, tu PIN cambió. Usalo la próxima vez que ingreses.'; al.hidden = false;
       $('p-nuevo').value = $('p-nuevo2').value = '';
     }catch(err){ manejarError(err); }
@@ -1130,7 +1200,7 @@ $('f-perfil').addEventListener('submit', async e => {
 });
 
 cargarLocales();
-if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; pintarCabecera(); }).catch(() => {}); }
+if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; if(p.rol) yo.rol = p.rol; guardarSesion(); aplicarRol(); pintarCabecera(); }).catch(() => {}); }
 </script>
 </body>
 </html>

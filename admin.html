@@ -894,7 +894,7 @@ $('f-login').addEventListener('submit', async e => {
     try{
       const r = await rpc('tc_admin_login', {p_pin: p});
       if(!r.ok){ avisoLogin('PIN incorrecto'); $('l-pin').select(); return; }
-      pin = p; try{ sessionStorage.setItem('tucupon.admin', pin); }catch(_){}
+      pin = r.token || p; try{ sessionStorage.setItem('tucupon.admin', pin); }catch(_){}
       entrar();
     }catch(err){ avisoLogin(err.message); }
   });
@@ -1462,7 +1462,7 @@ $('f-pin').addEventListener('submit', async e => {
   await conBoton(e.target.querySelector('.btn'), async () => {
     try{
       await rpc('tc_admin_cambiar_pin', {p_pin: pin, p_nuevo: a});
-      pin = a; try{ sessionStorage.setItem('tucupon.admin', pin); }catch(_){}
+      if(!/^t\./.test(pin)){ pin = a; try{ sessionStorage.setItem('tucupon.admin', pin); }catch(_){} }
       al.className = 'alert ok'; al.textContent = 'Listo, el PIN maestro cambió.'; al.hidden = false; $('p-nuevo').value = $('p-nuevo2').value = '';
     }catch(err){ manejarError(err); }
   });
