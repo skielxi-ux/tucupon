@@ -282,7 +282,7 @@ a.btn{text-decoration:none}
     <!-- Locales -->
     <section id="t-locales" class="panel" hidden>
       <div class="row"><h2 class="grow">Locales</h2><button type="button" id="btn-nuevo-local" class="btn">+ Nuevo local</button></div>
-      <div class="row"><label class="label" for="lf-rubro" style="margin:0">Rubro</label><select id="lf-rubro" class="field" style="width:auto"></select></div>
+      <div class="row" style="flex-wrap:wrap"><div class="row"><label class="label" for="lf-prov" style="margin:0">Provincia</label><select id="lf-prov" class="field" style="width:auto;max-width:100%"></select></div><div class="row"><label class="label" for="lf-rubro" style="margin:0">Rubro</label><select id="lf-rubro" class="field" style="width:auto"></select></div></div>
       <div class="card" id="loc-lista"></div>
     </section>
 
@@ -380,7 +380,10 @@ a.btn{text-decoration:none}
     </div>
     <div class="grid2">
       <div><label class="label" for="lo-rubro">Rubro</label><select id="lo-rubro" class="field"></select></div>
-      <div><label class="label" for="lo-barrio">Barrio</label><select id="lo-barrio" class="field"></select>
+      <div><label class="label" for="lo-prov">Provincia</label><select id="lo-prov" class="field"></select></div>
+    </div>
+    <div class="grid2">
+      <div><label class="label" for="lo-barrio">Barrio o zona</label><select id="lo-barrio" class="field"></select>
         <div data-otro hidden style="margin-top:8px"><label class="label" for="lo-barrio-otro">¿Qué barrio?</label><input id="lo-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
     </div>
     <div><label class="label" for="lo-dir">Dirección</label><input id="lo-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
@@ -716,12 +719,25 @@ const logoHTML = (src, nombre, color, clase = '') => src
 // ---------- Barrios: lista fija + "Otro" ----------
 const BARRIOS = ['Yerba Buena', 'Centro', 'Barrio Sur', 'Barrio Norte', 'Mate de Luna'];
 function barrioSelectHTML(){ return BARRIOS.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('') + '<option value="__otro">Otro</option>'; }
-function ponerBarrio(sel, otro, valor){
-  sel.innerHTML = '<option value="">Elegí el barrio</option>' + barrioSelectHTML();
-  const conocido = BARRIOS.includes(valor);
-  sel.value = !valor ? '' : conocido ? valor : '__otro';
+// En Tucumán hay lista fija; en las demás provincias se escribe el barrio o la zona
+function ponerBarrio(sel, otro, valor, prov){
+  const tuc = !prov || prov === 'Tucumán';
+  sel.hidden = !tuc;
+  sel.innerHTML = tuc ? '<option value="">Elegí el barrio</option>' + barrioSelectHTML() : '<option value="__otro">Otro</option>';
+  const conocido = tuc && BARRIOS.includes(valor);
+  sel.value = !tuc ? '__otro' : !valor ? '' : conocido ? valor : '__otro';
   otro.value = conocido ? '' : (valor || '');
-  otro.closest('[data-otro]').hidden = sel.value !== '__otro';
+  const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro';
+  const lb = w.querySelector('label'); if(lb){ lb.hidden = !tuc; }
+  otro.placeholder = tuc ? 'Escribí el barrio' : 'Barrio o zona (ej.: Nueva Córdoba)';
+  w.style.marginTop = tuc ? '8px' : '0';
+}
+// ---------- Provincias ----------
+const PROVINCIAS = ['Buenos Aires','Catamarca','Chaco','Chubut','Ciudad de Buenos Aires','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'];
+function provinciaSelectHTML(vacio){ return (vacio ? `<option value="">${vacio}</option>` : '') + PROVINCIAS.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join(''); }
+// Al cambiar de provincia se reacomoda el campo de barrio (conserva lo escrito si sirve)
+function unirProvincia(provSel, sel, otro){
+  provSel.addEventListener('change', () => { const actual = leerBarrio(sel, otro); ponerBarrio(sel, otro, provSel.value === 'Tucumán' ? (BARRIOS.includes(actual) ? actual : '') : (BARRIOS.includes(actual) ? '' : actual), provSel.value); });
 }
 function leerBarrio(sel, otro){ return sel.value === '__otro' ? otro.value.trim() : sel.value; }
 function unirBarrio(sel, otro){
@@ -869,7 +885,13 @@ function pintarFiltros(){
   $('lf-rubro').innerHTML = '<option value="">Todos</option>' + D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
   $('lf-rubro').value = D.rubros.some(r => r.id === rv) ? rv : '';
   $('lo-rubro').innerHTML = D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
+  const pv = $('lf-prov').value, cuenta = p => D.locales.filter(l => (l.provincia || 'Tucumán') === p).length;
+  const conLocales = PROVINCIAS.filter(cuenta);
+  $('lf-prov').innerHTML = '<option value="">Todas</option>' + conLocales.map(p => `<option value="${esc(p)}">${esc(p)} (${cuenta(p)})</option>`).join('');
+  $('lf-prov').value = conLocales.includes(pv) ? pv : '';
 }
+$('lf-prov').addEventListener('change', pintarLocales);
+$('lo-prov').innerHTML = provinciaSelectHTML();
 $('lf-rubro').addEventListener('change', pintarLocales);
 
 // ---------- Números ----------
@@ -906,12 +928,12 @@ $('k-dias').addEventListener('change', cargarKpis);
 
 // ---------- Locales ----------
 function pintarLocales(){
-  const r = $('lf-rubro').value, ls = D.locales.filter(l => !r || l.rubro === r);
+  const r = $('lf-rubro').value, pv = $('lf-prov').value, ls = D.locales.filter(l => (!r || l.rubro === r) && (!pv || (l.provincia || 'Tucumán') === pv));
   $('loc-lista').innerHTML = ls.length ? ls.map(l => {
     const n = l.cupones;
     return `<div class="item">
       ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
-      <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)} · ${esc(l.dir)}</p>
+      <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)}, ${esc(l.provincia || 'Tucumán')} · ${esc(l.dir)}</p>
         <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Activo' : 'Pausado'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} ${n === 1 ? 'cupón activo' : 'cupones activos'} · ${l.pedidos} pedidos · ${l.usados} canjes${l.reclamos ? ` · <b style="color:var(--hot)">${l.reclamos} ${l.reclamos === 1 ? 'reclamo' : 'reclamos'}</b>` : ''}</p>
         <p class="s">${l.responsable ? '👤 ' + esc(l.responsable) + ' · ' : ''}${l.telefono ? '📞 ' + esc(l.telefono) : '<span style="color:var(--warn)">Sin teléfono cargado</span>'}</p>
         ${!l.activo && l.motivo_pausa ? `<p class="s" style="color:var(--hot)"><b>Motivo:</b> ${esc(l.motivo_pausa)}</p>` : ''}</div>
@@ -920,7 +942,7 @@ function pintarLocales(){
         <button type="button" class="btn ghost sm" data-lpin="${l.id}">${l.tiene_pin ? 'Nuevo PIN' : 'Crear PIN'}</button>
         <button type="button" class="btn sm ${l.activo ? 'danger' : 'lima'}" data-lpausa="${l.id}">${l.activo ? 'Pausar' : 'Reactivar'}</button>
       </div></div>`;
-  }).join('') : '<div class="empty">No hay locales en este rubro.</div>';
+  }).join('') : '<div class="empty">No hay locales con estos filtros.</div>';
 }
 let localEdit = null, logoOrig = null, logoNuevo, LOGOS = {};
 function pintarLogoLocal(){
@@ -946,16 +968,18 @@ function abrirLocal(l){
   localEdit = l ? l.id : null;
   $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
   $('lo-nombre').value = l ? l.nombre : ''; $('lo-resp').value = l ? (l.responsable || '') : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
-  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : ''); $('lo-dir').value = l ? l.dir : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
+  $('lo-prov').value = l ? (l.provincia || 'Tucumán') : ($('lf-prov').value || 'Tucumán');
+  ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : '', $('lo-prov').value); $('lo-dir').value = l ? l.dir : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
   logoOrig = l ? (LOGOS[l.id] || null) : null; logoNuevo = undefined; pintarLogoLocal();
   $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
   abrirHoja('sheet-local'); setTimeout(() => $('lo-nombre').focus(), 250);
 }
 $('btn-nuevo-local').addEventListener('click', () => abrirLocal(null));
 unirBarrio($('lo-barrio'), $('lo-barrio-otro'));
+unirProvincia($('lo-prov'), $('lo-barrio'), $('lo-barrio-otro'));
 $('f-local').addEventListener('submit', async e => {
   e.preventDefault(); $('lo-alert').hidden = true;
-  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), responsable: $('lo-resp').value.trim(), rubro: $('lo-rubro').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
+  const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), responsable: $('lo-resp').value.trim(), rubro: $('lo-rubro').value, provincia: $('lo-prov').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
     telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
@@ -1073,7 +1097,7 @@ function pintarAltas(){
     return `<article class="card alta" data-al="${l.id}">
       <div class="item" style="padding:0;border:0">
         ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
-        <div class="grow"><p class="t">${esc(l.nombre)}${l.activo ? '' : ' <span class="chip off">Pausado</span>'}</p><p class="s">${esc(l.barrio)}${l.responsable ? ' · 👤 ' + esc(l.responsable) : ''}${l.telefono ? ' · 📞 ' + esc(l.telefono) : ''}</p><p class="s" style="margin-top:4px">${chip}</p></div>
+        <div class="grow"><p class="t">${esc(l.nombre)}${l.activo ? '' : ' <span class="chip off">Pausado</span>'}</p><p class="s">${esc(l.barrio)}, ${esc(l.provincia || 'Tucumán')}${l.responsable ? ' · 👤 ' + esc(l.responsable) : ''}${l.telefono ? ' · 📞 ' + esc(l.telefono) : ''}</p><p class="s" style="margin-top:4px">${chip}</p></div>
         ${wa ? `<a class="btn sm wa" href="https://wa.me/${wa}" target="_blank" rel="noopener" aria-label="WhatsApp a ${esc(l.responsable || l.nombre)}">${WA_ICO}WhatsApp</a>` : '<span class="chip" style="color:var(--warn)">Sin teléfono</span>'}
       </div>
       <div class="alta-edit">
