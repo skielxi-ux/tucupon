@@ -115,6 +115,10 @@ p{margin:0}
 .banner img{width:100%;height:100%;object-fit:cover;display:block}
 .banner .ad{position:absolute;top:8px;right:8px;background:rgba(20,8,45,.6);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.02em;padding:2px 8px;border-radius:999px;backdrop-filter:blur(4px)}
 a.banner:active{transform:scale(.99)}
+.compartir{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:16px;padding:13px;font-weight:800;background:#25D366;color:#fff;text-decoration:none}
+.compartir svg{width:20px;height:20px}
+.compartido{display:flex;gap:10px;align-items:center;background:var(--surface-2);border:2px solid var(--brand);border-radius:16px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;color:var(--ink)}
+.compartido .em{font-size:1.5rem;flex:none}
 .saludo{border-radius:999px;background:rgba(255,255,255,.12);padding:5px 12px;font-size:.82rem;font-weight:700}
 .hero h1{position:relative;margin-top:18px;font-size:2.15rem;line-height:1.02;font-weight:800}
 .hero h1 span{display:inline-block;margin-top:4px;rotate:-1deg;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 10px 4px}
@@ -376,6 +380,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <button type="button" class="tab" role="tab" data-view="login">Ingresar</button>
       <button type="button" class="tab" role="tab" data-view="signup">Crear cuenta</button>
     </div>
+    <div id="auth-compartido" class="compartido" hidden><span class="em" aria-hidden="true">🎁</span><span><b>¡Te compartieron un descuento!</b><br>Ingresá o creá tu cuenta gratis para verlo y pedir tu código.</span></div>
     <div id="auth-alert" class="alert" role="alert" hidden></div>
 
     <form id="v-login" class="form" novalidate>
@@ -678,6 +683,36 @@ async function traerFotos(){
     render();
   }catch(e){ ids.forEach(id => { const c = CUPONES.find(x => x.id === id); if(c) pedidas.delete(id + ':' + c.foto_v); }); }
 }
+// ---------- Compartir cupón ----------
+const WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>';
+const SITIO = 'https://tucuponapp.com/';
+function linkCompartir(c){
+  const l = localDe(c) || {}, url = SITIO + '?c=' + c.id;
+  const extra = esRel(c) ? `⚡ Es relámpago: termina hoy a las ${hora(c.relampago_fin)} h y hay pocos códigos.` : c.horario && c.restringido ? `Vale ${c.horario}.` : '';
+  const txt = `🎟️ Mirá este descuento en Tucupón: *${c.etiqueta}* en ${c.titulo} — ${l.nombre || ''}${l.barrio ? ' (' + l.barrio + ')' : ''}.${extra ? '\n' + extra : ''}\nPedí tu código gratis acá 👉 ${url}`;
+  return 'https://wa.me/?text=' + encodeURIComponent(txt);
+}
+// Si entraron con un link compartido (?c=ID), lo guardamos hasta que inicien sesión
+let compartido = null;
+try{
+  const c = new URLSearchParams(location.search).get('c');
+  if(/^\d{1,9}$/.test(c || '')){ compartido = +c; localStorage.setItem('tucupon.compartido', JSON.stringify({id: compartido, t: Date.now()})); }
+  else{ const g = JSON.parse(localStorage.getItem('tucupon.compartido') || 'null'); if(g && Date.now() - g.t < 7 * 864e5) compartido = g.id; }
+}catch(e){}
+function abrirCompartido(){
+  if(!compartido) return;
+  const id = compartido; compartido = null;
+  try{ localStorage.removeItem('tucupon.compartido'); }catch(e){}
+  if(location.search && history.replaceState) history.replaceState(null, '', location.pathname + location.hash);
+  const c = CUPONES.find(x => x.id === id), l = c && localDe(c);
+  if(!c || !l){ toast('Ese descuento ya no está disponible. ¡Mirá todos los que hay!'); return; }
+  const pv = l.provincia || 'Tucumán';
+  if(pv !== prov){ prov = pv; barrio = 'Todos'; try{ localStorage.setItem('tucupon.prov', prov); localStorage.setItem('tucupon.barrio', barrio); }catch(e){} calcBarrios(); }
+  pila = [{vista: 'home', rubroSel: null, localSel: null}];
+  vista = 'local'; localSel = l.id; filtro = 'todos'; $('hero-in').innerHTML = ''; render(true);
+  verDetalle(c.id);
+}
+
 // ---------- Publicidad ----------
 let BANNERS = [], BIMG = {};
 const ROT = Math.floor(Math.random() * 1000);   // cada visita muestra un banner distinto si hay varios en el mismo lugar
@@ -1076,7 +1111,7 @@ function verDetalle(id, soloPintar){
       </div>
       <p class="muted" style="font-size:.8rem;margin-top:8px">${v.mi_voto ? 'Gracias por votar. Tocá de nuevo para quitar tu voto.' : (v.hot + v.frio ? `${v.hot + v.frio} ${v.hot + v.frio === 1 ? 'persona votó' : 'personas votaron'}.` : 'Sé el primero en votar.')}</p>
     </div>
-    <div class="act">${accionCupon(c)}<button type="button" class="sec-btn" data-close>Cerrar</button></div>`;
+    <div class="act">${accionCupon(c)}<a class="compartir" href="${linkCompartir(c)}" target="_blank" rel="noopener" data-compartir="${c.id}">${WA_SVG}Compartir con un amigo</a><button type="button" class="sec-btn" data-close>Cerrar</button></div>`;
   if(!soloPintar) abrirHoja('sheet-det');
 }
 let votando = false;
@@ -1210,6 +1245,7 @@ document.addEventListener('click', ev => {
   const t = s => ev.target.closest(s);
   let b;
   if((b = t('a[data-banner]'))){ clicBanner(+b.dataset.banner); return; }
+  if(t('[data-compartir]')) return;
   if((b = t('[data-fav]'))){ toggleFav(+b.dataset.fav); return; }
   if((b = t('[data-votar]'))){ if(detalle) votar(detalle, +b.dataset.votar); return; }
   if((b = t('[data-pedir]'))){ cerrar('sheet-det'); pedir(+b.dataset.pedir); return; }
@@ -1252,7 +1288,7 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden) refre
 // ---------- Acceso (Supabase Auth) ----------
 const emailOk = v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
 const VISTAS = ['login', 'signup', 'forgot', 'sent', 'reset'];
-const volverA = () => location.origin + location.pathname;
+const volverA = () => location.origin + location.pathname + (compartido ? '?c=' + compartido : '');
 function vistaAuth(v){
   VISTAS.forEach(x => $('v-' + x).hidden = x !== v);
   $('auth-tabs').hidden = !(v === 'login' || v === 'signup');
@@ -1354,7 +1390,7 @@ async function entrar(s){
     vista = 'home'; pila = []; cargado = false; $('hero-in').innerHTML = ''; render(true);
     try{ await cargarCatalogo(); await cargarMios(); cargarLogos(); }
     catch(e){ toast(e.message); }
-    cargado = true; render();
+    cargado = true; render(); abrirCompartido();
   }
 }
 function salir(){
@@ -1374,7 +1410,8 @@ sb.auth.onAuthStateChange((evento, s) => {
   const { data } = await sb.auth.getSession();
   if(recuperando) return;
   if(data.session){ entrar(data.session); return; }
-  vistaAuth('login');
+  vistaAuth(compartido ? 'signup' : 'login');
+  $('auth-compartido').hidden = !compartido;
   if(h.get('error_description')){
     aviso(traducir({ message: h.get('error_description') }));
     history.replaceState && history.replaceState(null, '', location.pathname + location.search);
