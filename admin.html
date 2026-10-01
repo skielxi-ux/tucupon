@@ -425,8 +425,8 @@ a.btn{text-decoration:none}
     <div>
       <span class="label">Imagen</span>
       <div id="bn-prev" class="bn-prev"><span>Sin imagen</span></div>
-      <div class="row" style="margin-top:8px"><label class="btn ghost sm file-btn">Subir imagen<input id="bn-file" type="file" accept="image/png,image/jpeg,image/webp"></label></div>
-      <p class="hint"><b>Tamaño ideal: 1200 × 400 px</b> (3 a 1, horizontal). Si la imagen tiene otra forma, la recortamos al centro. Dejá el texto importante lejos de los bordes y fuera de la esquina de arriba a la derecha: ahí va la etiqueta “Publicidad”.</p>
+      <div class="row" style="margin-top:8px"><label class="btn ghost sm file-btn">Subir imagen<input id="bn-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label></div>
+      <p class="hint"><b>Tamaño ideal: 1200 × 400 px</b> (3 a 1, horizontal). Si la imagen tiene otra forma, la recortamos al centro. <b>También acepta GIF animado</b> (hasta 1 MB): el GIF se sube tal cual, así que conviene que ya venga en 1200 × 400 px. Dejá el texto importante lejos de los bordes y fuera de la esquina de arriba a la derecha: ahí va la etiqueta “Publicidad”.</p>
       <p id="bn-aviso" class="hint warn" hidden></p>
     </div>
     <div><label class="label" for="bn-link">Link (opcional)</label><input id="bn-link" class="field" type="url" inputmode="url" maxlength="500" placeholder="https://… o https://wa.me/549…"><p class="hint">A dónde va la persona al tocar el banner. Sin link, el banner no se puede tocar.</p></div>
@@ -947,7 +947,28 @@ $('lf-rubro').addEventListener('change', pintarLocales);
 
 // ---------- Publicidad ----------
 let BANNERS = [], bannerEdit = null, bannerImg;   // bannerImg: undefined = sin cambios, texto = imagen nueva
+// GIF animado: se sube sin tocar (si lo pasáramos por el canvas perdería la animación)
+function prepararGif(file){
+  return new Promise((ok, mal) => {
+    if(file.size > 1024 * 1024) return mal(new Error(`El GIF pesa ${(file.size / 1048576).toFixed(1).replace('.', ',')} MB y el máximo es 1 MB. Achicalo en ezgif.com (opción “Optimize”, o bajale colores o cuadros) y probá de nuevo.`));
+    const fr = new FileReader();
+    fr.onload = () => {
+      const data = fr.result, img = new Image();
+      img.onload = () => {
+        const w0 = img.width, h0 = img.height, avisos = [];
+        if(w0 < 900 || h0 < 300) avisos.push(`Tu GIF mide ${w0} × ${h0} px: es chico y puede verse pixelado. Mejor 1200 × 400 px.`);
+        if(Math.abs(w0 / h0 - 3) > .25) avisos.push('Tu GIF no tiene la forma ideal (3 a 1): en la app se va a ver recortado arriba y abajo o a los costados. Revisá la vista previa.');
+        ok({data, avisos});
+      };
+      img.onerror = () => mal(new Error('No pudimos leer ese GIF. Probá con otro.'));
+      img.src = data;
+    };
+    fr.onerror = () => mal(new Error('No pudimos leer ese GIF. Probá con otro.'));
+    fr.readAsDataURL(file);
+  });
+}
 function prepararBanner(file){
+  if(file && file.type === 'image/gif') return prepararGif(file);
   return new Promise((ok, mal) => {
     if(!file || !/^image\//.test(file.type)) return mal(new Error('Elegí una imagen (JPG, PNG o WebP).'));
     if(file.size > 25e6) return mal(new Error('La imagen es muy pesada. Probá con una de menos de 25 MB.'));
