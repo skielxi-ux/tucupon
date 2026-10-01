@@ -96,6 +96,19 @@ p{margin:0}
   mask:radial-gradient(circle 5px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 5px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat}
 .brandmark .tk svg{width:16px;height:16px}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative}
+.prov-btn{position:relative;display:inline-flex;align-items:center;gap:6px;margin-top:16px;border:1.5px solid rgba(255,255,255,.28);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+.prov-btn:hover{background:rgba(255,255,255,.2)}
+.prov-btn .ch{opacity:.8;font-size:.75rem}
+.prov-list{display:grid;gap:6px;margin-top:14px}
+.prov-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:11px 14px;font:inherit;color:var(--ink);cursor:pointer}
+.prov-item b{flex:1;min-width:0;color:var(--heading)}
+.prov-item small{flex:none;color:var(--muted);font-weight:700;font-size:.8rem}
+.prov-item[aria-pressed="true"]{border-color:var(--brand);background:var(--surface-2)}
+.prov-item[aria-pressed="true"] small{color:var(--brand)}
+.prov-vacia{border:2px dashed var(--line);border-radius:24px;padding:28px 20px;text-align:center;margin-top:22px}
+.prov-vacia h2{color:var(--heading);font-size:1.25rem;margin-top:6px}
+.prov-vacia p{color:var(--muted);margin-top:6px}
+.prov-vacia .sumar-local{text-align:left}
 .saludo{border-radius:999px;background:rgba(255,255,255,.12);padding:5px 12px;font-size:.82rem;font-weight:700}
 .hero h1{position:relative;margin-top:18px;font-size:2.15rem;line-height:1.02;font-weight:800}
 .hero h1 span{display:inline-block;margin-top:4px;rotate:-1deg;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 10px 4px}
@@ -435,7 +448,8 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         <button id="btn-salir" type="button" class="btn-ghost">Salir</button>
       </section>
 
-      <div class="sec" style="margin-top:22px">
+      <div id="prov-vacia" hidden></div>
+      <div class="sec" id="sec-barrio" style="margin-top:22px">
         <p class="label" style="margin-bottom:8px">Barrio</p>
         <div class="chips barrios" role="group" aria-label="Filtrar por barrio"></div>
       </div>
@@ -544,6 +558,15 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <div class="act"><button type="submit" class="main">Enviar</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
     </form>
   </div>
+  <!-- Hoja: provincia -->
+  <div id="sheet-prov" class="sheet-wrap" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pv-title">
+      <div class="grip"></div>
+      <h3 id="pv-title" style="font-size:1.3rem;color:var(--heading)">¿En qué provincia estás?</h3>
+      <p class="muted" style="margin-top:6px;font-size:.9rem">Te mostramos los locales y descuentos de esa provincia.</p>
+      <div id="prov-list" class="prov-list"></div>
+    </div>
+  </div>
   <!-- Hoja: limpiar códigos -->
   <div id="sheet-limpiar" class="sheet-wrap" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="lp-title">
@@ -602,6 +625,10 @@ async function rpc(fn, args = {}){
 
 // Datos que vienen de la base
 let RUBROS = [], LOCALES = [], CUPONES = [], BARRIOS = [], favs = [], mios = {};
+const PROVINCIAS = ['Buenos Aires','Catamarca','Chaco','Chubut','Ciudad de Buenos Aires','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'];
+let prov = 'Tucumán';
+try{ const g = localStorage.getItem('tucupon.prov'); if(PROVINCIAS.includes(g)) prov = g; }catch(e){}
+const enProv = l => (l.provincia || 'Tucumán') === prov;
 const localDe = c => LOCALES.find(l => l.id === c.local);
 const rubroDe = id => RUBROS.find(r => r.id === id) || {nombre: '', icono: '🍽️', color: '#7B3FF0'};
 
@@ -649,8 +676,11 @@ async function cargarCatalogo(){
   RUBROS = d.rubros || [];
   CUPONES = d.cupones || [];
   LOCALES = (d.locales || []).map(l => ({...l, cupones: CUPONES.filter(c => c.local === l.id)}));
-  BARRIOS = [...new Set(LOCALES.map(l => l.barrio))].sort((a, b) => a.localeCompare(b, 'es'));
   favs = d.favoritos || [];
+  calcBarrios();
+}
+function calcBarrios(){
+  BARRIOS = [...new Set(LOCALES.filter(enProv).map(l => l.barrio))].sort((a, b) => a.localeCompare(b, 'es'));
   if(barrio !== 'Todos' && !BARRIOS.includes(barrio)) barrio = 'Todos';
 }
 async function cargarMios(){
@@ -793,6 +823,7 @@ function tarjeta(c, puesto){
 function heroHome(){
   const h = new Date().getHours();
   return `<div class="topline"><img src="logo.png" alt="Tucupón" class="logo-img" style="height:40px;width:auto;display:block;max-width:62vw" width="656" height="160"><span class="saludo">${h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches'}</span></div>
+    ${provBtn()}
     <h1>Descuentos para comer<br><span>cerca tuyo</span></h1>
     <div class="search" role="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -805,7 +836,31 @@ function heroBar(titulo, sub){
   return `<div class="bar"><button type="button" class="back" data-back>${ATRAS}Volver</button><img src="logo.png" alt="Tucupón" class="logo-img" style="height:30px;width:auto;display:block;margin-left:auto;max-width:45vw" width="656" height="160"></div>
     <h1 style="font-size:1.9rem">${titulo}</h1>${sub ? `<p style="position:relative;margin-top:8px;font-weight:600;opacity:.9">${sub}</p>` : ''}`;
 }
-const porBarrio = l => barrio === 'Todos' || l.barrio === barrio;
+const porBarrio = l => enProv(l) && (barrio === 'Todos' || l.barrio === barrio);
+function provBtn(){ return `<button type="button" class="prov-btn" data-prov-abrir aria-label="Cambiar provincia (ahora: ${esc(prov)})">${PIN} ${esc(prov)} <span class="ch" aria-hidden="true">▼</span></button>`; }
+function abrirProv(){
+  const n = p => LOCALES.filter(l => (l.provincia || 'Tucumán') === p).length;
+  const orden = [prov, ...PROVINCIAS.filter(p => p !== prov && n(p)), ...PROVINCIAS.filter(p => p !== prov && !n(p))];
+  $('prov-list').innerHTML = orden.map(p => { const k = n(p);
+    return `<button type="button" class="prov-item" data-prov="${esc(p)}" aria-pressed="${p === prov}"><b>${esc(p)}</b><small>${k ? `${k} ${k === 1 ? 'local' : 'locales'}` : 'Próximamente'}</small></button>`; }).join('');
+  abrirHoja('sheet-prov');
+}
+function elegirProv(p){
+  if(!PROVINCIAS.includes(p)) return;
+  cerrar('sheet-prov');
+  if(p === prov) return;
+  prov = p; barrio = 'Todos'; q = '';
+  try{ localStorage.setItem('tucupon.prov', prov); localStorage.setItem('tucupon.barrio', barrio); }catch(e){}
+  calcBarrios(); pila = []; vista = 'home'; $('hero-in').innerHTML = ''; render(true);
+}
+const WA_SUMAR = 'https://wa.me/5493816335234?text=';
+function provVacia(){
+  const msg = encodeURIComponent(`Hola Tucupon, quiero solicitar información para sumarme como local adherido al sistema. Mi local está en ${prov}.`);
+  return `<p style="font-size:2.2rem">📍</p><h2>Todavía no hay locales en ${esc(prov)}</h2>
+    <p>Estamos llegando a nuevas provincias. ¿Tenés un local gastronómico acá? Sumate y sé de los primeros.</p>
+    <a class="sumar-local" href="${WA_SUMAR + msg}" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg></span><span><b>Quiero sumar mi local</b><small>Escribinos por WhatsApp</small></span></a>
+    ${prov !== 'Tucumán' ? `<button type="button" class="btn-ghost" data-prov="Tucumán" style="margin-top:16px">Ver los descuentos de Tucumán</button>` : ''}`;
+}
 function barrioChips(){
   const html = ['Todos', ...BARRIOS].map(b => `<button type="button" class="filtro" data-barrio="${esc(b)}" aria-pressed="${b === barrio}">${b === 'Todos' ? 'Todos los barrios' : esc(b)}</button>`).join('');
   $$('.barrios').forEach(el => el.innerHTML = html);
@@ -819,7 +874,12 @@ function ordenar(ls){
 
 function pintarHome(){
   if(!cargado){ $('rubros').innerHTML = `<div class="loading" style="grid-column:1/-1">${SPINNER}</div>`; return; }
-  const qn = norm(q.trim());
+  const qn = norm(q.trim()), sinLocales = !LOCALES.some(enProv);
+  $('prov-vacia').hidden = !sinLocales; $('sec-barrio').hidden = sinLocales || BARRIOS.length < 2;
+  if(sinLocales){
+    $('prov-vacia').className = 'prov-vacia'; $('prov-vacia').innerHTML = provVacia();
+    $('resultados').hidden = true; $('home-main').hidden = true; pintarMios(); return;
+  }
   $('resultados').hidden = !qn; $('home-main').hidden = !!qn;
   if(qn){
     const r = ordenar(LOCALES.filter(l => porBarrio(l) && (norm(l.nombre).includes(qn) || norm(rubroDe(l.rubro).nombre).includes(qn))));
@@ -832,7 +892,7 @@ function pintarHome(){
       const ls = vis.filter(l => l.rubro === r.id), n = ls.length, d = ls.reduce((s, l) => s + l.cupones.length, 0);
       return `<button type="button" class="rubro" data-rubro="${esc(r.id)}" style="--rc:${esc(r.color)}"><span class="bg"></span><span class="em" aria-hidden="true">${esc(r.icono)}</span><span><b>${esc(r.nombre)}</b><small>${n} ${n === 1 ? 'local' : 'locales'} · ${d} ${d === 1 ? 'descuento' : 'descuentos'}</small></span></button>`;
     }).join('') : vacio('Todavía no hay rubros cargados.');
-    const fl = LOCALES.filter(l => esFav(l.id));
+    const fl = LOCALES.filter(l => enProv(l) && esFav(l.id));
     $('favs-row').innerHTML = fl.length ? `<div class="favs-row">${fl.map(l => `<button type="button" class="fav-pill" data-local="${l.id}">${logo(l)}${esc(l.nombre)}</button>`).join('')}</div>`
       : vacio('Tocá el corazón de un local para tenerlo siempre a mano acá.');
     $$('[data-go-favs]').forEach(b => b.hidden = !fl.length);
@@ -844,7 +904,7 @@ function pintarHome(){
     $('rel-rail').innerHTML = rels.map(c => tarjeta(c)).join('');
     const top = CUPONES.filter(c => !esRel(c) && localDe(c) && porBarrio(localDe(c))).sort((a, b) => b.pedidos - a.pedidos || pct(b) - pct(a)).slice(0, 6);
     $('top-rail').classList.toggle('solo', top.length === 1);
-    $('top-rail').innerHTML = top.length ? top.map((c, i) => tarjeta(c, c.pedidos ? i + 1 : 0)).join('') : vacio('No hay cupones en este barrio por ahora.');
+    $('top-rail').innerHTML = top.length ? top.map((c, i) => tarjeta(c, c.pedidos ? i + 1 : 0)).join('') : vacio(barrio !== 'Todos' ? 'No hay cupones en este barrio por ahora.' : `No hay cupones en ${esc(prov)} por ahora.`);
   }
   pintarMios();
 }
@@ -920,7 +980,7 @@ function cerrar(id){
   if(id === 'sheet-code'){ abierto = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
 }
 $$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrar(w.id); }));
-document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); } });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); cerrar('sheet-prov'); } });
 
 function accionCupon(c){
   const m = mios[c.id];
@@ -1113,6 +1173,8 @@ document.addEventListener('click', ev => {
   if((b = t('[data-rubro]'))){ ir('rubro', {rubro: b.dataset.rubro}); return; }
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
   if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
+  if(t('[data-prov-abrir]')){ abrirProv(); return; }
+  if((b = t('[data-prov]'))){ elegirProv(b.dataset.prov); return; }
   if(t('[data-reclamo]')){ abrirReclamo(); return; }
   if((b = t('#lp-ok'))){ limpiarCodigos(b); return; }
   if(t('[data-back]')){ volver(); return; }
