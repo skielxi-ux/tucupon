@@ -109,6 +109,12 @@ p{margin:0}
 .prov-vacia h2{color:var(--heading);font-size:1.25rem;margin-top:6px}
 .prov-vacia p{color:var(--muted);margin-top:6px}
 .prov-vacia .sumar-local{text-align:left}
+.ban-slot:empty{display:none}
+.ban-slot{margin-top:26px}
+.banner{display:block;position:relative;aspect-ratio:3/1;border-radius:22px;overflow:hidden;background:var(--surface-2);box-shadow:0 6px 18px rgba(43,15,99,.10);text-decoration:none}
+.banner img{width:100%;height:100%;object-fit:cover;display:block}
+.banner .ad{position:absolute;top:8px;right:8px;background:rgba(20,8,45,.6);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.02em;padding:2px 8px;border-radius:999px;backdrop-filter:blur(4px)}
+a.banner:active{transform:scale(.99)}
 .saludo{border-radius:999px;background:rgba(255,255,255,.12);padding:5px 12px;font-size:.82rem;font-weight:700}
 .hero h1{position:relative;margin-top:18px;font-size:2.15rem;line-height:1.02;font-weight:800}
 .hero h1 span{display:inline-block;margin-top:4px;rotate:-1deg;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 10px 4px}
@@ -470,6 +476,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
           <div id="rubros" class="rubros"></div>
         </section>
 
+        <div id="ban-inicio" class="ban-slot"></div>
         <section class="sec">
           <div class="sec-h"><h2>Tus favoritos</h2><button type="button" class="count" data-go-favs style="color:var(--brand)">Ver todos</button></div>
           <div id="favs-row"></div>
@@ -508,6 +515,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
           <option value="nombre">Nombre (A–Z)</option>
         </select>
       </div>
+      <div id="ban-rubro" class="ban-slot" style="margin-top:20px"></div>
       <div class="sec-h sec" style="margin-top:20px"><h2 id="rubro-sub">Locales adheridos</h2><span id="rubro-count" class="count"></span></div>
       <div id="rubro-list" class="locales"></div>
     </div>
@@ -670,7 +678,43 @@ async function traerFotos(){
     render();
   }catch(e){ ids.forEach(id => { const c = CUPONES.find(x => x.id === id); if(c) pedidas.delete(id + ':' + c.foto_v); }); }
 }
+// ---------- Publicidad ----------
+let BANNERS = [], BIMG = {};
+const ROT = Math.floor(Math.random() * 1000);   // cada visita muestra un banner distinto si hay varios en el mismo lugar
+async function cargarBanners(){
+  try{ BANNERS = await rpc('tc_banners') || []; }catch(e){ return; }
+  const faltan = BANNERS.filter(b => !BIMG[b.id] || BIMG[b.id].v !== b.imagen_v).map(b => b.id);
+  if(!faltan.length) return pintarBanners();
+  try{ const r = await rpc('tc_banner_imgs', {p_ids: faltan}); Object.entries(r || {}).forEach(([id, x]) => BIMG[id] = x); }catch(e){}
+  pintarBanners();
+}
+function bannerPara(ubic, rubro){
+  const ls = BANNERS.filter(b => b.ubicacion === ubic && (ubic !== 'rubro' || b.rubro === rubro) && (!b.provincia || b.provincia === prov) && BIMG[b.id]);
+  if(!ls.length) return '';
+  const b = ls[ROT % ls.length], img = `<img src="${BIMG[b.id].img}" alt="${esc(b.anunciante)}" loading="lazy"><span class="ad">Publicidad</span>`;
+  return b.link && /^https?:\/\//i.test(b.link) ? `<a class="banner" href="${esc(b.link)}" target="_blank" rel="noopener sponsored" data-banner="${b.id}">${img}</a>`
+    : `<div class="banner" data-banner="${b.id}">${img}</div>`;
+}
+const VISTOS = new Set();
+const obsBanner = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+  if(!e.isIntersecting) return;
+  const id = +e.target.dataset.banner; obsBanner.unobserve(e.target);
+  if(VISTOS.has(id)) return; VISTOS.add(id);
+  rpc('tc_banner_evento', {p_id: id, p_tipo: 'v'}).catch(() => VISTOS.delete(id));
+}), {threshold: .5}) : null;
+function pintarBanners(){
+  const poner = (id, html) => { const el = $(id); if(!el || el.innerHTML === html) return; el.innerHTML = html; const b = el.querySelector('[data-banner]'); if(b && obsBanner) obsBanner.observe(b); };
+  const sinLocales = !LOCALES.some(enProv);
+  poner('ban-inicio', vista === 'home' && !q.trim() && !sinLocales ? bannerPara('inicio') : '');
+  poner('ban-rubro', vista === 'rubro' && rubroSel !== 'favs' ? bannerPara('rubro', rubroSel) : '');
+}
+function clicBanner(id){
+  const h = {apikey: SUPABASE_KEY, 'Content-Type': 'application/json'};
+  if(sesion) h.Authorization = 'Bearer ' + sesion.access_token;
+  try{ fetch(`${SUPABASE_URL}/rest/v1/rpc/tc_banner_evento`, {method: 'POST', headers: h, body: JSON.stringify({p_id: id, p_tipo: 'c'}), keepalive: true}).catch(() => {}); }catch(e){}
+}
 async function cargarCatalogo(){
+  cargarBanners();
   const antes = Date.now(), d = await rpc('tc_catalogo');
   if(d.ahora) desfase = new Date(d.ahora).getTime() - (antes + Date.now()) / 2;
   RUBROS = d.rubros || [];
@@ -957,6 +1001,7 @@ function render(scroll){
     $('hero-in').innerHTML = heroBar(esc(l.nombre), `${PIN} ${esc(l.barrio)} · ${esc(l.dir)}`);
     pintarLocal();
   }
+  pintarBanners();
   if(scroll) window.scrollTo(0, 0);
   if(detalle) verDetalle(detalle, true);
 }
@@ -1164,6 +1209,7 @@ document.addEventListener('click', ev => {
   if($('app').hidden) return;
   const t = s => ev.target.closest(s);
   let b;
+  if((b = t('a[data-banner]'))){ clicBanner(+b.dataset.banner); return; }
   if((b = t('[data-fav]'))){ toggleFav(+b.dataset.fav); return; }
   if((b = t('[data-votar]'))){ if(detalle) votar(detalle, +b.dataset.votar); return; }
   if((b = t('[data-pedir]'))){ cerrar('sheet-det'); pedir(+b.dataset.pedir); return; }
@@ -1180,10 +1226,10 @@ document.addEventListener('click', ev => {
   if(t('[data-back]')){ volver(); return; }
   if((b = t('[data-barrio]'))){ barrio = b.dataset.barrio; try{ localStorage.setItem('tucupon.barrio', barrio); }catch(e){} render(); return; }
   if((b = t('[data-filtro]'))){ filtro = b.dataset.filtro; pintarLocal(); return; }
-  if(t('[data-clear]')){ q = ''; $('q').value = ''; t('[data-clear]').hidden = true; pintarHome(); $('q').focus(); return; }
+  if(t('[data-clear]')){ q = ''; $('q').value = ''; t('[data-clear]').hidden = true; pintarHome(); pintarBanners(); $('q').focus(); return; }
 });
 document.addEventListener('input', e => {
-  if(e.target.id === 'q'){ q = e.target.value; document.querySelector('[data-clear]').hidden = !q; pintarHome(); }
+  if(e.target.id === 'q'){ q = e.target.value; document.querySelector('[data-clear]').hidden = !q; pintarHome(); pintarBanners(); }
 });
 $('orden').addEventListener('change', e => { orden = e.target.value; pintarRubro(); });
 
