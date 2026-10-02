@@ -119,6 +119,12 @@ a.banner:active{transform:scale(.99)}
 .compartir svg{width:20px;height:20px}
 .compartido{display:flex;gap:10px;align-items:center;background:var(--surface-2);border:2px solid var(--brand);border-radius:16px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;color:var(--ink)}
 .compartido .em{font-size:1.5rem;flex:none}
+.sedes{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:.92rem;font-weight:700}
+.sedes li{display:flex;gap:6px;align-items:baseline;min-width:0}
+.box .sedes,.box .sedes li{padding:0;margin:0}
+.box .sedes li::before{content:none!important;display:none!important}
+.sedes li span{min-width:0;overflow-wrap:anywhere}
+.sedes svg{flex:none;color:var(--brand)}
 .saludo{border-radius:999px;background:rgba(255,255,255,.12);padding:5px 12px;font-size:.82rem;font-weight:700}
 .hero h1{position:relative;margin-top:18px;font-size:2.15rem;line-height:1.02;font-weight:800}
 .hero h1 span{display:inline-block;margin-top:4px;rotate:-1deg;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 10px 4px}
@@ -717,7 +723,7 @@ function abrirCompartido(){
 let BANNERS = [], BIMG = {};
 const ROT = Math.floor(Math.random() * 1000);   // cada visita muestra un banner distinto si hay varios en el mismo lugar
 async function cargarBanners(){
-  try{ BANNERS = await rpc('tc_banners') || []; }catch(e){ return; }
+  try{ const r = await rpc('tc_banners'); BANNERS = Array.isArray(r) ? r : []; }catch(e){ return; }
   const faltan = BANNERS.filter(b => !BIMG[b.id] || BIMG[b.id].v !== b.imagen_v).map(b => b.id);
   if(!faltan.length) return pintarBanners();
   try{ const r = await rpc('tc_banner_imgs', {p_ids: faltan}); Object.entries(r || {}).forEach(([id, x]) => BIMG[id] = x); }catch(e){}
@@ -759,7 +765,7 @@ async function cargarCatalogo(){
   calcBarrios();
 }
 function calcBarrios(){
-  BARRIOS = [...new Set(LOCALES.filter(enProv).map(l => l.barrio))].sort((a, b) => a.localeCompare(b, 'es'));
+  BARRIOS = [...new Set(LOCALES.filter(enProv).flatMap(l => sedes(l).map(x => x.barrio)))].sort((a, b) => a.localeCompare(b, 'es'));
   if(barrio !== 'Todos' && !BARRIOS.includes(barrio)) barrio = 'Todos';
 }
 async function cargarMios(){
@@ -856,7 +862,7 @@ function localCard(l){
       ${logo(l)}
       <span class="min">
         <span class="ln">${esc(l.nombre)}</span>
-        <span class="dir">${esc(l.barrio)} · ${esc(l.dir)}</span>
+        <span class="dir">${esc(sedeVista(l).barrio)} · ${esc(sedeVista(l).dir)}${sucTexto(l)}</span>
       </span>
     </button>
     ${favBtn(l)}
@@ -915,7 +921,14 @@ function heroBar(titulo, sub){
   return `<div class="bar"><button type="button" class="back" data-back>${ATRAS}Volver</button><img src="logo.png" alt="Tucupón" class="logo-img" style="height:30px;width:auto;display:block;margin-left:auto;max-width:45vw" width="656" height="160"></div>
     <h1 style="font-size:1.9rem">${titulo}</h1>${sub ? `<p style="position:relative;margin-top:8px;font-weight:600;opacity:.9">${sub}</p>` : ''}`;
 }
-const porBarrio = l => enProv(l) && (barrio === 'Todos' || l.barrio === barrio);
+// Sucursales: la dirección del local es la principal; las demás vienen en l.sucursales
+const sedes = l => [{barrio: l.barrio, dir: l.dir}, ...(l.sucursales || [])];
+const masSuc = l => (l.sucursales || []).length;
+const porBarrio = l => enProv(l) && (barrio === 'Todos' || sedes(l).some(x => x.barrio === barrio));
+// Con un barrio elegido, muestra la sede de ese barrio
+const sedeVista = l => (barrio !== 'Todos' && sedes(l).find(x => x.barrio === barrio)) || sedes(l)[0];
+function sucTexto(l){ const n = masSuc(l); return n ? ` · ${n === 1 ? '+1 sucursal' : '+' + n + ' sucursales'}` : ''; }
+const sedesHTML = l => `<ul class="sedes">${sedes(l).map(x => `<li>${PIN} <span>${esc(x.dir)}, ${esc(x.barrio)}</span></li>`).join('')}</ul>`;
 function provBtn(){ return `<button type="button" class="prov-btn" data-prov-abrir aria-label="Cambiar provincia (ahora: ${esc(prov)})">${PIN} ${esc(prov)} <span class="ch" aria-hidden="true">▼</span></button>`; }
 function abrirProv(){
   const n = p => LOCALES.filter(l => (l.provincia || 'Tucumán') === p).length;
@@ -1000,7 +1013,8 @@ function pintarLocal(){
   const l = LOCALES.find(x => x.id === localSel); if(!l){ vista = 'home'; return render(true); }
   const r = rubroDe(l.rubro);
   $('ficha').innerHTML = `<div class="top">${logo(l)}<div style="min-width:0;flex:1"><p class="muted" style="font-size:.8rem;font-weight:800">${esc(r.icono)} ${esc(r.nombre)}</p><h2>${esc(l.nombre)}</h2></div>${favBtn(l)}</div>
-    <dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`;
+    ${masSuc(l) ? `<p class="label" style="margin:16px 0 6px">${masSuc(l) + 1} sucursales · los descuentos valen en todas</p>${sedesHTML(l)}`
+      : `<dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`}`;
   const cs = l.cupones.slice().sort((a, b) => b.pedidos - a.pedidos), vis = filtro === 'ahora' ? cs.filter(enHorario) : cs;
   $('local-count').textContent = cs.length ? `${cs.length} ${cs.length === 1 ? 'cupón' : 'cupones'}` : '';
   $('local-filtros').hidden = !cs.length;
@@ -1033,7 +1047,7 @@ function render(scroll){
   }else{
     const l = LOCALES.find(x => x.id === localSel);
     if(!l){ vista = 'home'; $('hero-in').innerHTML = ''; return render(true); }
-    $('hero-in').innerHTML = heroBar(esc(l.nombre), `${PIN} ${esc(l.barrio)} · ${esc(l.dir)}`);
+    $('hero-in').innerHTML = heroBar(esc(l.nombre), masSuc(l) ? `${PIN} ${masSuc(l) + 1} sucursales` : `${PIN} ${esc(l.barrio)} · ${esc(l.dir)}`);
     pintarLocal();
   }
   pintarBanners();
@@ -1096,7 +1110,7 @@ function verDetalle(id, soloPintar){
     </div>`}
     <div class="box">
       <p class="k">Dónde</p>
-      <p class="v" style="font-size:1rem">${esc(l.dir)}, ${esc(l.barrio)}</p>
+      ${masSuc(l) ? `<p class="v2" style="margin:2px 0 6px">Vale en todas sus sucursales:</p>${sedesHTML(l)}` : `<p class="v" style="font-size:1rem">${esc(l.dir)}, ${esc(l.barrio)}</p>`}
     </div>
     <div class="box">
       <p class="k">Condiciones</p>
@@ -1154,7 +1168,7 @@ function pintarHoja(){
   const l = localDe(c), ok = m.estado === 'usado';
   $('s-badge').textContent = c.icono;
   $('s-title').textContent = `${c.etiqueta} · ${c.titulo}`;
-  $('s-local').textContent = l ? `${l.nombre} · ${l.dir}, ${l.barrio}` : '';
+  $('s-local').textContent = l ? (masSuc(l) ? `${l.nombre} · en cualquiera de sus ${masSuc(l) + 1} sucursales` : `${l.nombre} · ${l.dir}, ${l.barrio}`) : '';
   $('s-code').textContent = m.codigo;
   $('s-cond').textContent = c.condiciones ? c.condiciones.replace(/\.?$/, '.') : '';
   $('s-stamp').hidden = !ok;
