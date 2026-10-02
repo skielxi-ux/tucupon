@@ -223,6 +223,15 @@ a.btn{text-decoration:none}
 .bn-nums div{background:var(--surface-2);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
 .bn-nums b{display:block;font-size:1.1rem;color:var(--heading)}
 .bn-nums span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;line-height:1.2}
+.pc-row{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:16px}
+.pc-row .grow{flex:none}
+.pc-row .t{font-weight:800;overflow-wrap:anywhere}
+.pc-row .s{font-size:.85rem;color:var(--muted);margin-top:2px}
+.who .suc{display:block;font-size:.72rem;font-weight:600;opacity:.8;margin-top:1px;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.suc-lista{margin:4px 0 0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+.su-row+.su-row{border-top:1px dashed var(--line);padding-top:10px}
+.su-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start}
+@media (max-width:520px){.su-row{grid-template-columns:minmax(0,1fr) auto}.su-row .su-dir-w{grid-column:1/2}}
 </style>
 
 </head>
@@ -352,7 +361,8 @@ a.btn{text-decoration:none}
             <div data-otro hidden style="margin-top:8px"><label class="label" for="pf-barrio-otro">¿Qué barrio?</label><input id="pf-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
           <div><label class="label" for="pf-rubro">Rubro <span class="req">*</span></label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
         </div>
-        <div><label class="label" for="pf-dir">Dirección <span class="req">*</span></label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+        <div><label class="label" for="pf-dir">Dirección <span class="req">*</span></label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"><p id="pf-suc-hint" class="hint" hidden>Es la dirección de tu sucursal principal.</p></div>
+        <div id="pf-suc" hidden><span class="label">Tus otras sucursales</span><ul id="pf-suc-lista" class="suc-lista"></ul><p class="hint">Tus cupones valen en todas. Para sumar, cambiar o quitar una sucursal, escribile al equipo de Tucupón.</p></div>
         <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto <span class="req">*</span></label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
         <p class="hint" style="margin-top:-4px"><span class="req">*</span> Campos obligatorios</p>
         <button type="submit" class="btn full">Guardar perfil</button>
@@ -385,16 +395,12 @@ a.btn{text-decoration:none}
     <section id="t-ajustes" class="panel" hidden>
       <div class="card" style="display:grid;gap:12px">
         <div><h2>PIN de caja</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Para tus mozos y cajeros. Con este PIN solo pueden <b>confirmar descuentos</b> y ver los canjes del día. No pueden tocar tus cupones, tu perfil, tus números ni tu PIN.</p></div>
-        <div id="pc-estado"></div>
+        <div id="pc-lista" style="display:grid;gap:10px"></div>
         <div id="pc-nuevo" hidden>
-          <p class="label" style="margin-bottom:6px">Nuevo PIN de caja</p>
+          <p class="label" style="margin-bottom:6px" id="pc-para">Nuevo PIN de caja</p>
           <p id="pc-valor" class="mono" style="font-size:2.2rem;font-weight:800;letter-spacing:.2em;text-align:center;user-select:all;background:var(--surface-2);border-radius:16px;padding:12px"></p>
           <p class="hint">Anotalo y pasáselo a tu equipo. Por seguridad no se puede volver a ver: si se pierde, generás otro.</p>
           <button type="button" id="pc-copiar" class="btn ghost sm" style="justify-self:start">Copiar PIN</button>
-        </div>
-        <div class="row" style="flex-wrap:wrap;gap:8px">
-          <button type="button" id="pc-generar" class="btn">Crear PIN de caja</button>
-          <button type="button" id="pc-quitar" class="btn ghost" hidden>Desactivar</button>
         </div>
         <p class="hint" style="margin:0">Si un empleado deja de trabajar con vos, generá uno nuevo: el anterior deja de funcionar en el momento.</p>
       </div>
@@ -850,7 +856,7 @@ function entrar(){
   tab('canjear');
 }
 function pintarCabecera(){
-  $('w-nombre').innerHTML = `${logoHTML(yo.logo, yo.nombre, yo.color, 'mini')}${esc(yo.nombre)}`;
+  $('w-nombre').innerHTML = `${logoHTML(yo.logo, yo.nombre, yo.color, 'mini')}${esc(yo.nombre)}${esCaja() && yo.sucursal ? `<small class="suc">${esc(yo.sucursal)}</small>` : ''}`;
   const av = $('pausa-aviso'); av.hidden = yo.activo !== false;
   if(yo.activo === false) av.innerHTML = `<b>Tu local está pausado por Tucupón.</b> Mientras tanto no aparece para los clientes y no se pueden canjear códigos.${yo.motivo_pausa ? `<br>Motivo: ${esc(yo.motivo_pausa)}` : ''}<br>Para reactivarlo, escribile al equipo de Tucupón.`;
 }
@@ -942,7 +948,7 @@ async function cargarCanjes(){
   try{
     const r = await rpc('tc_local_canjes', {p_local_id: yo.id, p_pin: pin, p_desde: d, p_hasta: d});
     $('h-usados').textContent = r.usados; $('h-pedidos').textContent = r.pedidos;
-    $('h-lista').innerHTML = r.lista.length ? r.lista.map(k => `<div class="item"><span class="badge" aria-hidden="true" style="font-size:.9rem">${esc(hora(k.usado_en))}</span><div class="grow"><p class="t">${esc(k.icono)} ${esc(k.etiqueta)} · ${esc(k.titulo)}</p><p class="s">Código <span class="mono">${esc(k.codigo)}</span> · ${esc(k.email)}</p></div></div>`).join('')
+    $('h-lista').innerHTML = r.lista.length ? r.lista.map(k => `<div class="item"><span class="badge" aria-hidden="true" style="font-size:.9rem">${esc(hora(k.usado_en))}</span><div class="grow"><p class="t">${esc(k.icono)} ${esc(k.etiqueta)} · ${esc(k.titulo)}</p><p class="s">Código <span class="mono">${esc(k.codigo)}</span> · ${esc(k.email)}${k.sucursal && !esCaja() ? ` · 📍 ${esc(k.sucursal)}` : ''}</p></div></div>`).join('')
       : '<div class="empty">No hubo canjes confirmados este día.</div>';
   }catch(err){ manejarError(err); $('h-lista').innerHTML = ''; }
 }
@@ -994,36 +1000,47 @@ $('del-ok').addEventListener('click', async e => {
 });
 
 // ---------- PIN ----------
-// ---------- PIN de caja ----------
-function pintarPinCaja(tiene){
-  $('pc-estado').innerHTML = tiene ? '<span class="chip ok">Activo</span> <span class="muted" style="font-size:.88rem">Tu equipo puede ingresar con el PIN de caja.</span>'
-    : '<span class="chip">Sin PIN de caja</span> <span class="muted" style="font-size:.88rem">Por ahora solo se ingresa con tu PIN.</span>';
-  $('pc-generar').textContent = tiene ? 'Generar uno nuevo' : 'Crear PIN de caja';
-  $('pc-quitar').hidden = !tiene;
+// ---------- PIN de caja (uno por sucursal) ----------
+let PC = [];   // [{id: null (principal) | id sucursal, dir, barrio, tiene}]
+function pintarPinCaja(){
+  const multi = PC.length > 1;
+  $('pc-lista').innerHTML = PC.map((x, i) => `<div class="pc-row">
+      <div class="grow" style="min-width:0">
+        ${multi ? `<p class="t">${esc(x.dir)}<span class="muted" style="font-weight:600"> · ${esc(x.barrio)}</span></p>` : ''}
+        <p class="s">${x.tiene ? '<span class="chip ok">Activo</span> Tu equipo puede ingresar.' : '<span class="chip">Sin PIN de caja</span>'}</p>
+      </div>
+      <div class="acts">
+        <button type="button" class="btn sm" data-pc-gen="${i}">${x.tiene ? 'Generar uno nuevo' : 'Crear PIN de caja'}</button>
+        ${x.tiene ? `<button type="button" class="btn ghost sm" data-pc-off="${i}">Desactivar</button>` : ''}
+      </div>
+    </div>`).join('');
 }
 async function cargarPinCaja(){
   $('pc-nuevo').hidden = true;
-  try{ const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); pintarPinCaja(!!p.tiene_pin_caja); }catch(err){ manejarError(err); }
+  try{
+    const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin});
+    PC = [{id: null, dir: p.dir, barrio: p.barrio, tiene: !!p.tiene_pin_caja}, ...(p.sucursales || []).map(x => ({id: x.id, dir: x.dir, barrio: x.barrio, tiene: !!x.tiene_pin_caja}))];
+    pintarPinCaja();
+  }catch(err){ manejarError(err); }
 }
-$('pc-generar').addEventListener('click', async e => {
-  if(!$('pc-quitar').hidden && !confirm('¿Generar un PIN de caja nuevo? El actual deja de funcionar y tu equipo va a tener que ingresar con el nuevo.')) return;
-  let ok = false;
-  await conBoton(e.target, async () => {
-    try{
-      const r = await rpc('tc_local_pin_caja', {p_local_id: yo.id, p_pin: pin, p_activar: true});
-      $('pc-valor').textContent = r.pin; $('pc-nuevo').hidden = false; ok = true;
-    }catch(err){ manejarError(err); }
-  });
-  if(ok){ pintarPinCaja(true); $('pc-nuevo').scrollIntoView({block: 'nearest'}); }
-});
-$('pc-quitar').addEventListener('click', async e => {
-  if(!confirm('¿Desactivar el PIN de caja? Tu equipo no va a poder ingresar hasta que generes uno nuevo.')) return;
-  let ok = false;
-  await conBoton(e.target, async () => {
-    try{ await rpc('tc_local_pin_caja', {p_local_id: yo.id, p_pin: pin, p_activar: false}); ok = true; }
+$('pc-lista').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const x = PC[+(b.dataset.pcGen ?? b.dataset.pcOff)]; if(!x) return;
+  const donde = PC.length > 1 ? ` de ${x.dir}` : '';
+  const activar = b.dataset.pcGen !== undefined;
+  if(activar && x.tiene && !confirm(`¿Generar un PIN de caja nuevo${donde}? El actual deja de funcionar y el equipo va a tener que ingresar con el nuevo.`)) return;
+  if(!activar && !confirm(`¿Desactivar el PIN de caja${donde}? El equipo no va a poder ingresar hasta que generes uno nuevo.`)) return;
+  let r = null;
+  await conBoton(b, async () => {
+    try{ r = await rpc('tc_local_pin_caja', Object.assign({p_local_id: yo.id, p_pin: pin, p_activar: activar}, x.id ? {p_sucursal_id: x.id} : {})); }
     catch(err){ manejarError(err); }
   });
-  if(ok){ $('pc-nuevo').hidden = true; pintarPinCaja(false); toast('PIN de caja desactivado'); }
+  if(!r) return;
+  x.tiene = activar; pintarPinCaja();
+  if(activar){
+    $('pc-para').textContent = 'Nuevo PIN de caja' + (PC.length > 1 ? ' · ' + x.dir : '');
+    $('pc-valor').textContent = r.pin; $('pc-nuevo').hidden = false; $('pc-nuevo').scrollIntoView({block: 'nearest'});
+  }else{ $('pc-nuevo').hidden = true; toast('PIN de caja desactivado'); }
 });
 $('pc-copiar').addEventListener('click', async () => {
   try{ await navigator.clipboard.writeText($('pc-valor').textContent); toast('PIN copiado'); }catch(_){ toast('Mantené apretado el PIN para copiarlo'); }
@@ -1164,6 +1181,9 @@ async function cargarPerfil(){
     ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio, $('pf-prov').value);
     $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
     $('pf-dir').value = perfil.dir; $('pf-tel').value = perfil.telefono || '';
+    const sucs = perfil.sucursales || [];
+    $('pf-suc').hidden = $('pf-suc-hint').hidden = !sucs.length;
+    $('pf-suc-lista').innerHTML = sucs.map(x => `<li><b>${esc(x.dir)}</b> · ${esc(x.barrio)}</li>`).join('');
     pintarLogoPerfil();
   }catch(err){ manejarError(err); }
 }
@@ -1200,7 +1220,7 @@ $('f-perfil').addEventListener('submit', async e => {
 });
 
 cargarLocales();
-if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; if(p.rol) yo.rol = p.rol; guardarSesion(); aplicarRol(); pintarCabecera(); }).catch(() => {}); }
+if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; if(p.rol) yo.rol = p.rol; if('sucursal' in p) yo.sucursal = p.sucursal; guardarSesion(); aplicarRol(); pintarCabecera(); }).catch(() => {}); }
 </script>
 </body>
 </html>

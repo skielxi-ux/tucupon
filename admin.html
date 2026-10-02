@@ -223,6 +223,15 @@ a.btn{text-decoration:none}
 .bn-nums div{background:var(--surface-2);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
 .bn-nums b{display:block;font-size:1.1rem;color:var(--heading)}
 .bn-nums span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;line-height:1.2}
+.pc-row{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:16px}
+.pc-row .grow{flex:none}
+.pc-row .t{font-weight:800;overflow-wrap:anywhere}
+.pc-row .s{font-size:.85rem;color:var(--muted);margin-top:2px}
+.who .suc{display:block;font-size:.72rem;font-weight:600;opacity:.8;margin-top:1px;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.suc-lista{margin:4px 0 0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+.su-row+.su-row{border-top:1px dashed var(--line);padding-top:10px}
+.su-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start}
+@media (max-width:520px){.su-row{grid-template-columns:minmax(0,1fr) auto}.su-row .su-dir-w{grid-column:1/2}}
 </style>
 
 </head>
@@ -408,6 +417,15 @@ a.btn{text-decoration:none}
         <div data-otro hidden style="margin-top:8px"><label class="label" for="lo-barrio-otro">¿Qué barrio?</label><input id="lo-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
     </div>
     <div><label class="label" for="lo-dir">Dirección</label><input id="lo-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+    <div class="rel-box">
+      <label class="switch"><input id="lo-multi" type="checkbox"><span>🏬 Tiene otras sucursales</span></label>
+      <p class="hint">Los cupones del local valen en todas. Cada sucursal tiene su propio PIN de caja, que el dueño genera desde su panel.</p>
+      <div id="lo-sucs" style="display:grid;gap:10px;margin-top:12px" hidden>
+        <p class="label" style="margin:0">La dirección de arriba es la principal. Otras sucursales:</p>
+        <div id="lo-suc-lista" style="display:grid;gap:10px"></div>
+        <button type="button" id="lo-suc-mas" class="btn ghost sm" style="justify-self:start">+ Agregar sucursal</button>
+      </div>
+    </div>
     <div><label class="label" for="lo-tel">Teléfono / WhatsApp de contacto</label><input id="lo-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">Solo lo ves vos, para resolver reclamos.</p></div>
     <div class="grid2">
       <div><label class="label" for="lo-color">Color de fondo (si no tiene logo)</label><input id="lo-color" class="field" type="color" style="height:48px;padding:4px"></div>
@@ -1141,7 +1159,7 @@ function pintarLocales(){
     const n = l.cupones;
     return `<div class="item">
       ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
-      <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)}, ${esc(l.provincia || 'Tucumán')} · ${esc(l.dir)}</p>
+      <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)}, ${esc(l.provincia || 'Tucumán')} · ${esc(l.dir)}${(l.sucursales || []).length ? ` · <b>🏬 ${l.sucursales.length + 1} sucursales</b>` : ''}</p>
         <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Activo' : 'Pausado'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} ${n === 1 ? 'cupón activo' : 'cupones activos'} · ${l.pedidos} pedidos · ${l.usados} canjes${l.reclamos ? ` · <b style="color:var(--hot)">${l.reclamos} ${l.reclamos === 1 ? 'reclamo' : 'reclamos'}</b>` : ''}</p>
         <p class="s">${l.responsable ? '👤 ' + esc(l.responsable) + ' · ' : ''}${l.telefono ? '📞 ' + esc(l.telefono) : '<span style="color:var(--warn)">Sin teléfono cargado</span>'}</p>
         ${!l.activo && l.motivo_pausa ? `<p class="s" style="color:var(--hot)"><b>Motivo:</b> ${esc(l.motivo_pausa)}</p>` : ''}</div>
@@ -1172,12 +1190,45 @@ async function cargarLogosAdmin(){
   }
   if(tabActual === 'locales') pintarLocales();
 }
+// ---------- Sucursales en el formulario del local ----------
+function filaSucursal(x = {}){
+  const d = document.createElement('div'); d.className = 'su-row';
+  d.dataset.id = x.id || '';
+  d.innerHTML = `<div><select class="field su-barrio" aria-label="Barrio de la sucursal"></select><div data-otro hidden style="margin-top:6px"><label class="label">¿Qué barrio?</label><input class="field su-otro" maxlength="40" aria-label="Barrio"></div></div>
+    <div class="su-dir-w"><input class="field su-dir" maxlength="80" placeholder="Calle y número" aria-label="Dirección de la sucursal" value="${esc(x.dir || '')}"></div>
+    <button type="button" class="btn ghost sm su-quitar" aria-label="Quitar sucursal" style="align-self:center">✕</button>`;
+  const sel = d.querySelector('.su-barrio'), otro = d.querySelector('.su-otro');
+  ponerBarrio(sel, otro, x.barrio || '', $('lo-prov').value); unirBarrio(sel, otro);
+  d.querySelector('.su-quitar').addEventListener('click', () => { d.remove(); if(!$('lo-suc-lista').children.length){ $('lo-multi').checked = false; $('lo-sucs').hidden = true; } });
+  return d;
+}
+function ponerSucursales(lista){
+  $('lo-suc-lista').innerHTML = '';
+  (lista || []).forEach(x => $('lo-suc-lista').appendChild(filaSucursal(x)));
+  $('lo-multi').checked = !!(lista && lista.length); $('lo-sucs').hidden = !$('lo-multi').checked;
+}
+function leerSucursales(){
+  if(!$('lo-multi').checked) return [];
+  return [...$('lo-suc-lista').children].map(d => ({id: d.dataset.id ? +d.dataset.id : null,
+    barrio: leerBarrio(d.querySelector('.su-barrio'), d.querySelector('.su-otro')), dir: d.querySelector('.su-dir').value.trim()}));
+}
+$('lo-multi').addEventListener('change', () => {
+  $('lo-sucs').hidden = !$('lo-multi').checked;
+  if($('lo-multi').checked && !$('lo-suc-lista').children.length){ const f = filaSucursal(); $('lo-suc-lista').appendChild(f); f.querySelector('.su-barrio:not([hidden]), .su-otro').focus(); }
+});
+$('lo-suc-mas').addEventListener('click', () => { const f = filaSucursal(); $('lo-suc-lista').appendChild(f); f.querySelector('.su-dir').focus(); });
+$('lo-prov').addEventListener('change', () => [...$('lo-suc-lista').children].forEach(d => {
+  const sel = d.querySelector('.su-barrio'), otro = d.querySelector('.su-otro'), v = leerBarrio(sel, otro);
+  ponerBarrio(sel, otro, $('lo-prov').value === 'Tucumán' ? (BARRIOS.includes(v) ? v : '') : (BARRIOS.includes(v) ? '' : v), $('lo-prov').value);
+}));
+
 function abrirLocal(l){
   localEdit = l ? l.id : null;
   $('lo-title').textContent = l ? 'Editar local' : 'Nuevo local'; $('lo-alert').hidden = true;
   $('lo-nombre').value = l ? l.nombre : ''; $('lo-resp').value = l ? (l.responsable || '') : ''; $('lo-rubro').value = l ? l.rubro : ($('lf-rubro').value || D.rubros[0]?.id || '');
   $('lo-prov').value = l ? (l.provincia || 'Tucumán') : ($('lf-prov').value || 'Tucumán');
   ponerBarrio($('lo-barrio'), $('lo-barrio-otro'), l ? l.barrio : '', $('lo-prov').value); $('lo-dir').value = l ? l.dir : ''; $('lo-tel').value = l && l.telefono ? l.telefono : '';
+  ponerSucursales(l ? l.sucursales : []);
   logoOrig = l ? (LOGOS[l.id] || null) : null; logoNuevo = undefined; pintarLogoLocal();
   $('lo-color').value = l && /^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#EFEAF9';
   abrirHoja('sheet-local'); setTimeout(() => $('lo-nombre').focus(), 250);
@@ -1190,9 +1241,15 @@ $('f-local').addEventListener('submit', async e => {
   const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), responsable: $('lo-resp').value.trim(), rubro: $('lo-rubro').value, provincia: $('lo-prov').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
     telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
+  const sucs = leerSucursales(), antes = ((D.locales.find(x => x.id === localEdit) || {}).sucursales || []);
+  const faltaSuc = sucs.findIndex(x => !x.barrio || !x.dir);
+  if(faltaSuc >= 0){ $('lo-alert').textContent = `Completá el barrio y la dirección de la sucursal ${faltaSuc + 1}.`; $('lo-alert').hidden = false; $('lo-alert').scrollIntoView({block: 'nearest'}); return; }
+  const quitadas = antes.filter(a => !sucs.some(x => x.id === a.id));
+  if(quitadas.length && !confirm(`Vas a quitar ${quitadas.length === 1 ? 'la sucursal ' + quitadas[0].dir : quitadas.length + ' sucursales'}. Su PIN de caja deja de funcionar. ¿Seguimos?`)) return;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
     try{
       const r = await rpc('tc_admin_guardar_local', {p_pin: pin, p_local: datos});
+      if(sucs.length || antes.length) await rpc('tc_admin_guardar_sucursales', {p_pin: pin, p_local_id: localEdit || r.id, p_sucursales: sucs});
       cerrarHoja('sheet-local'); const nuevo = !localEdit; await recargar();
       if(nuevo){ toast('Local creado. Ahora generale un PIN.'); generarPin(r.id); } else toast('Local actualizado');
     }catch(err){ if(/PIN incorrecto/i.test(err.message)) return manejarError(err); $('lo-alert').textContent = err.message; $('lo-alert').hidden = false; }
@@ -1442,7 +1499,7 @@ async function cargarCanjes(){
   try{
     const r = await rpc('tc_admin_canjes', {p_pin: pin, p_desde: d, p_hasta: h});
     $('cj-usados').textContent = r.usados; $('cj-pedidos').textContent = r.pedidos;
-    $('cj-lista').innerHTML = r.lista.length ? `<table><thead><tr><th>Cuándo</th><th>Local</th><th>Cupón</th><th>Cliente</th><th>Código</th></tr></thead><tbody>${r.lista.map(k => `<tr><td style="white-space:nowrap">${esc(fecha(k.usado_en))}</td><td>${esc(k.local)}</td><td>${esc(k.icono)} ${esc(k.etiqueta)}</td><td>${esc(k.email)}</td><td class="mono">${esc(k.codigo)}</td></tr>`).join('')}</tbody></table>`
+    $('cj-lista').innerHTML = r.lista.length ? `<table><thead><tr><th>Cuándo</th><th>Local</th><th>Cupón</th><th>Cliente</th><th>Código</th></tr></thead><tbody>${r.lista.map(k => `<tr><td style="white-space:nowrap">${esc(fecha(k.usado_en))}</td><td>${esc(k.local)}${k.sucursal ? `<br><span class="muted" style="font-size:.8rem">📍 ${esc(k.sucursal)}</span>` : ''}</td><td>${esc(k.icono)} ${esc(k.etiqueta)}</td><td>${esc(k.email)}</td><td class="mono">${esc(k.codigo)}</td></tr>`).join('')}</tbody></table>`
       : '<div class="empty">No hubo canjes confirmados en estas fechas.</div>';
   }catch(err){ manejarError(err); }
 }
