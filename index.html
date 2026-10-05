@@ -125,6 +125,25 @@ a.banner:active{transform:scale(.99)}
 .box .sedes li::before{content:none!important;display:none!important}
 .sedes li span{min-width:0;overflow-wrap:anywhere}
 .sedes svg{flex:none;color:var(--brand)}
+/* Caja Sorpresa */
+.sec-cajas{margin-top:26px;border-radius:26px;padding:16px 16px 4px;margin-inline:-6px;background:linear-gradient(135deg,rgba(16,150,104,.13),rgba(196,240,74,.18))}
+.sec-cajas h2{display:flex;align-items:center;gap:6px}
+.sec-cajas .rail{padding-bottom:16px}
+.caja{position:relative;display:flex;flex-direction:column;border-radius:28px;overflow:hidden;background:linear-gradient(150deg,#0F8A62 0%,#0B5E46 100%);color:#fff;box-shadow:0 18px 36px -16px rgba(5,60,40,.55);padding:18px 18px 16px}
+.caja.agotada{filter:grayscale(.6);opacity:.85}
+.caja .tag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;background:rgba(255,255,255,.16);font-weight:800;font-size:.82rem}
+.caja .loc{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:800;text-align:left;color:#fff}
+.caja .loc .lg{width:38px;height:38px;border-radius:12px;font-size:.8rem}
+.caja .desc{margin-top:10px;font-size:.92rem;opacity:.92;line-height:1.35}
+.caja .precios{display:flex;align-items:baseline;gap:10px;margin-top:12px;flex-wrap:wrap}
+.caja .antes{font-weight:700;opacity:.75;text-decoration:line-through}
+.caja .ahora{font-weight:900;font-size:2.4rem;line-height:1;color:#C4F04A;letter-spacing:-.02em}
+.caja .meta{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-size:.84rem;font-weight:800;flex-wrap:wrap}
+.caja .meta .q{color:#C4F04A}
+.caja .cbtn{margin-top:14px;display:block;width:100%;border:0;border-radius:16px;padding:13px;font:inherit;font-weight:800;background:#C4F04A;color:#1E0B45;cursor:pointer}
+.caja .cbtn.mio{background:#fff;color:#0B5E46}
+.caja .cbtn[disabled]{opacity:.6;cursor:default}
+.caja-ahorro{position:absolute;right:16px;top:14px;border-radius:999px;background:#C4F04A;color:#1E0B45;font-weight:900;font-size:.82rem;padding:4px 10px}
 .saludo{border-radius:999px;background:rgba(255,255,255,.12);padding:5px 12px;font-size:.82rem;font-weight:700}
 .hero h1{position:relative;margin-top:18px;font-size:2.15rem;line-height:1.02;font-weight:800}
 .hero h1 span{display:inline-block;margin-top:4px;rotate:-1deg;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:0 10px 4px}
@@ -482,6 +501,11 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
           <p class="muted" style="font-size:.88rem;margin-top:4px">Por pocas horas y hasta agotar stock. ¡Pedí tu código antes de que se terminen!</p>
           <div id="rel-rail" class="rail"></div>
         </section>
+        <section id="sec-cajas" class="sec-cajas" hidden>
+          <div class="sec-h"><h2><span aria-hidden="true">🎁</span>Cajas Sorpresa</h2><span class="count" id="cajas-count"></span></div>
+          <p class="muted" style="font-size:.88rem;margin-top:4px">Lo que los locales no vendieron hoy, a un precio bajísimo. Reservá, pasá a retirar en el horario y pagá en el local.</p>
+          <div id="cajas-rail" class="rail"></div>
+        </section>
         <section class="sec">
           <div class="sec-h"><h2>Elegí un rubro</h2><span id="total-locales" class="count"></span></div>
           <div id="rubros" class="rubros"></div>
@@ -534,6 +558,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
     <!-- LOCAL -->
     <div id="v-local" hidden>
       <div id="ficha" class="ficha"></div>
+      <div id="local-caja" class="rail solo" style="margin-top:18px" hidden></div>
       <section class="sec">
         <div class="sec-h"><h2>Descuentos</h2><span id="local-count" class="count"></span></div>
         <div id="local-filtros" class="chips" role="group" aria-label="Filtrar descuentos" style="margin-top:10px">
@@ -576,6 +601,15 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       </div>
       <div class="act"><button type="submit" class="main">Enviar</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
     </form>
+  </div>
+  <!-- Hoja: reservar Caja Sorpresa -->
+  <div id="sheet-caja" class="sheet-wrap" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cj-title">
+      <div class="grip"></div>
+      <h3 id="cj-title" style="font-size:1.3rem;color:var(--heading)">🎁 ¿Reservás esta Caja Sorpresa?</h3>
+      <div id="cj-body"></div>
+      <div class="act"><button type="button" class="main" id="cj-ok">Reservar</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
+    </div>
   </div>
   <!-- Hoja: provincia -->
   <div id="sheet-prov" class="sheet-wrap" aria-hidden="true">
@@ -631,14 +665,39 @@ function hoyAR(){ const d = new Date(new Date().toLocaleString('en-US', {timeZon
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let sesion = null, email = '';
-async function rpc(fn, args = {}){
+// La sesión dura 1 hora; con la pestaña en segundo plano el celular a veces no la renueva a tiempo.
+// Antes de cada pedido pedimos la sesión vigente, y si igual llega vencida, la renovamos y reintentamos.
+let renovando = null;   // una sola renovación a la vez
+async function tokenVigente(forzar){
+  if(!sesion) return null;
+  try{
+    const vence = (sesion.expires_at || 0) * 1000;
+    if(forzar || vence - Date.now() < 60000){
+      if(forzar){ renovando = renovando || sb.auth.refreshSession().finally(() => setTimeout(() => renovando = null, 3000)); }
+      const {data} = forzar ? await renovando : await sb.auth.getSession();
+      if(data && data.session) sesion = data.session;
+      else if(forzar){ return null; }
+    }
+  }catch(e){}
+  return sesion && sesion.access_token;
+}
+async function rpc(fn, args = {}, reintento){
   const headers = {apikey: SUPABASE_KEY, 'Content-Type': 'application/json'};
-  if(sesion) headers.Authorization = 'Bearer ' + sesion.access_token;
+  const tk = await tokenVigente(reintento);
+  if(tk) headers.Authorization = 'Bearer ' + tk;
   let r;
   try{ r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {method:'POST', headers, body: JSON.stringify(args)}); }
   catch(e){ throw new Error('No hay conexión. Revisá internet y probá de nuevo.'); }
   const d = await r.json().catch(() => null);
-  if(!r.ok) throw new Error((d && d.message) || 'No pudimos conectar. Probá de nuevo.');
+  if(!r.ok){
+    const msg = (d && d.message) || '';
+    if(/JWT|token/i.test(msg) && sesion){
+      if(!reintento) return rpc(fn, args, true);
+      try{ await sb.auth.signOut(); }catch(e){}
+      throw new Error('Tu sesión venció. Ingresá de nuevo.');
+    }
+    throw new Error(msg || 'No pudimos conectar. Probá de nuevo.');
+  }
   return d;
 }
 
@@ -719,6 +778,95 @@ function abrirCompartido(){
   verDetalle(c.id);
 }
 
+// ---------- Caja Sorpresa ----------
+let CAJAS = [], MISCAJAS = {}, abiertaCaja = null, cajaRes = null;
+const pesos = n => '$ ' + Number(n || 0).toLocaleString('es-AR');
+const cajaDe = id => CAJAS.find(x => x.id === id);
+const cajaQuedan = cj => Math.max(0, cj.cantidad - cj.reservadas);
+const cajaDelLocal = id => CAJAS.find(x => x.local === id);
+async function cargarCajas(){
+  try{ const r = await rpc('tc_cajas_hoy'); CAJAS = Array.isArray(r) ? r : []; }catch(e){ CAJAS = []; }
+}
+async function cargarMisCajas(){
+  try{ const r = await rpc('tc_mis_cajas'); MISCAJAS = {}; (Array.isArray(r) ? r : []).forEach(x => MISCAJAS[x.caja] = x); }catch(e){}
+}
+function cajaCard(cj, enLocal){
+  const l = localDe({local: cj.local}); if(!l) return '';
+  const m = MISCAJAS[cj.id], q = cajaQuedan(cj), ago = !m && q <= 0, ahorro = Math.round((1 - cj.precio / cj.valor) * 100);
+  const btn = m ? (m.estado === 'retirada' ? '<button type="button" class="cbtn mio" disabled>✓ Retirada</button>'
+                 : `<button type="button" class="cbtn mio" data-caja-ver="${cj.id}">Ver mi código · <span class="mono">${esc(m.codigo)}</span></button>`)
+            : ago ? '<button type="button" class="cbtn" disabled>Agotada por hoy</button>'
+            : `<button type="button" class="cbtn" data-caja-res="${cj.id}">Reservar por ${pesos(cj.precio)}</button>`;
+  return `<article class="caja ${ago ? 'agotada' : ''}">
+    <span class="tag">🎁 Caja Sorpresa</span>${ahorro > 0 ? `<span class="caja-ahorro">-${ahorro}%</span>` : ''}
+    ${enLocal ? '' : `<button type="button" class="loc" data-local="${l.id}">${logo(l)}<span>${esc(l.nombre)}<br><small style="font-weight:600;opacity:.85">${esc(sedeVista(l).barrio)}</small></span></button>`}
+    <p class="desc">${esc(cj.descripcion)}</p>
+    <div class="precios"><span class="antes">Valor ${pesos(cj.valor)}</span><span class="ahora">${pesos(cj.precio)}</span></div>
+    <div class="meta"><span>🕐 Retirá hoy de ${esc(hTxt(cj.desde))} a ${esc(hTxt(cj.hasta))} h</span><span class="q">${m ? 'Reservada' : q ? (q === 1 ? '¡Queda 1!' : `Quedan ${q}`) : 'Agotada'}</span></div>
+    ${btn}
+  </article>`;
+}
+const hTxt = t => (t || '').replace(/^0(\d)/, '$1').replace(/:00$/, '');
+function abrirReservaCaja(id){
+  const cj = cajaDe(id), l = cj && localDe({local: cj.local}); if(!cj || !l) return;
+  cajaRes = id;
+  $('cj-body').innerHTML = `<div class="box" style="margin-top:14px"><p class="k">${esc(l.nombre)}</p><p class="v" style="font-size:1rem">${esc(cj.descripcion)}</p>
+      <p class="v2" style="margin-top:6px">Contenido sorpresa: depende de lo que haya quedado en el día.</p></div>
+    <div class="box ok"><p class="k">💵 Pagás en el local</p><p class="v">${pesos(cj.precio)} <span style="font-size:.9rem;font-weight:700;text-decoration:line-through;opacity:.7">${pesos(cj.valor)}</span></p>
+      <p class="v2">Retirala hoy de <b>${esc(hTxt(cj.desde))} a ${esc(hTxt(cj.hasta))} h</b> en ${masSuc(l) ? 'cualquiera de sus sucursales' : esc(l.dir) + ', ' + esc(l.barrio)}.</p></div>
+    <p class="muted" style="font-size:.85rem;margin-top:10px">Si al final no podés ir, cancelá la reserva desde tu código así otra persona la aprovecha.</p>`;
+  $('cj-ok').textContent = `Reservar por ${pesos(cj.precio)}`; $('cj-ok').disabled = false;
+  abrirHoja('sheet-caja');
+}
+async function reservarCaja(){
+  const id = cajaRes; if(!id) return;
+  const b = $('cj-ok'); b.disabled = true; b.textContent = 'Reservando…';
+  try{
+    await rpc('tc_reservar_caja', {p_caja_id: id});
+    await Promise.all([cargarMisCajas(), cargarCajas()]);
+    cerrar('sheet-caja'); render(); abrirCaja(id);
+  }catch(e){ toast(e.message); b.disabled = false; b.textContent = 'Reintentar'; await cargarCajas(); render(); }
+}
+function pintarHojaCaja(){
+  const m = MISCAJAS[abiertaCaja]; if(!m) return;
+  const l = localDe({local: m.local}), ok = m.estado === 'retirada';
+  $('s-badge').textContent = '🎁';
+  $('s-title').textContent = `Caja Sorpresa · ${pesos(m.precio)}`;
+  $('s-local').textContent = l ? (masSuc(l) ? `${l.nombre} · en cualquiera de sus sucursales` : `${l.nombre} · ${l.dir}, ${l.barrio}`) : '';
+  $('s-code').textContent = m.codigo;
+  $('s-cond').textContent = m.descripcion || '';
+  $('s-stamp').hidden = !ok; $('s-stamp').querySelector('span').textContent = ok ? 'RETIRADA' : 'CANJEADO';
+  $('s-status').className = 'status' + (ok ? ' ok' : '');
+  $('s-status').querySelector('.pulse').hidden = ok;
+  $('s-status-t').textContent = ok ? `Retirada el ${fecha(m.retirado_en)} · ¡Que la disfrutes!` : 'Esperando que la retires';
+  $('s-sub').textContent = ok ? 'Ya retiraste tu caja' : `Mostrá este código al retirar y pagá ${pesos(m.precio)}`;
+  const hs = $('s-hor'); hs.hidden = ok;
+  if(!ok){
+    hs.className = 'box s-hor ok';
+    hs.innerHTML = `<p class="k">🕐 Retirala hoy de ${esc(hTxt(m.desde))} a ${esc(hTxt(m.hasta))} h</p><p class="v2">Pagás ${pesos(m.precio)} en el local. El código vale solo hoy.</p>
+      <button type="button" class="sec-btn" data-caja-cancel="${m.id}" style="margin-top:8px;color:var(--hot);font-weight:800">No voy a poder ir: cancelar reserva</button>`;
+  }
+}
+async function abrirCaja(id){
+  abierto = null; abiertaCaja = id; pintarHojaCaja(); abrirHoja('sheet-code');
+  try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    const m = MISCAJAS[abiertaCaja];
+    if(!abiertaCaja || !m || m.estado === 'retirada' || document.hidden) return;
+    try{
+      await cargarMisCajas();
+      if(MISCAJAS[abiertaCaja] && MISCAJAS[abiertaCaja].estado === 'retirada'){ pintarHojaCaja(); render(); try{ navigator.vibrate && navigator.vibrate([60, 40, 60]); }catch(_){} }
+    }catch(e){}
+  }, 4000);
+}
+async function cancelarCaja(rid, b){
+  if(!confirm('¿Cancelar tu reserva? La caja vuelve a quedar disponible para otra persona.')) return;
+  b.disabled = true;
+  try{ await rpc('tc_cancelar_caja', {p_reserva_id: rid}); await Promise.all([cargarMisCajas(), cargarCajas()]); cerrar('sheet-code'); render(); toast('Reserva cancelada. ¡Gracias por avisar!'); }
+  catch(e){ toast(e.message); b.disabled = false; }
+}
+
 // ---------- Publicidad ----------
 let BANNERS = [], BIMG = {};
 const ROT = Math.floor(Math.random() * 1000);   // cada visita muestra un banner distinto si hay varios en el mismo lugar
@@ -756,6 +904,7 @@ function clicBanner(id){
 }
 async function cargarCatalogo(){
   cargarBanners();
+  const pc = cargarCajas();
   const antes = Date.now(), d = await rpc('tc_catalogo');
   if(d.ahora) desfase = new Date(d.ahora).getTime() - (antes + Date.now()) / 2;
   RUBROS = d.rubros || [];
@@ -763,14 +912,17 @@ async function cargarCatalogo(){
   LOCALES = (d.locales || []).map(l => ({...l, cupones: CUPONES.filter(c => c.local === l.id)}));
   favs = d.favoritos || [];
   calcBarrios();
+  await pc;
 }
 function calcBarrios(){
   BARRIOS = [...new Set(LOCALES.filter(enProv).flatMap(l => sedes(l).map(x => x.barrio)))].sort((a, b) => a.localeCompare(b, 'es'));
   if(barrio !== 'Todos' && !BARRIOS.includes(barrio)) barrio = 'Todos';
 }
 async function cargarMios(){
+  const pm = cargarMisCajas();
   const rows = await rpc('tc_mis_codigos');
   mios = {}; (rows || []).forEach(r => mios[r.cupon_id] = r);
+  await pm;
 }
 
 let desfase = 0;   // diferencia entre el reloj del servidor y el del celular
@@ -994,6 +1146,13 @@ function pintarHome(){
     $('rel-count').textContent = rels.length ? `${rels.length} ${rels.length === 1 ? 'activo' : 'activos'}` : '';
     $('rel-rail').classList.toggle('solo', rels.length === 1);
     $('rel-rail').innerHTML = rels.map(c => tarjeta(c)).join('');
+    const cajas = CAJAS.filter(cj => { const l = localDe({local: cj.local}); return l && porBarrio(l); })
+      .sort((a, b) => (!!MISCAJAS[b.id]) - (!!MISCAJAS[a.id]) || (cajaQuedan(b) > 0) - (cajaQuedan(a) > 0) || a.precio - b.precio);
+    $('sec-cajas').hidden = !cajas.length;
+    const disp = cajas.filter(cj => cajaQuedan(cj) > 0).length;
+    $('cajas-count').textContent = cajas.length ? (disp ? `${disp} ${disp === 1 ? 'disponible' : 'disponibles'}` : 'Agotadas por hoy') : '';
+    $('cajas-rail').classList.toggle('solo', cajas.length === 1);
+    $('cajas-rail').innerHTML = cajas.map(cj => cajaCard(cj)).join('');
     const top = CUPONES.filter(c => !esRel(c) && localDe(c) && porBarrio(localDe(c))).sort((a, b) => b.pedidos - a.pedidos || pct(b) - pct(a)).slice(0, 6);
     $('top-rail').classList.toggle('solo', top.length === 1);
     $('top-rail').innerHTML = top.length ? top.map((c, i) => tarjeta(c, c.pedidos ? i + 1 : 0)).join('') : vacio(barrio !== 'Todos' ? 'No hay cupones en este barrio por ahora.' : `No hay cupones en ${esc(prov)} por ahora.`);
@@ -1015,6 +1174,8 @@ function pintarLocal(){
   $('ficha').innerHTML = `<div class="top">${logo(l)}<div style="min-width:0;flex:1"><p class="muted" style="font-size:.8rem;font-weight:800">${esc(r.icono)} ${esc(r.nombre)}</p><h2>${esc(l.nombre)}</h2></div>${favBtn(l)}</div>
     ${masSuc(l) ? `<p class="label" style="margin:16px 0 6px">${masSuc(l) + 1} sucursales · los descuentos valen en todas</p>${sedesHTML(l)}`
       : `<dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`}`;
+  const cjl = cajaDelLocal(l.id);
+  $('local-caja').hidden = !cjl; $('local-caja').innerHTML = cjl ? cajaCard(cjl, true) : '';
   const cs = l.cupones.slice().sort((a, b) => b.pedidos - a.pedidos), vis = filtro === 'ahora' ? cs.filter(enHorario) : cs;
   $('local-count').textContent = cs.length ? `${cs.length} ${cs.length === 1 ? 'cupón' : 'cupones'}` : '';
   $('local-filtros').hidden = !cs.length;
@@ -1029,8 +1190,10 @@ function pintarLocal(){
 }
 function pintarMios(){
   const mias = CUPONES.filter(c => mios[c.id] && !mios[c.id].oculto && localDe(c));
-  $('mis').hidden = !mias.length;
-  $('mis-list').innerHTML = mias.map(c => { const m = mios[c.id], u = m.estado === 'usado', l = localDe(c);
+  const cjs = Object.values(MISCAJAS).filter(m => localDe({local: m.local}));
+  $('mis').hidden = !mias.length && !cjs.length;
+  $('mis-list').innerHTML = cjs.map(m => { const l = localDe({local: m.local}), u = m.estado === 'retirada';
+    return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-caja-ver="${m.caja}"><span class="ic">🎁</span><span><b>${esc(m.codigo)}</b><small>${u ? 'Retirada · ' : 'Caja Sorpresa · '}${esc(l.nombre)}</small></span></button>`; }).join('') + mias.map(c => { const m = mios[c.id], u = m.estado === 'usado', l = localDe(c);
     return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-ver="${c.id}"><span class="ic">${esc(c.icono)}</span><span><b>${esc(m.codigo)}</b><small>${u ? 'Usado · ' + esc(l.nombre) : esc(c.etiqueta) + ' · ' + esc(l.nombre)}</small></span></button>`; }).join('');
 }
 
@@ -1071,10 +1234,10 @@ const abrirHoja = id => $(id).setAttribute('aria-hidden', 'false');
 function cerrar(id){
   $(id).setAttribute('aria-hidden', 'true');
   if(id === 'sheet-det') detalle = null;
-  if(id === 'sheet-code'){ abierto = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
+  if(id === 'sheet-code'){ abierto = null; abiertaCaja = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
 }
 $$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrar(w.id); }));
-document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); cerrar('sheet-prov'); } });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); cerrar('sheet-prov'); cerrar('sheet-caja'); } });
 
 function accionCupon(c){
   const m = mios[c.id];
@@ -1171,7 +1334,7 @@ function pintarHoja(){
   $('s-local').textContent = l ? (masSuc(l) ? `${l.nombre} · en cualquiera de sus ${masSuc(l) + 1} sucursales` : `${l.nombre} · ${l.dir}, ${l.barrio}`) : '';
   $('s-code').textContent = m.codigo;
   $('s-cond').textContent = c.condiciones ? c.condiciones.replace(/\.?$/, '.') : '';
-  $('s-stamp').hidden = !ok;
+  $('s-stamp').hidden = !ok; $('s-stamp').querySelector('span').textContent = 'CANJEADO';
   $('s-status').className = 'status' + (ok ? ' ok' : '');
   $('s-status').querySelector('.pulse').hidden = ok;
   $('s-status-t').textContent = ok ? `Confirmado el ${fecha(m.usado_en)} · ¡Que lo disfrutes!` : 'Esperando confirmación del local';
@@ -1187,7 +1350,7 @@ function pintarHoja(){
   }
 }
 async function abrir(id){
-  abierto = id; pintarHoja(); abrirHoja('sheet-code');
+  abiertaCaja = null; abierto = id; pintarHoja(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
   poll = setInterval(async () => {
@@ -1269,6 +1432,10 @@ document.addEventListener('click', ev => {
   if((b = t('[data-rubro]'))){ ir('rubro', {rubro: b.dataset.rubro}); return; }
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
   if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
+  if((b = t('[data-caja-res]'))){ abrirReservaCaja(+b.dataset.cajaRes); return; }
+  if((b = t('[data-caja-ver]'))){ abrirCaja(+b.dataset.cajaVer); return; }
+  if((b = t('[data-caja-cancel]'))){ cancelarCaja(+b.dataset.cajaCancel, b); return; }
+  if(t('#cj-ok')){ reservarCaja(); return; }
   if(t('[data-prov-abrir]')){ abrirProv(); return; }
   if((b = t('[data-prov]'))){ elegirProv(b.dataset.prov); return; }
   if(t('[data-reclamo]')){ abrirReclamo(); return; }
@@ -1293,6 +1460,7 @@ async function refrescar(){
     const f = document.activeElement && document.activeElement.id;
     render(); if(f === 'q') $('q').focus();
     if(abierto) pintarHoja();
+    if(abiertaCaja) pintarHojaCaja();
   }catch(e){ /* sin conexión: se reintenta en la próxima vuelta */ }
   finally{ refrescando = false; }
 }
