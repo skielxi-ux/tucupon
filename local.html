@@ -232,6 +232,18 @@ a.btn{text-decoration:none}
 .su-row+.su-row{border-top:1px dashed var(--line);padding-top:10px}
 .su-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start}
 @media (max-width:520px){.su-row{grid-template-columns:minmax(0,1fr) auto}.su-row .su-dir-w{grid-column:1/2}}
+.btn.ghost.btn-borrar{color:var(--hot)}
+#loc-lista .item{flex-wrap:wrap}
+#loc-lista .item .grow{flex:1 1 14rem;min-width:0}
+@media (max-width:700px){#loc-lista .acts{flex:1 1 100%;padding-left:60px}}
+@media (max-width:420px){#loc-lista .acts{padding-left:0}}
+#cj-hoy .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+#cj-hoy .stat b{font-size:1.6rem}
+.caja-hero{background:linear-gradient(150deg,#0F8A62,#0B5E46);color:#fff;border:0}
+.caja-hero .t{font-weight:900;font-size:1.2rem}
+.caja-hero p:not(.t){opacity:.9;margin-top:4px;font-size:.92rem}
+.cobrar{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:#E3F7EE;color:#0B5E46;border-radius:16px;padding:12px 16px;font-weight:800}
+.cobrar b{font-size:1.8rem;font-weight:900}
 </style>
 
 </head>
@@ -263,6 +275,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Canjes</button>
       <button type="button" class="tab" role="tab" data-tab="kpis" aria-selected="false">KPIs</button>
       <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
+      <button type="button" class="tab" role="tab" data-tab="caja" aria-selected="false">🎁 Caja Sorpresa</button>
       <button type="button" class="tab" role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
       <button type="button" class="tab" role="tab" data-tab="referir" aria-selected="false">Referir</button>
       <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">PINs</button>
@@ -325,6 +338,44 @@ a.btn{text-decoration:none}
         <div class="stat"><b id="h-pedidos">–</b><span>Códigos pedidos</span></div>
       </div>
       <div class="card"><h2>Canjes confirmados</h2><div id="h-lista" style="margin-top:12px"></div></div>
+    </section>
+
+    <!-- Caja Sorpresa -->
+    <section id="t-caja" class="panel" hidden>
+      <div class="card caja-hero">
+        <p class="t">🎁 Caja Sorpresa</p>
+        <p>Vendé a precio bajo lo que no se vendió en el día, en vez de tirarlo. El cliente reserva desde la app, pasa a retirar en tu horario y te paga en el local.</p>
+      </div>
+      <div id="cj-hoy" class="card" hidden>
+        <div class="row"><h2 class="grow">Hoy</h2><span id="cj-estado" class="chip"></span></div>
+        <div class="stats" style="margin-top:10px">
+          <div class="stat"><b id="cj-cant">–</b><span>Cajas publicadas</span></div>
+          <div class="stat"><b id="cj-res">–</b><span>Reservadas</span></div>
+          <div class="stat"><b id="cj-ret">–</b><span>Retiradas</span></div>
+        </div>
+        <form id="f-cj-hoy" class="row" style="margin-top:12px;align-items:flex-end;flex-wrap:wrap" novalidate>
+          <div class="grow" style="min-width:10rem"><label class="label" for="cj-n">¿Cuántas cajas tenés hoy?</label><input id="cj-n" class="field" type="number" min="0" max="500" step="1" inputmode="numeric" placeholder="Ej.: 5"></div>
+          <button type="submit" class="btn">Publicar</button>
+        </form>
+        <p class="hint">Se publican solo por hoy y dejan de verse cuando termina tu horario de retiro. Poné 0 si hoy no tenés.</p>
+        <div id="cj-lista" style="margin-top:12px"></div>
+      </div>
+      <form id="f-caja" class="card" style="display:grid;gap:14px" novalidate>
+        <div class="row"><h2 class="grow">Tu caja</h2><label class="switch"><input id="cj-activo" type="checkbox" checked>Activa</label></div>
+        <div id="cj-alert" class="alert" hidden></div>
+        <div><label class="label" for="cj-desc">¿Qué suele traer?</label><textarea id="cj-desc" class="field" maxlength="160" placeholder="Ej.: Panificados y facturas del día"></textarea><p class="hint">Orientativo: el contenido es sorpresa y depende de lo que quede cada día.</p></div>
+        <div class="grid2">
+          <div><label class="label" for="cj-valor">Valor de lo que trae</label><input id="cj-valor" class="field" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej.: 12000"></div>
+          <div><label class="label" for="cj-precio">Precio para el cliente</label><input id="cj-precio" class="field" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej.: 4000"></div>
+        </div>
+        <p id="cj-ahorro" class="hint" style="margin-top:-6px">Lo ideal es un tercio del valor o menos: es lo que hace que la caja se reserve rápido.</p>
+        <div class="grid2">
+          <div><span class="label" id="cj-desde-l">Retiro desde</span><input id="cj-desde" type="hidden"><div class="hora" data-hora="cj-desde" aria-labelledby="cj-desde-l"></div></div>
+          <div><span class="label" id="cj-hasta-l">Retiro hasta</span><input id="cj-hasta" type="hidden"><div class="hora" data-hora="cj-hasta" aria-labelledby="cj-hasta-l"></div></div>
+        </div>
+        <p class="hint" style="margin-top:-6px">Elegí un horario cerca del cierre, cuando ya sabés qué te sobró. Formato 24 h.</p>
+        <button type="submit" class="btn full">Guardar caja</button>
+      </form>
     </section>
 
     <!-- Mis cupones -->
@@ -841,7 +892,7 @@ $('f-login').addEventListener('submit', async e => {
     }catch(err){ avisoLogin(err.message); }
   });
 });
-const SOLO_DUENO = ['kpis', 'cupones', 'perfil', 'referir', 'ajustes'];
+const SOLO_DUENO = ['kpis', 'cupones', 'caja', 'perfil', 'referir', 'ajustes'];
 const esCaja = () => yo && yo.rol === 'caja';
 function aplicarRol(){
   $$('[data-tab]').forEach(b => b.hidden = esCaja() && SOLO_DUENO.includes(b.dataset.tab));
@@ -878,10 +929,11 @@ function manejarError(err){
 function tab(t){
   if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['canjear', 'hoy', 'kpis', 'cupones', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['canjear', 'hoy', 'kpis', 'cupones', 'caja', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   if(t === 'canjear') setTimeout(() => $('c-codigo').focus(), 50);
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
   if(t === 'cupones') cargarCupones();
+  if(t === 'caja') cargarCaja();
   if(t === 'kpis') cargarKpis();
   if(t === 'referir') prepararReferir();
   if(t === 'perfil') cargarPerfil();
@@ -906,6 +958,7 @@ $('f-codigo').addEventListener('submit', async e => {
 });
 function pintarVerificado(r){
   if(!r.ok){ $('c-result').innerHTML = `<div class="alert">${esc(r.error)}</div>`; return; }
+  if(r.tipo === 'caja') return pintarCajaVerificada(r);
   const usado = r.estado === 'usado';
   let aviso = '', puede = !usado;
   if(usado) aviso = `<div class="alert">Este código ya se usó el ${esc(fecha(r.usado_en))}.</div>`;
@@ -921,6 +974,22 @@ function pintarVerificado(r){
     <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
   </div>`;
 }
+const pesos = n => '$ ' + Number(n || 0).toLocaleString('es-AR');
+function pintarCajaVerificada(r){
+  let aviso = '', puede = false;
+  if(r.estado === 'usado') aviso = `<div class="alert">Esta caja ya se retiró el ${esc(fecha(r.usado_en))}.</div>`;
+  else if(r.cancelada) aviso = '<div class="alert">El cliente canceló esta reserva.</div>';
+  else if(r.vencido) aviso = '<div class="alert">Esta reserva era para otro día y ya venció.</div>';
+  else puede = true;
+  $('c-result').innerHTML = `<div class="card result">
+    <div class="item" style="padding:0"><span class="badge" aria-hidden="true">🎁</span><div class="grow"><p class="t">Caja Sorpresa</p><p class="s">Código <b class="mono">${esc(r.codigo)}</b> · Cliente ${esc(r.email)}</p></div></div>
+    <div class="cobrar"><span>Cobrale</span><b>${pesos(r.precio)}</b></div>
+    <p class="muted" style="font-size:.88rem"><b>${esc(r.horario)}</b>${r.condiciones ? ' · ' + esc(r.condiciones) : ''}</p>
+    ${aviso}
+    ${puede ? `<button type="button" id="c-ok" class="btn lima full" data-codigo="${esc(r.codigo)}">Entregar caja y cobrar ${pesos(r.precio)}</button>` : ''}
+    <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
+  </div>`;
+}
 document.addEventListener('click', async e => {
   const ok = e.target.closest('#c-ok');
   if(ok){
@@ -929,6 +998,15 @@ document.addEventListener('click', async e => {
         const r = await rpc('tc_canjear_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: ok.dataset.codigo});
         if(r.error === 'PIN incorrecto') return manejarError(new Error(r.error));
         if(!r.ok){ $('c-result').insertAdjacentHTML('afterbegin', `<div class="alert">${esc(r.error)}</div>`); return; }
+        if(r.tipo === 'caja'){
+          $('c-result').innerHTML = `<div class="card result" style="text-align:center">
+            <span class="stamp">ENTREGADA</span>
+            <p class="t" style="font-weight:800;font-size:1.1rem">🎁 Caja Sorpresa · ${pesos(r.precio)}</p>
+            <p class="muted">Entregá la caja y cobrá ${pesos(r.precio)}. El cliente ya la ve como retirada.</p>
+            <button type="button" class="btn full" id="c-otro">Canjear otro código</button></div>`;
+          try{ navigator.vibrate && navigator.vibrate(80); }catch(_){}
+          return;
+        }
         $('c-result').innerHTML = `<div class="card result" style="text-align:center">
           <span class="stamp">CANJEADO</span>
           <p class="t" style="font-weight:800;font-size:1.1rem">${esc(r.icono)} ${esc(r.etiqueta)} · ${esc(r.titulo)}</p>
@@ -939,6 +1017,62 @@ document.addEventListener('click', async e => {
     });
   }
   if(e.target.closest('#c-otro')){ $('c-result').innerHTML = ''; $('c-codigo').value = ''; $('c-codigo').focus(); }
+});
+
+// ---------- Caja Sorpresa ----------
+let CJ = null;
+function avisoCaja(m, ok){ const a = $('cj-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
+function pintarCaja(){
+  const c = CJ && CJ.caja, h = CJ && CJ.hoy;
+  $('cj-hoy').hidden = !c;
+  if(c){
+    $('cj-cant').textContent = h.cantidad; $('cj-res').textContent = h.reservadas; $('cj-ret').textContent = h.retiradas;
+    const est = !c.activo ? ['Pausada', 'off'] : !h.abierta ? ['Terminó el retiro de hoy', ''] : h.cantidad > 0 ? (h.reservadas >= h.cantidad ? ['Agotada', ''] : ['Publicada', 'ok']) : ['Sin publicar hoy', ''];
+    $('cj-estado').textContent = est[0]; $('cj-estado').className = 'chip ' + est[1];
+    if(document.activeElement !== $('cj-n')) $('cj-n').value = h.cantidad || '';
+    $('cj-lista').innerHTML = CJ.reservas.length ? '<p class="label" style="margin-bottom:4px">Reservas de hoy</p>' + CJ.reservas.map(x => `<div class="item"><span class="badge" aria-hidden="true">${x.estado === 'retirada' ? '✅' : '🎁'}</span><div class="grow"><p class="t mono">${esc(x.codigo)}</p><p class="s">${esc(x.email)} · ${x.estado === 'retirada' ? 'Retirada ' + esc(hora(x.retirado_en)) + ' h' : 'Reservada ' + esc(hora(x.creado)) + ' h'}</p></div></div>`).join('') : '';
+    $('cj-desc').value = c.descripcion; $('cj-valor').value = c.valor; $('cj-precio').value = c.precio; $('cj-activo').checked = c.activo;
+    ponerHora('cj-desde', c.desde); ponerHora('cj-hasta', c.hasta);
+  }else if(!$('cj-desde').value){ ponerHora('cj-desde', '20:00'); ponerHora('cj-hasta', '21:00'); }
+  ahorroCaja();
+}
+function ahorroCaja(){
+  const v = +$('cj-valor').value, p = +$('cj-precio').value, el = $('cj-ahorro');
+  if(v > 0 && p > 0){
+    if(p >= v){ el.textContent = 'El precio tiene que ser menor que el valor.'; el.className = 'hint warn'; return; }
+    const d = Math.round((1 - p / v) * 100);
+    el.textContent = `El cliente ahorra ${d}%. ${d >= 60 ? '¡Muy atractivo!' : 'Lo ideal es un 60% o más de ahorro: así se reserva rápido.'}`;
+    el.className = 'hint ' + (d >= 60 ? 'ok' : 'warn');
+  }else{ el.textContent = 'Lo ideal es un tercio del valor o menos: es lo que hace que la caja se reserve rápido.'; el.className = 'hint'; }
+}
+$('cj-valor').addEventListener('input', ahorroCaja); $('cj-precio').addEventListener('input', ahorroCaja);
+async function cargarCaja(){
+  try{ CJ = await rpc('tc_local_caja', {p_local_id: yo.id, p_pin: pin}); pintarCaja(); }
+  catch(err){ manejarError(err); }
+}
+$('f-caja').addEventListener('submit', async e => {
+  e.preventDefault(); avisoCaja('');
+  const datos = {descripcion: $('cj-desc').value.trim(), valor: +$('cj-valor').value || null, precio: +$('cj-precio').value || null,
+    desde: $('cj-desde').value, hasta: $('cj-hasta').value, activo: $('cj-activo').checked};
+  if(!datos.descripcion) return avisoCaja('Contá qué suele traer la caja.');
+  if(!datos.valor || !datos.precio) return avisoCaja('Completá el valor y el precio.');
+  if(datos.precio >= datos.valor) return avisoCaja('El precio tiene que ser menor que el valor.');
+  if(!datos.desde || !datos.hasta) return avisoCaja('Elegí el horario de retiro.');
+  if(datos.desde >= datos.hasta) return avisoCaja('El retiro tiene que terminar después de empezar (dentro del mismo día).');
+  await conBoton(e.target.querySelector('.btn.full'), async () => {
+    try{ const nueva = !(CJ && CJ.caja); CJ = await rpc('tc_local_guardar_caja', {p_local_id: yo.id, p_pin: pin, p_caja: datos}); pintarCaja();
+      avisoCaja(nueva ? '¡Listo! Ahora publicá cuántas cajas tenés hoy (arriba).' : 'Caja guardada.', true); if(nueva) $('cj-hoy').scrollIntoView({block: 'start', behavior: 'smooth'}); }
+    catch(err){ if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err); avisoCaja(err.message); }
+  });
+});
+$('f-cj-hoy').addEventListener('submit', async e => {
+  e.preventDefault();
+  const n = $('cj-n').value === '' ? NaN : +$('cj-n').value;
+  if(!Number.isInteger(n) || n < 0) return toast('Poné cuántas cajas tenés (0 si hoy no hay).');
+  await conBoton(e.target.querySelector('.btn'), async () => {
+    try{ CJ = await rpc('tc_local_caja_hoy', {p_local_id: yo.id, p_pin: pin, p_cantidad: n}); pintarCaja(); toast(n ? `Publicaste ${n} ${n === 1 ? 'caja' : 'cajas'} para hoy 🎁` : 'Hoy no hay cajas publicadas'); }
+    catch(err){ manejarError(err); }
+  });
 });
 
 // ---------- Canjes del día ----------
