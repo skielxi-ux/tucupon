@@ -126,6 +126,9 @@ a.banner:active{transform:scale(.99)}
 .sedes li span{min-width:0;overflow-wrap:anywhere}
 .sedes svg{flex:none;color:var(--brand)}
 /* Caja Sorpresa */
+@keyframes regalo{0%,55%,100%{transform:translateY(0) rotate(0) scale(1)}10%{transform:translateY(-5px) rotate(-12deg) scale(1.12)}20%{transform:translateY(0) rotate(10deg) scale(1.05)}30%{transform:translateY(-3px) rotate(-8deg) scale(1.08)}40%{transform:translateY(0) rotate(4deg) scale(1)}}
+.regalo{display:inline-block;transform-origin:50% 80%;animation:regalo 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.regalo{animation:none}}
 .sec-cajas{margin-top:26px;border-radius:26px;padding:16px 16px 4px;margin-inline:-6px;background:linear-gradient(135deg,rgba(16,150,104,.13),rgba(196,240,74,.18))}
 .sec-cajas h2{display:flex;align-items:center;gap:6px}
 .sec-cajas .rail{padding-bottom:16px}
@@ -502,7 +505,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
           <div id="rel-rail" class="rail"></div>
         </section>
         <section id="sec-cajas" class="sec-cajas" hidden>
-          <div class="sec-h"><h2><span aria-hidden="true">🎁</span>Cajas Sorpresa</h2><span class="count" id="cajas-count"></span></div>
+          <div class="sec-h"><h2><span class="regalo" aria-hidden="true">🎁</span>Cajas Sorpresa</h2><span class="count" id="cajas-count"></span></div>
           <p class="muted" style="font-size:.88rem;margin-top:4px">Lo que los locales no vendieron hoy, a un precio bajísimo. Reservá, pasá a retirar en el horario y pagá en el local.</p>
           <div id="cajas-rail" class="rail"></div>
         </section>
@@ -606,7 +609,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   <div id="sheet-caja" class="sheet-wrap" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cj-title">
       <div class="grip"></div>
-      <h3 id="cj-title" style="font-size:1.3rem;color:var(--heading)">🎁 ¿Reservás esta Caja Sorpresa?</h3>
+      <h3 id="cj-title" style="font-size:1.3rem;color:var(--heading)"><span class="regalo" aria-hidden="true">🎁</span> ¿Reservás esta Caja Sorpresa?</h3>
       <div id="cj-body"></div>
       <div class="act"><button type="button" class="main" id="cj-ok">Reservar</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
     </div>
@@ -798,7 +801,7 @@ function cajaCard(cj, enLocal){
             : ago ? '<button type="button" class="cbtn" disabled>Agotada por hoy</button>'
             : `<button type="button" class="cbtn" data-caja-res="${cj.id}">Reservar por ${pesos(cj.precio)}</button>`;
   return `<article class="caja ${ago ? 'agotada' : ''}">
-    <span class="tag">🎁 Caja Sorpresa</span>${ahorro > 0 ? `<span class="caja-ahorro">-${ahorro}%</span>` : ''}
+    <span class="tag"><span class="regalo" aria-hidden="true">🎁</span> Caja Sorpresa</span>${ahorro > 0 ? `<span class="caja-ahorro">-${ahorro}%</span>` : ''}
     ${enLocal ? '' : `<button type="button" class="loc" data-local="${l.id}">${logo(l)}<span>${esc(l.nombre)}<br><small style="font-weight:600;opacity:.85">${esc(sedeVista(l).barrio)}</small></span></button>`}
     <p class="desc">${esc(cj.descripcion)}</p>
     <div class="precios"><span class="antes">Valor ${pesos(cj.valor)}</span><span class="ahora">${pesos(cj.precio)}</span></div>
@@ -830,7 +833,7 @@ async function reservarCaja(){
 function pintarHojaCaja(){
   const m = MISCAJAS[abiertaCaja]; if(!m) return;
   const l = localDe({local: m.local}), ok = m.estado === 'retirada';
-  $('s-badge').textContent = '🎁';
+  $('s-badge').innerHTML = '<span class="regalo" aria-hidden="true">🎁</span>';
   $('s-title').textContent = `Caja Sorpresa · ${pesos(m.precio)}`;
   $('s-local').textContent = l ? (masSuc(l) ? `${l.nombre} · en cualquiera de sus sucursales` : `${l.nombre} · ${l.dir}, ${l.barrio}`) : '';
   $('s-code').textContent = m.codigo;
