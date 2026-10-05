@@ -232,6 +232,11 @@ a.btn{text-decoration:none}
 .su-row+.su-row{border-top:1px dashed var(--line);padding-top:10px}
 .su-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start}
 @media (max-width:520px){.su-row{grid-template-columns:minmax(0,1fr) auto}.su-row .su-dir-w{grid-column:1/2}}
+.btn.ghost.btn-borrar{color:var(--hot)}
+#loc-lista .item{flex-wrap:wrap}
+#loc-lista .item .grow{flex:1 1 14rem;min-width:0}
+@media (max-width:700px){#loc-lista .acts{flex:1 1 100%;padding-left:60px}}
+@media (max-width:420px){#loc-lista .acts{padding-left:0}}
 </style>
 
 </head>
@@ -497,6 +502,17 @@ a.btn{text-decoration:none}
     <p class="muted">Deja de aparecer en la app de clientes y no puede canjear códigos. Puede seguir entrando a su panel, donde ve el aviso y el motivo.</p>
     <div><label class="label" for="pa-motivo">Motivo (opcional, lo ve el local)</label><textarea id="pa-motivo" class="field" maxlength="200" placeholder="Ej.: no se respetaron los descuentos publicados"></textarea></div>
     <div class="row"><button type="button" class="btn ghost grow" data-close>Cancelar</button><button type="button" id="pa-ok" class="btn danger grow">Pausar local</button></div>
+  </div>
+</div>
+
+<!-- Eliminar local -->
+<div id="sheet-borrar" class="sheet-wrap" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="bo-t">
+    <h2 id="bo-t">¿Eliminar este local?</h2>
+    <div class="alert">Esto no se puede deshacer. Se borran el local, sus sucursales, todos sus cupones, los códigos pedidos y el historial de canjes, y deja de aparecer en los favoritos de los clientes. Los reclamos y referidos se conservan.</div>
+    <p class="muted" style="font-size:.9rem">Si solo querés sacarlo de la app por un tiempo, usá <b>Pausar</b>: se puede reactivar y no se pierde nada.</p>
+    <div><label class="label" for="bo-nombre">Para confirmar, escribí el nombre del local: <b id="bo-local"></b></label><input id="bo-nombre" class="field" autocomplete="off"></div>
+    <div class="row"><button type="button" class="btn ghost grow" data-close>Cancelar</button><button type="button" id="bo-ok" class="btn danger grow" disabled>Eliminar para siempre</button></div>
   </div>
 </div>
 
@@ -1167,6 +1183,7 @@ function pintarLocales(){
         <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
         <button type="button" class="btn ghost sm" data-lpin="${l.id}">${l.tiene_pin ? 'Nuevo PIN' : 'Crear PIN'}</button>
         <button type="button" class="btn sm ${l.activo ? 'danger' : 'lima'}" data-lpausa="${l.id}">${l.activo ? 'Pausar' : 'Reactivar'}</button>
+        <button type="button" class="btn ghost sm btn-borrar" data-lborrar="${l.id}" aria-label="Eliminar ${esc(l.nombre)}">Eliminar</button>
       </div></div>`;
   }).join('') : '<div class="empty">No hay locales con estos filtros.</div>';
 }
@@ -1265,8 +1282,27 @@ $('pin-copiar').addEventListener('click', async () => {
   try{ await navigator.clipboard.writeText($('pin-valor').textContent); toast('PIN copiado'); }
   catch(e){ const r = document.createRange(); r.selectNodeContents($('pin-valor')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Seleccionado: copialo con Ctrl+C'); }
 });
+// ---------- Eliminar local ----------
+let borrando = null;
+const normNom = t => (t || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
+function abrirBorrar(l){
+  if(!l) return;
+  borrando = l; $('bo-local').textContent = l.nombre; $('bo-nombre').value = ''; $('bo-ok').disabled = true;
+  abrirHoja('sheet-borrar'); setTimeout(() => $('bo-nombre').focus(), 250);
+}
+$('bo-nombre').addEventListener('input', () => { $('bo-ok').disabled = !borrando || normNom($('bo-nombre').value) !== normNom(borrando.nombre); });
+$('bo-ok').addEventListener('click', async e => {
+  if(!borrando || normNom($('bo-nombre').value) !== normNom(borrando.nombre)) return;
+  const l = borrando;
+  await conBoton(e.target, async () => {
+    try{ await rpc('tc_admin_borrar_local', {p_pin: pin, p_local_id: l.id}); cerrarHoja('sheet-borrar'); borrando = null; toast(`${l.nombre} fue eliminado`); await recargar(); }
+    catch(err){ manejarError(err); }
+  });
+});
+
 $('loc-lista').addEventListener('click', e => {
-  const ed = e.target.closest('[data-ledit]'), pn = e.target.closest('[data-lpin]'), pa = e.target.closest('[data-lpausa]');
+  const ed = e.target.closest('[data-ledit]'), pn = e.target.closest('[data-lpin]'), pa = e.target.closest('[data-lpausa]'), bo = e.target.closest('[data-lborrar]');
+  if(bo) abrirBorrar(D.locales.find(l => l.id === +bo.dataset.lborrar));
   if(ed) abrirLocal(D.locales.find(l => l.id === +ed.dataset.ledit));
   if(pn){
     const l = D.locales.find(x => x.id === +pn.dataset.lpin);
