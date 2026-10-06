@@ -57,6 +57,7 @@ p{margin:0}
 .btn-top{border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.85rem;color:#fff;flex:none}
 
 .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:14px 4px}
+@media (min-width:700px){.tabs{flex-wrap:wrap;overflow:visible}}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.92rem;color:var(--muted)}
 .tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
@@ -258,7 +259,7 @@ a.btn{text-decoration:none}
     <div><label class="label" for="l-local">Tu local</label><select id="l-local" class="field"><option value="">Cargando locales…</option></select></div>
     <div><label class="label" for="l-pin">PIN</label><input id="l-pin" class="field mono" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" placeholder="6 números" style="letter-spacing:.3em"></div>
     <button type="submit" class="btn full">Ingresar</button>
-    <p class="muted" style="font-size:.82rem;text-align:center">Entrá con tu PIN de dueño o con el PIN de caja.<br>¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
+    <p class="muted" style="font-size:.82rem;text-align:center">Entrá con tu PIN de dueño o con el PIN de encargado.<br>¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
   </form>
 </section>
 
@@ -270,15 +271,15 @@ a.btn{text-decoration:none}
   </div></header>
   <main class="wrap">
     <div id="pausa-aviso" class="alert" style="margin-top:14px" hidden></div>
-    <nav class="tabs" role="tablist" aria-label="Secciones">
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones">
       <button type="button" class="tab" role="tab" data-tab="canjear" aria-selected="true">Canjear</button>
       <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Canjes</button>
+      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">🔑 Encargados y PIN</button>
       <button type="button" class="tab" role="tab" data-tab="kpis" aria-selected="false">KPIs</button>
       <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
       <button type="button" class="tab" role="tab" data-tab="caja" aria-selected="false">🎁 Caja Sorpresa</button>
       <button type="button" class="tab" role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
       <button type="button" class="tab" role="tab" data-tab="referir" aria-selected="false">Referir</button>
-      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">PINs</button>
     </nav>
 
     <!-- KPIs -->
@@ -445,10 +446,10 @@ a.btn{text-decoration:none}
     <!-- PIN -->
     <section id="t-ajustes" class="panel" hidden>
       <div class="card" style="display:grid;gap:12px">
-        <div><h2>PIN de caja</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Para tus mozos y cajeros. Con este PIN solo pueden <b>confirmar descuentos</b> y ver los canjes del día. No pueden tocar tus cupones, tu perfil, tus números ni tu PIN.</p></div>
+        <div><h2>PIN para tu encargado</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Generá un PIN para tus encargados, mozos o cajeros. Con ese PIN entran por la misma página, pero <b>solo ven la pantalla para validar el código del cliente</b>. No ven tus cupones, tus números, tu perfil ni tus PIN.</p></div>
         <div id="pc-lista" style="display:grid;gap:10px"></div>
         <div id="pc-nuevo" hidden>
-          <p class="label" style="margin-bottom:6px" id="pc-para">Nuevo PIN de caja</p>
+          <p class="label" style="margin-bottom:6px" id="pc-para">Nuevo PIN de encargado</p>
           <p id="pc-valor" class="mono" style="font-size:2.2rem;font-weight:800;letter-spacing:.2em;text-align:center;user-select:all;background:var(--surface-2);border-radius:16px;padding:12px"></p>
           <p class="hint">Anotalo y pasáselo a tu equipo. Por seguridad no se puede volver a ver: si se pierde, generás otro.</p>
           <button type="button" id="pc-copiar" class="btn ghost sm" style="justify-self:start">Copiar PIN</button>
@@ -892,11 +893,12 @@ $('f-login').addEventListener('submit', async e => {
     }catch(err){ avisoLogin(err.message); }
   });
 });
-const SOLO_DUENO = ['kpis', 'cupones', 'caja', 'perfil', 'referir', 'ajustes'];
+const SOLO_DUENO = ['hoy', 'kpis', 'cupones', 'caja', 'perfil', 'referir', 'ajustes'];
 const esCaja = () => yo && yo.rol === 'caja';
 function aplicarRol(){
   $$('[data-tab]').forEach(b => b.hidden = esCaja() && SOLO_DUENO.includes(b.dataset.tab));
-  $('w-tag').textContent = esCaja() ? 'Caja' : 'Local';
+  $('w-tag').textContent = esCaja() ? 'Encargado' : 'Local';
+  $('tabs').hidden = esCaja();
   $('h-filtro').hidden = esCaja();
 }
 function entrar(){
@@ -1141,10 +1143,10 @@ function pintarPinCaja(){
   $('pc-lista').innerHTML = PC.map((x, i) => `<div class="pc-row">
       <div class="grow" style="min-width:0">
         ${multi ? `<p class="t">${esc(x.dir)}<span class="muted" style="font-weight:600"> · ${esc(x.barrio)}</span></p>` : ''}
-        <p class="s">${x.tiene ? '<span class="chip ok">Activo</span> Tu equipo puede ingresar.' : '<span class="chip">Sin PIN de caja</span>'}</p>
+        <p class="s">${x.tiene ? '<span class="chip ok">Activo</span> Tu equipo puede ingresar.' : '<span class="chip">Sin PIN de encargado</span>'}</p>
       </div>
       <div class="acts">
-        <button type="button" class="btn sm" data-pc-gen="${i}">${x.tiene ? 'Generar uno nuevo' : 'Crear PIN de caja'}</button>
+        <button type="button" class="btn sm" data-pc-gen="${i}">${x.tiene ? 'Generar uno nuevo' : 'Crear PIN de encargado'}</button>
         ${x.tiene ? `<button type="button" class="btn ghost sm" data-pc-off="${i}">Desactivar</button>` : ''}
       </div>
     </div>`).join('');
@@ -1162,8 +1164,8 @@ $('pc-lista').addEventListener('click', async e => {
   const x = PC[+(b.dataset.pcGen ?? b.dataset.pcOff)]; if(!x) return;
   const donde = PC.length > 1 ? ` de ${x.dir}` : '';
   const activar = b.dataset.pcGen !== undefined;
-  if(activar && x.tiene && !confirm(`¿Generar un PIN de caja nuevo${donde}? El actual deja de funcionar y el equipo va a tener que ingresar con el nuevo.`)) return;
-  if(!activar && !confirm(`¿Desactivar el PIN de caja${donde}? El equipo no va a poder ingresar hasta que generes uno nuevo.`)) return;
+  if(activar && x.tiene && !confirm(`¿Generar un PIN de encargado nuevo${donde}? El actual deja de funcionar y el equipo va a tener que ingresar con el nuevo.`)) return;
+  if(!activar && !confirm(`¿Desactivar el PIN de encargado${donde}? El equipo no va a poder ingresar hasta que generes uno nuevo.`)) return;
   let r = null;
   await conBoton(b, async () => {
     try{ r = await rpc('tc_local_pin_caja', Object.assign({p_local_id: yo.id, p_pin: pin, p_activar: activar}, x.id ? {p_sucursal_id: x.id} : {})); }
@@ -1172,9 +1174,9 @@ $('pc-lista').addEventListener('click', async e => {
   if(!r) return;
   x.tiene = activar; pintarPinCaja();
   if(activar){
-    $('pc-para').textContent = 'Nuevo PIN de caja' + (PC.length > 1 ? ' · ' + x.dir : '');
+    $('pc-para').textContent = 'Nuevo PIN de encargado' + (PC.length > 1 ? ' · ' + x.dir : '');
     $('pc-valor').textContent = r.pin; $('pc-nuevo').hidden = false; $('pc-nuevo').scrollIntoView({block: 'nearest'});
-  }else{ $('pc-nuevo').hidden = true; toast('PIN de caja desactivado'); }
+  }else{ $('pc-nuevo').hidden = true; toast('PIN de encargado desactivado'); }
 });
 $('pc-copiar').addEventListener('click', async () => {
   try{ await navigator.clipboard.writeText($('pc-valor').textContent); toast('PIN copiado'); }catch(_){ toast('Mantené apretado el PIN para copiarlo'); }
