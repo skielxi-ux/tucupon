@@ -6,8 +6,6 @@
 <meta name="theme-color" content="#2B0F63">
 <meta name="robots" content="noindex">
 <title>Tucupón · Panel del local</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="icono.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
@@ -57,13 +55,11 @@ p{margin:0}
 .btn-top{border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.85rem;color:#fff;flex:none}
 
 .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:14px 4px}
-@media (min-width:700px){.tabs{flex-wrap:wrap;overflow:visible}}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.92rem;color:var(--muted)}
 .tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
 main.wrap{padding-bottom:64px}
-.panel{margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-.item .t,.item .s{overflow-wrap:anywhere}
+.panel{margin-top:14px;display:grid;gap:14px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px}
 .card h2{font-size:1.25rem}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -107,7 +103,7 @@ textarea.field{min-height:84px;resize:vertical}
 .item .t{font-weight:800;line-height:1.25}
 .item .s{font-size:.82rem;color:var(--muted);margin-top:2px}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(6.5rem,1fr));gap:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:12px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
 .stat b{display:block;font:800 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
 .stat span{font-size:.82rem;color:var(--muted);font-weight:700}
@@ -129,7 +125,7 @@ textarea.field{min-height:84px;resize:vertical}
 .sheet-wrap[aria-hidden="true"] .sheet{transform:translateY(105%)}
 #toast{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:60;max-width:28rem;margin:0 auto;border-radius:14px;background:var(--ink);color:var(--bg);padding:12px 16px;text-align:center;font-size:.9rem;font-weight:700}
 .bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:10px}
-.bars div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;min-width:0}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;min-width:0}
 .bars i{display:block;border-radius:3px 3px 0 0}
 .bars .p{background:var(--brand);opacity:.35}.bars .u{background:var(--brand)}
 .legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);font-weight:700;margin-top:8px}
@@ -140,111 +136,14 @@ th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
 td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
 .scroll{overflow-x:auto}
 .lg{flex:none;display:grid;place-items:center;overflow:hidden;width:58px;height:58px;border-radius:16px;border:1px solid var(--line);color:#2B0F63;font:800 1.15rem/1 var(--font-display)}
-.lg.img{background:#fff;padding:0}
+.lg.img{background:#fff;padding:5px}
 .lg img{width:100%;height:100%;object-fit:contain;display:block}
 .lg.big{width:120px;height:120px;border-radius:26px;font-size:2.2rem}
-.lg.mini{width:30px;height:30px;border-radius:9px;font-size:.7rem;border-color:rgba(255,255,255,.3)}
+.lg.mini{width:30px;height:30px;border-radius:9px;font-size:.7rem;padding:2px;border-color:rgba(255,255,255,.3)}
 .logo-edit{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .file-btn{position:relative;overflow:hidden}
 .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.foto-edit{display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:start}
-.foto-prev{position:relative;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#7B3FF0,#4F1BB5);color:#C4F04A;display:grid;place-items:center;font:800 1.1rem var(--font-display);text-align:center;padding:8px}
-.foto-prev img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.foto-prev .velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,5,35,.45),rgba(15,5,35,0) 30%,rgba(15,5,35,.5) 55%,rgba(15,5,35,.92))}
-.foto-prev .txt{position:absolute;left:8px;right:8px;bottom:8px;text-align:left;color:#C4F04A;font:800 1rem/1 var(--font-display);text-shadow:0 1px 6px rgba(0,0,0,.5)}
-.hint.warn{color:var(--warn);font-weight:700}
-.icono-btn{display:flex;align-items:center;gap:12px;width:100%;border:2px solid var(--line);background:var(--surface-2);border-radius:14px;padding:7px 14px 7px 7px;font-weight:700;color:var(--brand);text-align:left}
-.icono-btn .em{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--surface);font-size:1.6rem;line-height:1}
-.icono-btn:hover{border-color:var(--brand)}
-.ic-grupo{margin-top:6px}
-.ic-grupo h3{font:800 .75rem var(--font-body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:10px 0 8px}
-.ic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px}
-.ic-grid button{aspect-ratio:1;border-radius:12px;font-size:1.7rem;line-height:1;background:var(--surface-2);border:2px solid transparent;transition:transform .1s}
-.ic-grid button:hover{transform:scale(1.08)}
-.ic-grid button[aria-pressed="true"]{border-color:var(--brand);background:var(--surface)}
-.hora{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.hora select{padding:11px 8px;text-align:center}
-.hint.ok{color:var(--ok);font-weight:700}
-.rel-box{border:2px dashed var(--brand);border-radius:16px;padding:14px;background:var(--surface-2)}
-.rel-box .switch{font-size:1.02rem}
-.chip.rel{background:#1E0B45;color:#C4F04A}
-.badge-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--hot);color:#fff;font-size:.72rem;font-weight:800;margin-left:4px}
-a.btn{text-decoration:none}
-.logo-noche{display:none}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo-claro{display:none}:root:not([data-theme="light"]) .logo-noche{display:inline}}
-:root[data-theme="dark"] .logo-claro{display:none}:root[data-theme="dark"] .logo-noche{display:inline}
-.login .card img{justify-self:start}
-.kp-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.kp-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 16px;min-width:0}
-.kp-card span{display:block;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.kp-card b{display:block;margin-top:6px;font:900 2rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
-.kp-card.dest{background:linear-gradient(135deg,#7B3FF0,#4F1BB5);border-color:transparent}
-.kp-card.dest span{color:#C4F04A}.kp-card.dest b{color:#fff}
-.kp-sem{display:grid;gap:10px;margin-top:14px}
-.kp-fila{display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border-radius:16px;padding:14px 16px}
-.kp-fila .t{font-weight:800;font-size:1.02rem;color:var(--heading)}
-.kp-fila .s{font-size:.86rem;color:var(--muted);margin-top:2px}
-.kp-fila > b{font:900 1.8rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
-.kp-cmp{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:8px;font-size:.8rem;color:var(--muted)}
-.kp-tr{display:inline-flex;border-radius:999px;padding:2px 9px;font-weight:800}
-.kp-tr.sube{background:var(--ok-bg);color:var(--ok)}.kp-tr.baja{background:var(--hot-bg);color:var(--hot)}.kp-tr.cero{padding:0;font-weight:700}
-.kp-per{display:flex;gap:4px;flex-wrap:wrap}
-.kp-per button{border:2px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:700;font-size:.82rem;color:var(--muted);background:var(--surface)}
-.kp-per button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
-.kp-mapa{display:grid;grid-template-columns:34px repeat(7,minmax(34px,1fr));gap:4px;min-width:320px}
-.kp-dia{text-align:center;font-size:.74rem;font-weight:800;color:var(--muted)}
-.kp-h{font-size:.72rem;font-weight:700;color:var(--muted);text-align:right;padding-right:4px;align-self:center}
-.kp-c{height:24px;border-radius:6px;background:var(--surface-2);border:2px solid transparent}
-.kp-c.promo{border-color:#9BD12A}
-.kp-c.n1{background:#DDD0FF}.kp-c.n2{background:#B794FF}.kp-c.n3{background:#8A5CF0}.kp-c.n4{background:#4F1BB5}
-.kp-c.sel{outline:3px solid var(--ink);outline-offset:1px}
-.kp-det{margin-top:12px;text-align:center;font-size:.9rem;font-weight:600;color:var(--ink);min-height:1.4em}
-.kp-ley{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);font-weight:700}
-.kp-ley i{display:inline-block;width:18px;height:14px;border-radius:4px}
-.kp-ley .n1{background:#DDD0FF}.kp-ley .n2{background:#B794FF}.kp-ley .n3{background:#8A5CF0}.kp-ley .n4{background:#4F1BB5}
-.kp-ley .promo-i{background:var(--surface-2);border:2px solid #9BD12A}
-@media (max-width:420px){.kp-card b{font-size:1.6rem}.kp-card{padding:12px}}
-.alta-edit{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:12px}
-.alta-edit .btn{height:48px}
-.btn.wa{background:#25D366;color:#fff;flex:none}
-.btn.wa svg{margin-right:2px}
-@media (max-width:460px){.alta-edit{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}.alta-edit input[type=date]{padding-inline:10px}.alta-edit .btn{grid-column:1/-1;height:auto}}
-#al-lista,#rec-lista,#ref-lista{grid-template-columns:minmax(0,1fr)}
-.card{min-width:0}
-.alta .item{flex-wrap:wrap}
-.alta .item .grow{flex:1 1 10rem}
-.alta-edit .field{min-width:0;width:100%}
-.req{color:var(--hot);font-weight:800}
-.field[aria-invalid="true"]{border-color:var(--hot)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-.bn-prev{aspect-ratio:3/1;border-radius:16px;overflow:hidden;background:var(--surface-2);border:2px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-weight:700;font-size:.9rem}
-.bn-prev img{width:100%;height:100%;object-fit:cover;display:block}
-.bn-prev:has(img){border:0}
-.bn-nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.bn-nums div{background:var(--surface-2);border-radius:12px;padding:8px 6px;text-align:center;min-width:0}
-.bn-nums b{display:block;font-size:1.1rem;color:var(--heading)}
-.bn-nums span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;line-height:1.2}
-.pc-row{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:16px}
-.pc-row .grow{flex:none}
-.pc-row .t{font-weight:800;overflow-wrap:anywhere}
-.pc-row .s{font-size:.85rem;color:var(--muted);margin-top:2px}
-.who .suc{display:block;font-size:.72rem;font-weight:600;opacity:.8;margin-top:1px;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.suc-lista{margin:4px 0 0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
-.su-row+.su-row{border-top:1px dashed var(--line);padding-top:10px}
-.su-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start}
-@media (max-width:520px){.su-row{grid-template-columns:minmax(0,1fr) auto}.su-row .su-dir-w{grid-column:1/2}}
-.btn.ghost.btn-borrar{color:var(--hot)}
-#loc-lista .item{flex-wrap:wrap}
-#loc-lista .item .grow{flex:1 1 14rem;min-width:0}
-@media (max-width:700px){#loc-lista .acts{flex:1 1 100%;padding-left:60px}}
-@media (max-width:420px){#loc-lista .acts{padding-left:0}}
-#cj-hoy .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
-#cj-hoy .stat b{font-size:1.6rem}
-.caja-hero{background:linear-gradient(150deg,#0F8A62,#0B5E46);color:#fff;border:0}
-.caja-hero .t{font-weight:900;font-size:1.2rem}
-.caja-hero p:not(.t){opacity:.9;margin-top:4px;font-size:.92rem}
-.cobrar{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:#E3F7EE;color:#0B5E46;border-radius:16px;padding:12px 16px;font-weight:800}
-.cobrar b{font-size:1.8rem;font-weight:900}
 </style>
 
 </head>
@@ -253,68 +152,30 @@ a.btn{text-decoration:none}
 <!-- ============ INGRESO ============ -->
 <section id="login" class="login">
   <form id="f-login" class="card" novalidate>
-    <img src="logo-oscuro.png" alt="Tucupón" class="logo-claro" style="height:44px;width:auto" width="656" height="160"><img src="logo.png" alt="Tucupón" class="logo-noche" style="height:44px;width:auto" width="656" height="160">
+    <span class="brandmark"><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em></span>
     <div><h1 style="font-size:1.5rem">Panel del local</h1><p class="muted" style="margin-top:4px">Confirmá los códigos de tus clientes y manejá tus cupones.</p></div>
     <div id="l-alert" class="alert" hidden></div>
     <div><label class="label" for="l-local">Tu local</label><select id="l-local" class="field"><option value="">Cargando locales…</option></select></div>
     <div><label class="label" for="l-pin">PIN</label><input id="l-pin" class="field mono" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" placeholder="6 números" style="letter-spacing:.3em"></div>
     <button type="submit" class="btn full">Ingresar</button>
-    <p class="muted" style="font-size:.82rem;text-align:center">Entrá con tu PIN de dueño o con el PIN de encargado.<br>¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
+    <p class="muted" style="font-size:.82rem;text-align:center">¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
   </form>
 </section>
 
 <!-- ============ PANEL ============ -->
 <div id="app" hidden>
   <header class="top"><div class="wrap">
-    <span class="brandmark"><img src="logo.png" alt="Tucupón" class="logo-img" style="height:34px;width:auto;display:block" width="656" height="160"><span class="tag" id="w-tag">Local</span></span>
+    <span class="brandmark"><span class="tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></span>Tu<em>cupón</em><span class="tag">Local</span></span>
     <span class="who"><span id="w-nombre"></span><button type="button" id="btn-salir" class="btn-top">Salir</button></span>
   </div></header>
   <main class="wrap">
-    <div id="pausa-aviso" class="alert" style="margin-top:14px" hidden></div>
-    <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones">
+    <nav class="tabs" role="tablist" aria-label="Secciones">
       <button type="button" class="tab" role="tab" data-tab="canjear" aria-selected="true">Canjear</button>
       <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Canjes</button>
-      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">🔑 Encargados y PIN</button>
-      <button type="button" class="tab" role="tab" data-tab="kpis" aria-selected="false">KPIs</button>
       <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
-      <button type="button" class="tab" role="tab" data-tab="caja" aria-selected="false">🎁 Caja Sorpresa</button>
       <button type="button" class="tab" role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
-      <button type="button" class="tab" role="tab" data-tab="referir" aria-selected="false">Referir</button>
+      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">PIN</button>
     </nav>
-
-    <!-- KPIs -->
-    <section id="t-kpis" class="panel" hidden>
-      <div class="kp-top">
-        <div class="kp-card dest"><span>Cupones visibles</span><b id="kp-vis">–</b></div>
-        <div class="kp-card"><span>Pedidos</span><b id="kp-ped">–</b></div>
-        <div class="kp-card"><span>Canjeados</span><b id="kp-usa">–</b></div>
-      </div>
-      <p class="muted" style="font-size:.8rem;margin-top:-6px">Pedidos y canjeados: desde que te sumaste a Tucupón.</p>
-
-      <div class="card">
-        <h2>Esta semana</h2>
-        <p class="muted" style="font-size:.85rem;font-weight:600">Últimos 7 días comparados con los 7 anteriores</p>
-        <div id="kp-sem" class="kp-sem"></div>
-      </div>
-
-      <div class="card">
-        <div class="row" style="align-items:center;justify-content:space-between">
-          <h2 style="flex:1 1 12rem">¿Cuándo se canjea?</h2>
-          <div class="kp-per" role="group" aria-label="Período">
-            <button type="button" data-per="7" aria-pressed="false">7 días</button>
-            <button type="button" data-per="28" aria-pressed="true">4 semanas</button>
-            <button type="button" data-per="90" aria-pressed="false">3 meses</button>
-          </div>
-        </div>
-        <p id="kp-res" class="muted" style="margin-top:8px;font-size:.92rem"></p>
-        <div class="scroll" style="margin-top:12px"><div id="kp-mapa" class="kp-mapa"></div></div>
-        <div id="kp-det" class="kp-det">Tocá un cuadro para ver el detalle.</div>
-        <div class="kp-ley">
-          <span>Menos</span><i class="n1"></i><i class="n2"></i><i class="n3"></i><i class="n4"></i><span>Más canjes</span>
-          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px"><i class="promo-i"></i>Horario con promo</span>
-        </div>
-      </div>
-    </section>
 
     <!-- Canjear -->
     <section id="t-canjear" class="panel">
@@ -330,7 +191,7 @@ a.btn{text-decoration:none}
 
     <!-- Canjes del día -->
     <section id="t-hoy" class="panel" hidden>
-      <div class="card row" id="h-filtro">
+      <div class="card row">
         <div class="grow"><label class="label" for="h-fecha">Día</label><input id="h-fecha" class="field" type="date"></div>
         <button type="button" class="btn ghost" id="h-hoy" style="align-self:flex-end">Hoy</button>
       </div>
@@ -339,44 +200,6 @@ a.btn{text-decoration:none}
         <div class="stat"><b id="h-pedidos">–</b><span>Códigos pedidos</span></div>
       </div>
       <div class="card"><h2>Canjes confirmados</h2><div id="h-lista" style="margin-top:12px"></div></div>
-    </section>
-
-    <!-- Caja Sorpresa -->
-    <section id="t-caja" class="panel" hidden>
-      <div class="card caja-hero">
-        <p class="t">🎁 Caja Sorpresa</p>
-        <p>Vendé a precio bajo lo que no se vendió en el día, en vez de tirarlo. El cliente reserva desde la app, pasa a retirar en tu horario y te paga en el local.</p>
-      </div>
-      <div id="cj-hoy" class="card" hidden>
-        <div class="row"><h2 class="grow">Hoy</h2><span id="cj-estado" class="chip"></span></div>
-        <div class="stats" style="margin-top:10px">
-          <div class="stat"><b id="cj-cant">–</b><span>Cajas publicadas</span></div>
-          <div class="stat"><b id="cj-res">–</b><span>Reservadas</span></div>
-          <div class="stat"><b id="cj-ret">–</b><span>Retiradas</span></div>
-        </div>
-        <form id="f-cj-hoy" class="row" style="margin-top:12px;align-items:flex-end;flex-wrap:wrap" novalidate>
-          <div class="grow" style="min-width:10rem"><label class="label" for="cj-n">¿Cuántas cajas tenés hoy?</label><input id="cj-n" class="field" type="number" min="0" max="500" step="1" inputmode="numeric" placeholder="Ej.: 5"></div>
-          <button type="submit" class="btn">Publicar</button>
-        </form>
-        <p class="hint">Se publican solo por hoy y dejan de verse cuando termina tu horario de retiro. Poné 0 si hoy no tenés.</p>
-        <div id="cj-lista" style="margin-top:12px"></div>
-      </div>
-      <form id="f-caja" class="card" style="display:grid;gap:14px" novalidate>
-        <div class="row"><h2 class="grow">Tu caja</h2><label class="switch"><input id="cj-activo" type="checkbox" checked>Activa</label></div>
-        <div id="cj-alert" class="alert" hidden></div>
-        <div><label class="label" for="cj-desc">¿Qué suele traer?</label><textarea id="cj-desc" class="field" maxlength="160" placeholder="Ej.: Panificados y facturas del día"></textarea><p class="hint">Orientativo: el contenido es sorpresa y depende de lo que quede cada día.</p></div>
-        <div class="grid2">
-          <div><label class="label" for="cj-valor">Valor de lo que trae</label><input id="cj-valor" class="field" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej.: 12000"></div>
-          <div><label class="label" for="cj-precio">Precio para el cliente</label><input id="cj-precio" class="field" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej.: 4000"></div>
-        </div>
-        <p id="cj-ahorro" class="hint" style="margin-top:-6px">Lo ideal es un tercio del valor o menos: es lo que hace que la caja se reserve rápido.</p>
-        <div class="grid2">
-          <div><span class="label" id="cj-desde-l">Retiro desde</span><input id="cj-desde" type="hidden"><div class="hora" data-hora="cj-desde" aria-labelledby="cj-desde-l"></div></div>
-          <div><span class="label" id="cj-hasta-l">Retiro hasta</span><input id="cj-hasta" type="hidden"><div class="hora" data-hora="cj-hasta" aria-labelledby="cj-hasta-l"></div></div>
-        </div>
-        <p class="hint" style="margin-top:-6px">Elegí un horario cerca del cierre, cuando ya sabés qué te sobró. Formato 24 h.</p>
-        <button type="submit" class="btn full">Guardar caja</button>
-      </form>
     </section>
 
     <!-- Mis cupones -->
@@ -401,63 +224,24 @@ a.btn{text-decoration:none}
               <button type="button" id="pf-quitar" class="btn ghost sm">Quitar logo</button>
             </div>
           </div>
-          <p class="hint"><b>Ideal: 512 × 512 px, cuadrado.</b> Si tu logo tiene fondo de color, que llegue hasta los bordes. Si es transparente, dejale un pequeño margen.</p>
+          <p class="hint">Ideal: cuadrado, con fondo blanco o transparente. Lo achicamos automáticamente.</p>
         </div>
+        <div><label class="label" for="pf-nombre">Nombre del local</label><input id="pf-nombre" class="field" maxlength="60"></div>
         <div class="grid2">
-          <div><label class="label" for="pf-nombre">Nombre del local <span class="req">*</span></label><input id="pf-nombre" class="field" maxlength="60" required></div>
-          <div><label class="label" for="pf-resp">Nombre y Apellido <span class="req">*</span></label><input id="pf-resp" class="field" maxlength="80" autocomplete="name" placeholder="Quién maneja el local" required></div>
-        </div>
-        <div><label class="label" for="pf-prov">Provincia <span class="req">*</span></label><select id="pf-prov" class="field"></select></div>
-        <div class="grid2">
-          <div><label class="label" for="pf-barrio">Barrio o zona <span class="req">*</span></label><select id="pf-barrio" class="field"></select>
+          <div><label class="label" for="pf-barrio">Barrio</label><select id="pf-barrio" class="field"></select>
             <div data-otro hidden style="margin-top:8px"><label class="label" for="pf-barrio-otro">¿Qué barrio?</label><input id="pf-barrio-otro" class="field" maxlength="40" placeholder="Escribí el barrio"></div></div>
-          <div><label class="label" for="pf-rubro">Rubro <span class="req">*</span></label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
+          <div><label class="label" for="pf-rubro">Rubro</label><select id="pf-rubro" class="field"></select><p class="hint">Define en qué sección te encuentran los clientes.</p></div>
         </div>
-        <div><label class="label" for="pf-dir">Dirección <span class="req">*</span></label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"><p id="pf-suc-hint" class="hint" hidden>Es la dirección de tu sucursal principal.</p></div>
-        <div id="pf-suc" hidden><span class="label">Tus otras sucursales</span><ul id="pf-suc-lista" class="suc-lista"></ul><p class="hint">Tus cupones valen en todas. Para sumar, cambiar o quitar una sucursal, escribile al equipo de Tucupón.</p></div>
-        <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto <span class="req">*</span></label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
-        <p class="hint" style="margin-top:-4px"><span class="req">*</span> Campos obligatorios</p>
+        <div><label class="label" for="pf-dir">Dirección</label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"></div>
+        <div><label class="label" for="pf-horario">Horario de atención</label><input id="pf-horario" class="field" maxlength="80" placeholder="Lun a Sáb · 12 a 23 h"></div>
         <button type="submit" class="btn full">Guardar perfil</button>
-      </form>
-    </section>
-
-    <!-- Referir -->
-    <section id="t-referir" class="panel" hidden>
-      <form id="f-ref" class="card" style="display:grid;gap:14px" novalidate>
-        <div>
-          <h2>Referí un local</h2>
-          <p class="muted" style="font-size:.92rem;margin-top:4px">¿Conocés un comercio gastronómico que le vendría bien estar en Tucupón? Dejanos sus datos y el equipo de Tucupón se contacta.</p>
-        </div>
-        <div id="rf-alert" class="alert" hidden></div>
-        <div class="grid2">
-          <div><label class="label" for="rf-local">Nombre del local</label><input id="rf-local" class="field" maxlength="80" placeholder="Ej.: Pizzería Don Pepe"></div>
-          <div><label class="label" for="rf-contacto">Persona de contacto</label><input id="rf-contacto" class="field" maxlength="80" autocomplete="off" placeholder="Nombre y apellido"></div>
-        </div>
-        <div class="grid2">
-          <div><label class="label" for="rf-tel">Teléfono / WhatsApp</label><input id="rf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"></div>
-          <div><label class="label" for="rf-rubro">Rubro</label><select id="rf-rubro" class="field"></select></div>
-        </div>
-        <div><label class="label" for="rf-com">Comentario (opcional)</label><textarea id="rf-com" class="field" maxlength="600" placeholder="Ej.: es el dueño, ya le conté de Tucupón y le interesa"></textarea></div>
-        <button type="submit" class="btn full">Enviar referido</button>
-        <p class="muted" style="font-size:.8rem;text-align:center">Antes de enviar, avisale a la persona que la vamos a contactar.</p>
       </form>
     </section>
 
     <!-- PIN -->
     <section id="t-ajustes" class="panel" hidden>
-      <div class="card" style="display:grid;gap:12px">
-        <div><h2>PIN para tu encargado</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Generá un PIN para tus encargados, mozos o cajeros. Con ese PIN entran por la misma página, pero <b>solo ven la pantalla para validar el código del cliente</b>. No ven tus cupones, tus números, tu perfil ni tus PIN.</p></div>
-        <div id="pc-lista" style="display:grid;gap:10px"></div>
-        <div id="pc-nuevo" hidden>
-          <p class="label" style="margin-bottom:6px" id="pc-para">Nuevo PIN de encargado</p>
-          <p id="pc-valor" class="mono" style="font-size:2.2rem;font-weight:800;letter-spacing:.2em;text-align:center;user-select:all;background:var(--surface-2);border-radius:16px;padding:12px"></p>
-          <p class="hint">Anotalo y pasáselo a tu equipo. Por seguridad no se puede volver a ver: si se pierde, generás otro.</p>
-          <button type="button" id="pc-copiar" class="btn ghost sm" style="justify-self:start">Copiar PIN</button>
-        </div>
-        <p class="hint" style="margin:0">Si un empleado deja de trabajar con vos, generá uno nuevo: el anterior deja de funcionar en el momento.</p>
-      </div>
       <form id="f-pin" class="card" style="display:grid;gap:12px" novalidate>
-        <div><h2>Tu PIN de dueño</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Con este PIN se maneja todo el panel. No lo compartas con tu equipo.</p></div>
+        <h2>Cambiar PIN</h2>
         <div id="p-alert" class="alert" hidden></div>
         <div><label class="label" for="p-nuevo">PIN nuevo</label><input id="p-nuevo" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="6 números"></div>
         <div><label class="label" for="p-nuevo2">Repetí el PIN</label><input id="p-nuevo2" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" placeholder="6 números"></div>
@@ -484,71 +268,28 @@ a.btn{text-decoration:none}
     <div id="cf-local-w" hidden><label class="label" for="cf-local">Local</label><select id="cf-local" class="field"></select></div>
     <div class="grid2">
       <div><label class="label" for="cf-etiqueta">Descuento</label><input id="cf-etiqueta" class="field" maxlength="24" placeholder="20% OFF, 2x1, $ 3.000 OFF"><p class="hint">Es el texto grande del cupón.</p></div>
-      <div><span class="label" id="cf-icono-l">Ícono</span><input id="cf-icono" type="hidden"><button type="button" class="icono-btn" data-icono-para="cf-icono" aria-labelledby="cf-icono-l"><span class="em"></span><span>Elegir ícono</span></button><p class="hint">Se ve en la tarjeta cuando el cupón no tiene foto.</p></div>
-    </div>
-    <div>
-      <span class="label">Foto del cupón (opcional)</span>
-      <div class="foto-edit">
-        <div id="cf-foto-prev" class="foto-prev"></div>
-        <div style="display:grid;gap:8px;align-content:start;min-width:0">
-          <label class="btn ghost sm file-btn">Subir foto<input id="cf-foto-file" type="file" accept="image/png,image/jpeg,image/webp"></label>
-          <button type="button" id="cf-foto-quitar" class="btn ghost sm">Quitar foto</button>
-          <p class="hint" style="margin:0"><b>Tamaño ideal: 1080 × 1350 px</b> (vertical, como un post de Instagram). Mínimo 800 × 1000 px. Que el producto esté en el centro: arriba y abajo va el texto del cupón.</p>
-          <p id="cf-foto-aviso" class="hint" style="margin:0" hidden></p>
-        </div>
-      </div>
-      <p class="hint">Sin foto, la tarjeta usa los colores de Tucupón.</p>
+      <div><label class="label" for="cf-icono">Ícono</label><input id="cf-icono" class="field" maxlength="4" placeholder="🍕"><p class="hint">Un emoji que represente el producto.</p></div>
     </div>
     <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="En pizzas grandes de la carta"></div>
     <div><label class="label" for="cf-descripcion">Descripción (opcional)</label><textarea id="cf-descripcion" class="field" maxlength="300" placeholder="Contá qué incluye la promo"></textarea></div>
     <div><label class="label" for="cf-condiciones">Condiciones</label><textarea id="cf-condiciones" class="field" maxlength="400" placeholder="Válido en salón. No acumulable con otras promos"></textarea><p class="hint">Separá cada condición con un punto.</p></div>
-    <div class="rel-box">
-      <label class="switch"><input id="cf-rel" type="checkbox"><span>⚡ Cupón relámpago</span></label>
-      <p class="hint">Dura pocas horas y tiene cantidad limitada. Aparece destacado arriba de todo en Tucupón, con cuenta regresiva.</p>
-      <div id="cf-rel-campos" class="grid2" style="margin-top:12px" hidden>
-        <div><label class="label" for="cf-rel-horas">Dura</label><select id="cf-rel-horas" class="field">
-          <option value="1">1 hora</option><option value="2">2 horas</option><option value="3" selected>3 horas</option>
-          <option value="6">6 horas</option><option value="12">12 horas</option><option value="24">24 horas</option></select></div>
-        <div><label class="label" for="cf-stock">Cantidad de códigos</label><input id="cf-stock" class="field" type="number" min="1" max="9999" step="1" inputmode="numeric" placeholder="Ej.: 50"></div>
-        <p id="cf-rel-estado" class="hint" style="grid-column:1/-1;margin:0">Empieza apenas guardes el cupón. El código vale hasta que termina.</p>
-      </div>
-    </div>
-    <div id="cf-normal" style="display:grid;gap:14px">
     <div>
       <span class="label">Días en que vale</span>
       <div class="dias" id="cf-dias">
         <label><input type="checkbox" value="1"><span>Lun</span></label><label><input type="checkbox" value="2"><span>Mar</span></label><label><input type="checkbox" value="3"><span>Mié</span></label><label><input type="checkbox" value="4"><span>Jue</span></label><label><input type="checkbox" value="5"><span>Vie</span></label><label><input type="checkbox" value="6"><span>Sáb</span></label><label><input type="checkbox" value="0"><span>Dom</span></label>
       </div>
-      <p class="hint">Si marcás todos (o ninguno), vale todos los días. Horarios en formato de 24 h: 13 = 1 de la tarde, 20 = 8 de la noche, 24 = medianoche.</p>
+      <p class="hint">Si marcás todos (o ninguno), vale todos los días.</p>
     </div>
     <div class="grid2">
-      <div><span class="label" id="cf-desde-l">Desde (opcional)</span><input id="cf-desde" type="hidden"><div class="hora" data-hora="cf-desde" aria-labelledby="cf-desde-l"></div></div>
-      <div><span class="label" id="cf-hasta-l">Hasta (opcional)</span><input id="cf-hasta" type="hidden"><div class="hora" data-hora="cf-hasta" aria-labelledby="cf-hasta-l"></div></div>
-    </div>
-    <p id="cf-res1" class="hint" style="margin-top:-6px">Sin horario: vale todo el día.</p>
-    <button type="button" id="cf-mas-horario" class="btn ghost sm" style="justify-self:start">+ Agregar otro horario</button>
-    <div id="cf-franja2" hidden>
-      <div class="row" style="margin-bottom:6px"><span class="label grow" style="margin:0">Segundo horario</span><button type="button" id="cf-quitar-horario" class="btn ghost sm">Quitar</button></div>
-      <div class="grid2">
-        <div><span class="label" id="cf-desde2-l">Desde</span><input id="cf-desde2" type="hidden"><div class="hora" data-hora="cf-desde2" aria-labelledby="cf-desde2-l"></div></div>
-        <div><span class="label" id="cf-hasta2-l">Hasta</span><input id="cf-hasta2" type="hidden"><div class="hora" data-hora="cf-hasta2" aria-labelledby="cf-hasta2-l"></div></div>
-      </div>
-      <p id="cf-res2" class="hint">Por ejemplo, para la noche: 20:00 a 23:30 h.</p>
-    </div>
+      <div><label class="label" for="cf-desde">Desde (opcional)</label><input id="cf-desde" class="field" type="time"></div>
+      <div><label class="label" for="cf-hasta">Hasta (opcional)</label><input id="cf-hasta" class="field" type="time"><p class="hint">Dejá las dos horas vacías si vale todo el día.</p></div>
     </div>
     <div class="grid2">
-      <div id="cf-vence-w"><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
+      <div><label class="label" for="cf-vence">Vence (opcional)</label><input id="cf-vence" class="field" type="date"></div>
       <div style="align-self:center"><label class="switch"><input id="cf-activo" type="checkbox" checked>Visible para los clientes</label></div>
     </div>
     <button type="submit" class="btn full">Guardar cupón</button>
   </form>
-</div>
-<!-- Hoja: elegir ícono -->
-<div id="sheet-iconos" class="sheet-wrap" aria-hidden="true" style="z-index:50">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ic-title">
-    <div class="row"><h2 id="ic-title" class="grow">Elegí un ícono</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
-    <div id="ic-grupos"></div>
-  </div>
 </div>
 <div id="toast" hidden></div>
 
@@ -596,16 +337,13 @@ const badge = (c) => { const e = partes(c.etiqueta); return `<span class="badge 
 // Fila de cupón en los paneles
 function itemCupon(c, extra = ''){
   const vence = c.vence ? `Vence ${fechaCorta(c.vence)}` : '';
-  const rel = c.relampago_fin ? (new Date(c.relampago_fin) > new Date()
-      ? `<span class="chip rel">⚡ Relámpago · termina ${hora(c.relampago_fin)} h · ${c.pedidos} de ${c.stock}</span> `
-      : `<span class="chip off">⚡ Relámpago terminado · ${c.pedidos} de ${c.stock}</span> `) : '';
   const vencido = c.vence && c.vence < hoyISO();
   return `<div class="item">
     ${badge(c)}
     <div class="grow">
       <p class="t">${esc(c.icono)} ${esc(c.etiqueta)} · ${esc(c.titulo)}</p>
-      <p class="s">${rel}${extra}${c.relampago_fin ? '' : esc(c.horario) + (vence ? ' · ' + vence : '')}</p>
-      <p class="s"><span class="chip ${c.activo && !vencido ? 'ok' : 'off'}">${!c.activo ? 'Pausado' : vencido ? 'Vencido' : 'Visible'}</span>${c.foto_v ? ' <span class="chip">📷 Con foto</span>' : ''} ${c.pedidos} pedidos · ${c.usados} canjeados · 🔥 ${c.votos.hot} / ❄️ ${c.votos.frio}</p>
+      <p class="s">${extra}${esc(c.horario)}${vence ? ' · ' + vence : ''}</p>
+      <p class="s"><span class="chip ${c.activo && !vencido ? 'ok' : 'off'}">${!c.activo ? 'Pausado' : vencido ? 'Vencido' : 'Visible'}</span> ${c.pedidos} pedidos · ${c.usados} canjeados · 🔥 ${c.votos.hot} / ❄️ ${c.votos.frio}</p>
     </div>
     <div class="acts">
       <button type="button" class="btn ghost sm" data-edit="${c.id}">Editar</button>
@@ -615,94 +353,26 @@ function itemCupon(c, extra = ''){
   </div>`;
 }
 
-// ---------- Foto del cupón: se recorta a 4:5 y se achica a 900 × 1125 en el navegador ----------
-const FOTO_W = 900, FOTO_H = 1125;
-function prepararFoto(file){
-  return new Promise((ok, mal) => {
-    if(!file || !/^image\//.test(file.type)) return mal(new Error('Elegí una imagen (JPG, PNG o WebP).'));
-    if(file.size > 25e6) return mal(new Error('La foto es muy pesada. Probá con una de menos de 25 MB.'));
-    const img = new Image(), url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const w0 = img.width, h0 = img.height, r = 4 / 5;
-      // recorte centrado a 4:5
-      let sw = w0, sh = h0;
-      if(w0 / h0 > r) sw = Math.round(h0 * r); else sh = Math.round(w0 / r);
-      const sx = Math.round((w0 - sw) / 2), sy = Math.round((h0 - sh) / 2);
-      const hacer = (W, q) => {
-        const k = Math.min(1, W / sw), w = Math.round(sw * k), h = Math.round(sh * k);
-        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-        const cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
-        let d = cv.toDataURL('image/webp', q);
-        if(!d.startsWith('data:image/webp')) d = cv.toDataURL('image/jpeg', q);
-        return d;
-      };
-      let d = hacer(FOTO_W, .8);
-      if(d.length > 390000) d = hacer(FOTO_W, .66);
-      if(d.length > 390000) d = hacer(720, .66);
-      if(d.length > 390000) return mal(new Error('No pudimos achicar esta foto. Probá con otra.'));
-      // avisos según tamaño y forma de la original
-      const avisos = [];
-      if(w0 < 800 || h0 < 1000) avisos.push(`Tu foto mide ${w0} × ${h0} px: es chica y puede verse pixelada. Mejor 1080 × 1350 px.`);
-      const prop = w0 / h0;
-      if(prop > 1.05) avisos.push('Tu foto es horizontal: le recortamos los costados para que quede vertical. Fijate en la vista previa que el producto no quede cortado.');
-      else if(Math.abs(prop - r) > .08) avisos.push('Tu foto no tiene la forma ideal (4:5): la recortamos al centro. Revisá la vista previa.');
-      ok({data: d, avisos});
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No pudimos leer esa foto. Probá con otra.')); };
-    img.src = url;
-  });
-}
-let fotoOrig = null, fotoNueva;   // fotoNueva: undefined = sin cambios, null = quitar, texto = foto nueva
-function pintarFotoCupon(){
-  const src = fotoNueva === undefined ? fotoOrig : fotoNueva, et = $('cf-etiqueta').value.trim() || '20% OFF';
-  $('cf-foto-prev').innerHTML = src ? `<img src="${src}" alt=""><span class="velo"></span><span class="txt">${esc(et)}</span>` : `<span>${esc(et)}</span>`;
-  $('cf-foto-quitar').hidden = !src;
-}
-$('cf-etiqueta').addEventListener('input', pintarFotoCupon);
-$('cf-foto-file').addEventListener('change', async e => {
-  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
-  const av = $('cf-foto-aviso');
-  try{
-    const r = await prepararFoto(f); fotoNueva = r.data; pintarFotoCupon();
-    av.textContent = r.avisos.length ? r.avisos.join(' ') : '¡Queda perfecta! Guardá el cupón para publicarla.';
-    av.className = 'hint' + (r.avisos.length ? ' warn' : ''); av.hidden = false;
-  }catch(err){ av.textContent = err.message; av.className = 'hint warn'; av.hidden = false; }
-});
-$('cf-foto-quitar').addEventListener('click', () => { fotoNueva = null; pintarFotoCupon(); $('cf-foto-aviso').hidden = true; });
-
 // ---------- Formulario de cupón ----------
 let editando = null;
-async function abrirFormCupon(c, opciones = {}){
+function abrirFormCupon(c, opciones = {}){
   editando = c ? c.id : null;
-  fotoOrig = null; fotoNueva = undefined; $('cf-foto-aviso').hidden = true;
   $('cf-title').textContent = c ? 'Editar cupón' : 'Nuevo cupón';
   $('cf-alert').hidden = true;
   $('cf-local-w').hidden = !opciones.locales;
   if(opciones.locales) $('cf-local').innerHTML = opciones.locales.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
   if(opciones.locales) $('cf-local').value = c ? c.local : (opciones.localPorDefecto || opciones.locales[0]?.id || '');
   $('cf-etiqueta').value = c ? c.etiqueta : '';
-  $('cf-icono').value = c && c.icono !== '🎟️' ? c.icono : '🍽️'; pintarBotonIcono('cf-icono');
+  $('cf-icono').value = c ? c.icono : '🎟️';
   $('cf-titulo').value = c ? c.titulo : '';
   $('cf-descripcion').value = c ? c.descripcion : '';
   $('cf-condiciones').value = c ? c.condiciones : '';
   $$('#cf-dias input').forEach(i => i.checked = !!(c && c.dias && c.dias.includes(+i.value)));
   $('cf-desde').value = c && c.hora_desde ? c.hora_desde : '';
   $('cf-hasta').value = c && c.hora_hasta ? c.hora_hasta : '';
-  $('cf-desde2').value = c && c.hora_desde2 ? c.hora_desde2 : '';
-  $('cf-hasta2').value = c && c.hora_hasta2 ? c.hora_hasta2 : '';
-  mostrarFranja2(!!(c && c.hora_desde2));
-  ['cf-desde', 'cf-hasta', 'cf-desde2', 'cf-hasta2'].forEach(id => ponerHora(id, $(id).value)); resumenHorarios();
   $('cf-vence').value = c && c.vence ? c.vence : '';
   $('cf-activo').checked = c ? c.activo : true;
-  relOrig = c && c.relampago_fin ? c : null;
-  $('cf-rel').checked = !!relOrig; $('cf-stock').value = relOrig ? relOrig.stock : ''; $('cf-rel-horas').value = '3';
-  pintarRelampago();
-  pintarFotoCupon();
   abrirHoja('sheet-cupon');
-  if(c && c.foto_v){
-    try{ const r = await rpc('tc_fotos', {p_ids: [c.id]}); if(editando === c.id && r[c.id]){ fotoOrig = r[c.id].foto; pintarFotoCupon(); } }catch(e){}
-  }
   setTimeout(() => $('cf-etiqueta').focus(), 250);
 }
 function leerFormCupon(){
@@ -713,10 +383,7 @@ function leerFormCupon(){
     descripcion: $('cf-descripcion').value.trim(), condiciones: $('cf-condiciones').value.trim(),
     dias: dias.length && dias.length < 7 ? dias : null,
     hora_desde: $('cf-desde').value || null, hora_hasta: $('cf-hasta').value || null,
-    hora_desde2: !$('cf-franja2').hidden && $('cf-desde2').value || null, hora_hasta2: !$('cf-franja2').hidden && $('cf-hasta2').value || null,
     vence: $('cf-vence').value || null, activo: $('cf-activo').checked,
-    ...(fotoNueva !== undefined ? {foto: fotoNueva} : {}),
-    relampago: $('cf-rel').checked, relampago_horas: +$('cf-rel-horas').value, stock: $('cf-stock').value ? +$('cf-stock').value : null,
   };
 }
 function avisoCupon(msg){ $('cf-alert').textContent = msg; $('cf-alert').hidden = !msg; if(msg) $('cf-alert').scrollIntoView({block:'nearest'}); }
@@ -754,114 +421,17 @@ const logoHTML = (src, nombre, color, clase = '') => src
 // ---------- Barrios: lista fija + "Otro" ----------
 const BARRIOS = ['Yerba Buena', 'Centro', 'Barrio Sur', 'Barrio Norte', 'Mate de Luna'];
 function barrioSelectHTML(){ return BARRIOS.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('') + '<option value="__otro">Otro</option>'; }
-// En Tucumán hay lista fija; en las demás provincias se escribe el barrio o la zona
-function ponerBarrio(sel, otro, valor, prov){
-  const tuc = !prov || prov === 'Tucumán';
-  sel.hidden = !tuc;
-  sel.innerHTML = tuc ? '<option value="">Elegí el barrio</option>' + barrioSelectHTML() : '<option value="__otro">Otro</option>';
-  const conocido = tuc && BARRIOS.includes(valor);
-  sel.value = !tuc ? '__otro' : !valor ? '' : conocido ? valor : '__otro';
+function ponerBarrio(sel, otro, valor){
+  sel.innerHTML = '<option value="">Elegí el barrio</option>' + barrioSelectHTML();
+  const conocido = BARRIOS.includes(valor);
+  sel.value = !valor ? '' : conocido ? valor : '__otro';
   otro.value = conocido ? '' : (valor || '');
-  const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro';
-  const lb = w.querySelector('label'); if(lb){ lb.hidden = !tuc; }
-  otro.placeholder = tuc ? 'Escribí el barrio' : 'Barrio o zona (ej.: Nueva Córdoba)';
-  w.style.marginTop = tuc ? '8px' : '0';
-}
-// ---------- Provincias ----------
-const PROVINCIAS = ['Buenos Aires','Catamarca','Chaco','Chubut','Ciudad de Buenos Aires','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'];
-function provinciaSelectHTML(vacio){ return (vacio ? `<option value="">${vacio}</option>` : '') + PROVINCIAS.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join(''); }
-// Al cambiar de provincia se reacomoda el campo de barrio (conserva lo escrito si sirve)
-function unirProvincia(provSel, sel, otro){
-  provSel.addEventListener('change', () => { const actual = leerBarrio(sel, otro); ponerBarrio(sel, otro, provSel.value === 'Tucumán' ? (BARRIOS.includes(actual) ? actual : '') : (BARRIOS.includes(actual) ? '' : actual), provSel.value); });
+  otro.closest('[data-otro]').hidden = sel.value !== '__otro';
 }
 function leerBarrio(sel, otro){ return sel.value === '__otro' ? otro.value.trim() : sel.value; }
 function unirBarrio(sel, otro){
   sel.addEventListener('change', () => { const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro'; if(!w.hidden) otro.focus(); });
 }
-
-// ---------- Selector de íconos (solo comida y bebida) ----------
-const ICONOS = [
-  ['Pizzas, sándwiches y rápidas', '🍕 🍔 🌭 🍟 🥪 🌮 🌯 🥙 🧆 🥟 🫔 🍗 🍖 🥩 🥓 🍳 🧀 🥚'],
-  ['Café, panadería y dulces', '☕ 🥐 🥖 🍞 🥯 🥞 🧇 🍩 🍪 🍰 🎂 🧁 🥧 🍫 🍮 🍬 🍯 🫖'],
-  ['Helados y postres fríos', '🍦 🍨 🍧 🍡 🍭 🧋'],
-  ['Platos', '🍝 🍜 🍲 🥘 🍛 🍣 🍱 🍤 🦐 🦑 🐟 🥗 🍚 🫕 🥣 🥫'],
-  ['Frutas y verduras', '🍎 🍓 🍇 🍉 🍋 🍊 🍍 🥑 🍅 🌽 🥕 🥦 🍄 🫑 🥔 🧄'],
-  ['Bebidas', '🥤 🧃 🧉 🍵 🥛 🍺 🍻 🍷 🥂 🍾 🍹 🍸 🥃 🧊'],
-];
-let iconoDestino = null;
-function pintarBotonIcono(inputId){
-  const i = $(inputId), b = document.querySelector(`[data-icono-para="${inputId}"]`); if(!b) return;
-  b.querySelector('.em').textContent = i.value || '🍽️';
-}
-function abrirIconos(inputId){
-  iconoDestino = inputId; const actual = $(inputId).value;
-  $('ic-grupos').innerHTML = ICONOS.map(([t, l]) => `<div class="ic-grupo"><h3>${t}</h3><div class="ic-grid">${l.split(' ').map(e => `<button type="button" data-ic="${e}" aria-pressed="${e === actual}" aria-label="${e}">${e}</button>`).join('')}</div></div>`).join('');
-  abrirHoja('sheet-iconos');
-}
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-icono-para]'); if(b){ abrirIconos(b.dataset.iconoPara); return; }
-  const ic = e.target.closest('[data-ic]');
-  if(ic && iconoDestino){ $(iconoDestino).value = ic.dataset.ic; pintarBotonIcono(iconoDestino); cerrarHoja('sheet-iconos'); }
-});
-
-// ---------- Segundo horario del cupón ----------
-function mostrarFranja2(si){ $('cf-franja2').hidden = !si; $('cf-mas-horario').hidden = si; }
-$('cf-mas-horario').addEventListener('click', () => {
-  if(!$('cf-desde').value || !$('cf-hasta').value){ avisoCupon('Completá primero el primer horario (Desde y Hasta).'); $('cf-desde').focus(); return; }
-  avisoCupon(''); mostrarFranja2(true); $('cf-desde2').focus();
-});
-$('cf-quitar-horario').addEventListener('click', () => { ponerHora('cf-desde2', ''); ponerHora('cf-hasta2', ''); resumenHorarios(); mostrarFranja2(false); });
-
-// ---------- Selector de hora en formato 24 h (00 a 24) ----------
-const HORAS24 = [...Array(25)].map((_, i) => String(i).padStart(2, '0'));
-function armarHora(el){
-  const id = el.dataset.hora;
-  el.innerHTML = `<select class="field" data-p="h" aria-label="Hora"><option value="">Hora</option>${HORAS24.map(h => `<option value="${h}">${h}</option>`).join('')}</select>
-    <select class="field" data-p="m" aria-label="Minutos">${['00','15','30','45'].map(m => `<option value="${m}">${m}</option>`).join('')}</select>`;
-  el.addEventListener('change', () => {
-    const sh = el.querySelector('[data-p=h]'), sm = el.querySelector('[data-p=m]');
-    if(sh.value === '24') sm.value = '00';            // 24 solo existe como 24:00
-    sm.disabled = sh.value === '24';
-    // "24" como hora de inicio es lo mismo que las 00
-    const h = sh.value === '24' && /desde/.test(id) ? '00' : sh.value;
-    $(id).value = h ? `${h}:${sm.value}` : '';
-    resumenHorarios();
-  });
-}
-function ponerHora(id, valor){
-  const el = document.querySelector(`[data-hora="${id}"]`); $(id).value = valor || '';
-  const [h, m] = valor ? valor.split(':') : ['', '00'], sm = el.querySelector('[data-p=m]');
-  el.querySelector('[data-p=h]').value = h;
-  if(![...sm.options].some(o => o.value === m)) sm.insertAdjacentHTML('beforeend', `<option value="${m}">${m}</option>`);
-  sm.value = m; sm.disabled = h === '24';
-}
-const texto12 = t => t ? t + ' h' : '';
-function resumenFranja(d, h, el, vacio){
-  if(!d && !h){ el.textContent = vacio; el.className = 'hint'; return; }
-  if(!d || !h){ el.textContent = 'Completá las dos horas.'; el.className = 'hint warn'; return; }
-  if(d === h){ el.textContent = 'La hora de inicio y de fin no pueden ser iguales.'; el.className = 'hint warn'; return; }
-  const cruza = d > h;
-  el.textContent = `Vale de ${texto12(d)} a ${texto12(h)}` + (cruza ? ' del día siguiente (pasa la medianoche). ¿Es correcto?' : '.');
-  el.className = 'hint ' + (cruza ? 'warn' : 'ok');
-}
-function resumenHorarios(){
-  resumenFranja($('cf-desde').value, $('cf-hasta').value, $('cf-res1'), 'Sin horario: vale todo el día.');
-  resumenFranja($('cf-desde2').value, $('cf-hasta2').value, $('cf-res2'), 'Por ejemplo, para la noche: 20:00 a 23:30 h.');
-}
-$$('[data-hora]').forEach(armarHora);
-
-// ---------- Cupón relámpago ----------
-let relOrig = null;
-function pintarRelampago(){
-  const si = $('cf-rel').checked, corriendo = relOrig && new Date(relOrig.relampago_fin) > new Date();
-  $('cf-rel-campos').hidden = !si; $('cf-normal').hidden = si; $('cf-vence-w').hidden = si;
-  $('cf-rel-horas').disabled = !!corriendo;
-  const est = $('cf-rel-estado');
-  if(corriendo){ est.textContent = `Está corriendo: termina hoy a las ${hora(relOrig.relampago_fin)} h. Ya se pidieron ${relOrig.pedidos} de ${relOrig.stock} códigos. Podés sumar más cantidad.`; est.className = 'hint ok'; }
-  else if(relOrig && relOrig.pedidos){ est.textContent = 'Este relámpago ya terminó. Para lanzar otro, creá un cupón nuevo.'; est.className = 'hint warn'; }
-  else { est.textContent = 'Empieza apenas guardes el cupón. El código vale hasta que termina.'; est.className = 'hint'; }
-}
-$('cf-rel').addEventListener('change', () => { pintarRelampago(); if($('cf-rel').checked && !$('cf-stock').value) $('cf-stock').focus(); });
 
 
 // ---------- Sesión del local (se guarda solo en esta pestaña) ----------
@@ -887,31 +457,20 @@ $('f-login').addEventListener('submit', async e => {
     try{
       const r = await rpc('tc_local_login', {p_local_id: id, p_pin: p});
       if(!r.ok){ avisoLogin(r.error || 'PIN incorrecto'); $('l-pin').select(); return; }
-      yo = r; pin = r.token || p; delete yo.token; guardarSesion();
+      yo = r; pin = p; guardarSesion();
       try{ localStorage.setItem('tucupon.ultimoLocal', String(id)); }catch(_){}
       entrar();
     }catch(err){ avisoLogin(err.message); }
   });
 });
-const SOLO_DUENO = ['hoy', 'kpis', 'cupones', 'caja', 'perfil', 'referir', 'ajustes'];
-const esCaja = () => yo && yo.rol === 'caja';
-function aplicarRol(){
-  $$('[data-tab]').forEach(b => b.hidden = esCaja() && SOLO_DUENO.includes(b.dataset.tab));
-  $('w-tag').textContent = esCaja() ? 'Encargado' : 'Local';
-  $('tabs').hidden = esCaja();
-  $('h-filtro').hidden = esCaja();
-}
 function entrar(){
   $('login').hidden = true; $('app').hidden = false;
-  aplicarRol();
   pintarCabecera();
   $('l-pin').value = '';
   tab('canjear');
 }
 function pintarCabecera(){
-  $('w-nombre').innerHTML = `${logoHTML(yo.logo, yo.nombre, yo.color, 'mini')}${esc(yo.nombre)}${esCaja() && yo.sucursal ? `<small class="suc">${esc(yo.sucursal)}</small>` : ''}`;
-  const av = $('pausa-aviso'); av.hidden = yo.activo !== false;
-  if(yo.activo === false) av.innerHTML = `<b>Tu local está pausado por Tucupón.</b> Mientras tanto no aparece para los clientes y no se pueden canjear códigos.${yo.motivo_pausa ? `<br>Motivo: ${esc(yo.motivo_pausa)}` : ''}<br>Para reactivarlo, escribile al equipo de Tucupón.`;
+  $('w-nombre').innerHTML = `${logoHTML(yo.logo, yo.nombre, yo.color, 'mini')}${esc(yo.nombre)}`;
 }
 function guardarSesion(){ try{ sessionStorage.setItem('tucupon.local', JSON.stringify({yo: {...yo, logo: null}, pin})); }catch(_){} }
 function salir(){
@@ -922,24 +481,18 @@ function salir(){
 $('btn-salir').addEventListener('click', salir);
 // Si el PIN cambió en otro lado o se bloqueó, vuelve al ingreso
 function manejarError(err){
-  if(/solo el dueño/i.test(err.message)){ toast(err.message); return; }
-  if(/PIN incorrecto/i.test(err.message)){ salir(); avisoLogin('Tu sesión se cerró (el PIN cambió o venció). Ingresá de nuevo.'); return; }
+  if(/PIN incorrecto/i.test(err.message)){ salir(); avisoLogin('Tu PIN cambió. Ingresá de nuevo.'); return; }
   toast(err.message);
 }
 
 // ---------- Pestañas ----------
 function tab(t){
-  if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['canjear', 'hoy', 'kpis', 'cupones', 'caja', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['canjear', 'hoy', 'cupones', 'perfil', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   if(t === 'canjear') setTimeout(() => $('c-codigo').focus(), 50);
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
   if(t === 'cupones') cargarCupones();
-  if(t === 'caja') cargarCaja();
-  if(t === 'kpis') cargarKpis();
-  if(t === 'referir') prepararReferir();
   if(t === 'perfil') cargarPerfil();
-  if(t === 'ajustes') cargarPinCaja();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
 
@@ -953,14 +506,12 @@ $('f-codigo').addEventListener('submit', async e => {
   await conBoton(e.target.querySelector('.btn'), async () => {
     try{
       const r = await rpc('tc_verificar_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: cod});
-      if(r.error === 'PIN incorrecto') return manejarError(new Error(r.error));
       pintarVerificado(r);
     }catch(err){ manejarError(err); }
   });
 });
 function pintarVerificado(r){
   if(!r.ok){ $('c-result').innerHTML = `<div class="alert">${esc(r.error)}</div>`; return; }
-  if(r.tipo === 'caja') return pintarCajaVerificada(r);
   const usado = r.estado === 'usado';
   let aviso = '', puede = !usado;
   if(usado) aviso = `<div class="alert">Este código ya se usó el ${esc(fecha(r.usado_en))}.</div>`;
@@ -976,39 +527,13 @@ function pintarVerificado(r){
     <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
   </div>`;
 }
-const pesos = n => '$ ' + Number(n || 0).toLocaleString('es-AR');
-function pintarCajaVerificada(r){
-  let aviso = '', puede = false;
-  if(r.estado === 'usado') aviso = `<div class="alert">Esta caja ya se retiró el ${esc(fecha(r.usado_en))}.</div>`;
-  else if(r.cancelada) aviso = '<div class="alert">El cliente canceló esta reserva.</div>';
-  else if(r.vencido) aviso = '<div class="alert">Esta reserva era para otro día y ya venció.</div>';
-  else puede = true;
-  $('c-result').innerHTML = `<div class="card result">
-    <div class="item" style="padding:0"><span class="badge" aria-hidden="true">🎁</span><div class="grow"><p class="t">Caja Sorpresa</p><p class="s">Código <b class="mono">${esc(r.codigo)}</b> · Cliente ${esc(r.email)}</p></div></div>
-    <div class="cobrar"><span>Cobrale</span><b>${pesos(r.precio)}</b></div>
-    <p class="muted" style="font-size:.88rem"><b>${esc(r.horario)}</b>${r.condiciones ? ' · ' + esc(r.condiciones) : ''}</p>
-    ${aviso}
-    ${puede ? `<button type="button" id="c-ok" class="btn lima full" data-codigo="${esc(r.codigo)}">Entregar caja y cobrar ${pesos(r.precio)}</button>` : ''}
-    <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
-  </div>`;
-}
 document.addEventListener('click', async e => {
   const ok = e.target.closest('#c-ok');
   if(ok){
     await conBoton(ok, async () => {
       try{
         const r = await rpc('tc_canjear_codigo', {p_local_id: yo.id, p_pin: pin, p_codigo: ok.dataset.codigo});
-        if(r.error === 'PIN incorrecto') return manejarError(new Error(r.error));
         if(!r.ok){ $('c-result').insertAdjacentHTML('afterbegin', `<div class="alert">${esc(r.error)}</div>`); return; }
-        if(r.tipo === 'caja'){
-          $('c-result').innerHTML = `<div class="card result" style="text-align:center">
-            <span class="stamp">ENTREGADA</span>
-            <p class="t" style="font-weight:800;font-size:1.1rem">🎁 Caja Sorpresa · ${pesos(r.precio)}</p>
-            <p class="muted">Entregá la caja y cobrá ${pesos(r.precio)}. El cliente ya la ve como retirada.</p>
-            <button type="button" class="btn full" id="c-otro">Canjear otro código</button></div>`;
-          try{ navigator.vibrate && navigator.vibrate(80); }catch(_){}
-          return;
-        }
         $('c-result').innerHTML = `<div class="card result" style="text-align:center">
           <span class="stamp">CANJEADO</span>
           <p class="t" style="font-weight:800;font-size:1.1rem">${esc(r.icono)} ${esc(r.etiqueta)} · ${esc(r.titulo)}</p>
@@ -1021,70 +546,14 @@ document.addEventListener('click', async e => {
   if(e.target.closest('#c-otro')){ $('c-result').innerHTML = ''; $('c-codigo').value = ''; $('c-codigo').focus(); }
 });
 
-// ---------- Caja Sorpresa ----------
-let CJ = null;
-function avisoCaja(m, ok){ const a = $('cj-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
-function pintarCaja(){
-  const c = CJ && CJ.caja, h = CJ && CJ.hoy;
-  $('cj-hoy').hidden = !c;
-  if(c){
-    $('cj-cant').textContent = h.cantidad; $('cj-res').textContent = h.reservadas; $('cj-ret').textContent = h.retiradas;
-    const est = !c.activo ? ['Pausada', 'off'] : !h.abierta ? ['Terminó el retiro de hoy', ''] : h.cantidad > 0 ? (h.reservadas >= h.cantidad ? ['Agotada', ''] : ['Publicada', 'ok']) : ['Sin publicar hoy', ''];
-    $('cj-estado').textContent = est[0]; $('cj-estado').className = 'chip ' + est[1];
-    if(document.activeElement !== $('cj-n')) $('cj-n').value = h.cantidad || '';
-    $('cj-lista').innerHTML = CJ.reservas.length ? '<p class="label" style="margin-bottom:4px">Reservas de hoy</p>' + CJ.reservas.map(x => `<div class="item"><span class="badge" aria-hidden="true">${x.estado === 'retirada' ? '✅' : '🎁'}</span><div class="grow"><p class="t mono">${esc(x.codigo)}</p><p class="s">${esc(x.email)} · ${x.estado === 'retirada' ? 'Retirada ' + esc(hora(x.retirado_en)) + ' h' : 'Reservada ' + esc(hora(x.creado)) + ' h'}</p></div></div>`).join('') : '';
-    $('cj-desc').value = c.descripcion; $('cj-valor').value = c.valor; $('cj-precio').value = c.precio; $('cj-activo').checked = c.activo;
-    ponerHora('cj-desde', c.desde); ponerHora('cj-hasta', c.hasta);
-  }else if(!$('cj-desde').value){ ponerHora('cj-desde', '20:00'); ponerHora('cj-hasta', '21:00'); }
-  ahorroCaja();
-}
-function ahorroCaja(){
-  const v = +$('cj-valor').value, p = +$('cj-precio').value, el = $('cj-ahorro');
-  if(v > 0 && p > 0){
-    if(p >= v){ el.textContent = 'El precio tiene que ser menor que el valor.'; el.className = 'hint warn'; return; }
-    const d = Math.round((1 - p / v) * 100);
-    el.textContent = `El cliente ahorra ${d}%. ${d >= 60 ? '¡Muy atractivo!' : 'Lo ideal es un 60% o más de ahorro: así se reserva rápido.'}`;
-    el.className = 'hint ' + (d >= 60 ? 'ok' : 'warn');
-  }else{ el.textContent = 'Lo ideal es un tercio del valor o menos: es lo que hace que la caja se reserve rápido.'; el.className = 'hint'; }
-}
-$('cj-valor').addEventListener('input', ahorroCaja); $('cj-precio').addEventListener('input', ahorroCaja);
-async function cargarCaja(){
-  try{ CJ = await rpc('tc_local_caja', {p_local_id: yo.id, p_pin: pin}); pintarCaja(); }
-  catch(err){ manejarError(err); }
-}
-$('f-caja').addEventListener('submit', async e => {
-  e.preventDefault(); avisoCaja('');
-  const datos = {descripcion: $('cj-desc').value.trim(), valor: +$('cj-valor').value || null, precio: +$('cj-precio').value || null,
-    desde: $('cj-desde').value, hasta: $('cj-hasta').value, activo: $('cj-activo').checked};
-  if(!datos.descripcion) return avisoCaja('Contá qué suele traer la caja.');
-  if(!datos.valor || !datos.precio) return avisoCaja('Completá el valor y el precio.');
-  if(datos.precio >= datos.valor) return avisoCaja('El precio tiene que ser menor que el valor.');
-  if(!datos.desde || !datos.hasta) return avisoCaja('Elegí el horario de retiro.');
-  if(datos.desde >= datos.hasta) return avisoCaja('El retiro tiene que terminar después de empezar (dentro del mismo día).');
-  await conBoton(e.target.querySelector('.btn.full'), async () => {
-    try{ const nueva = !(CJ && CJ.caja); CJ = await rpc('tc_local_guardar_caja', {p_local_id: yo.id, p_pin: pin, p_caja: datos}); pintarCaja();
-      avisoCaja(nueva ? '¡Listo! Ahora publicá cuántas cajas tenés hoy (arriba).' : 'Caja guardada.', true); if(nueva) $('cj-hoy').scrollIntoView({block: 'start', behavior: 'smooth'}); }
-    catch(err){ if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err); avisoCaja(err.message); }
-  });
-});
-$('f-cj-hoy').addEventListener('submit', async e => {
-  e.preventDefault();
-  const n = $('cj-n').value === '' ? NaN : +$('cj-n').value;
-  if(!Number.isInteger(n) || n < 0) return toast('Poné cuántas cajas tenés (0 si hoy no hay).');
-  await conBoton(e.target.querySelector('.btn'), async () => {
-    try{ CJ = await rpc('tc_local_caja_hoy', {p_local_id: yo.id, p_pin: pin, p_cantidad: n}); pintarCaja(); toast(n ? `Publicaste ${n} ${n === 1 ? 'caja' : 'cajas'} para hoy 🎁` : 'Hoy no hay cajas publicadas'); }
-    catch(err){ manejarError(err); }
-  });
-});
-
 // ---------- Canjes del día ----------
 async function cargarCanjes(){
-  const d = esCaja() ? hoyISO() : ($('h-fecha').value || hoyISO());
+  const d = $('h-fecha').value || hoyISO();
   $('h-lista').innerHTML = '<p class="muted">Cargando…</p>';
   try{
     const r = await rpc('tc_local_canjes', {p_local_id: yo.id, p_pin: pin, p_desde: d, p_hasta: d});
     $('h-usados').textContent = r.usados; $('h-pedidos').textContent = r.pedidos;
-    $('h-lista').innerHTML = r.lista.length ? r.lista.map(k => `<div class="item"><span class="badge" aria-hidden="true" style="font-size:.9rem">${esc(hora(k.usado_en))}</span><div class="grow"><p class="t">${esc(k.icono)} ${esc(k.etiqueta)} · ${esc(k.titulo)}</p><p class="s">Código <span class="mono">${esc(k.codigo)}</span> · ${esc(k.email)}${k.sucursal && !esCaja() ? ` · 📍 ${esc(k.sucursal)}` : ''}</p></div></div>`).join('')
+    $('h-lista').innerHTML = r.lista.length ? r.lista.map(k => `<div class="item"><span class="badge" aria-hidden="true" style="font-size:.9rem">${esc(hora(k.usado_en))}</span><div class="grow"><p class="t">${esc(k.icono)} ${esc(k.etiqueta)} · ${esc(k.titulo)}</p><p class="s">Código <span class="mono">${esc(k.codigo)}</span> · ${esc(k.email)}</p></div></div>`).join('')
       : '<div class="empty">No hubo canjes confirmados este día.</div>';
   }catch(err){ manejarError(err); $('h-lista').innerHTML = ''; }
 }
@@ -1136,52 +605,6 @@ $('del-ok').addEventListener('click', async e => {
 });
 
 // ---------- PIN ----------
-// ---------- PIN de caja (uno por sucursal) ----------
-let PC = [];   // [{id: null (principal) | id sucursal, dir, barrio, tiene}]
-function pintarPinCaja(){
-  const multi = PC.length > 1;
-  $('pc-lista').innerHTML = PC.map((x, i) => `<div class="pc-row">
-      <div class="grow" style="min-width:0">
-        ${multi ? `<p class="t">${esc(x.dir)}<span class="muted" style="font-weight:600"> · ${esc(x.barrio)}</span></p>` : ''}
-        <p class="s">${x.tiene ? '<span class="chip ok">Activo</span> Tu equipo puede ingresar.' : '<span class="chip">Sin PIN de encargado</span>'}</p>
-      </div>
-      <div class="acts">
-        <button type="button" class="btn sm" data-pc-gen="${i}">${x.tiene ? 'Generar uno nuevo' : 'Crear PIN de encargado'}</button>
-        ${x.tiene ? `<button type="button" class="btn ghost sm" data-pc-off="${i}">Desactivar</button>` : ''}
-      </div>
-    </div>`).join('');
-}
-async function cargarPinCaja(){
-  $('pc-nuevo').hidden = true;
-  try{
-    const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin});
-    PC = [{id: null, dir: p.dir, barrio: p.barrio, tiene: !!p.tiene_pin_caja}, ...(p.sucursales || []).map(x => ({id: x.id, dir: x.dir, barrio: x.barrio, tiene: !!x.tiene_pin_caja}))];
-    pintarPinCaja();
-  }catch(err){ manejarError(err); }
-}
-$('pc-lista').addEventListener('click', async e => {
-  const b = e.target.closest('button'); if(!b) return;
-  const x = PC[+(b.dataset.pcGen ?? b.dataset.pcOff)]; if(!x) return;
-  const donde = PC.length > 1 ? ` de ${x.dir}` : '';
-  const activar = b.dataset.pcGen !== undefined;
-  if(activar && x.tiene && !confirm(`¿Generar un PIN de encargado nuevo${donde}? El actual deja de funcionar y el equipo va a tener que ingresar con el nuevo.`)) return;
-  if(!activar && !confirm(`¿Desactivar el PIN de encargado${donde}? El equipo no va a poder ingresar hasta que generes uno nuevo.`)) return;
-  let r = null;
-  await conBoton(b, async () => {
-    try{ r = await rpc('tc_local_pin_caja', Object.assign({p_local_id: yo.id, p_pin: pin, p_activar: activar}, x.id ? {p_sucursal_id: x.id} : {})); }
-    catch(err){ manejarError(err); }
-  });
-  if(!r) return;
-  x.tiene = activar; pintarPinCaja();
-  if(activar){
-    $('pc-para').textContent = 'Nuevo PIN de encargado' + (PC.length > 1 ? ' · ' + x.dir : '');
-    $('pc-valor').textContent = r.pin; $('pc-nuevo').hidden = false; $('pc-nuevo').scrollIntoView({block: 'nearest'});
-  }else{ $('pc-nuevo').hidden = true; toast('PIN de encargado desactivado'); }
-});
-$('pc-copiar').addEventListener('click', async () => {
-  try{ await navigator.clipboard.writeText($('pc-valor').textContent); toast('PIN copiado'); }catch(_){ toast('Mantené apretado el PIN para copiarlo'); }
-});
-
 $('f-pin').addEventListener('submit', async e => {
   e.preventDefault();
   const a = $('p-nuevo').value.trim(), b = $('p-nuevo2').value.trim(), al = $('p-alert');
@@ -1191,112 +614,10 @@ $('f-pin').addEventListener('submit', async e => {
   await conBoton(e.target.querySelector('.btn'), async () => {
     try{
       await rpc('tc_local_cambiar_pin', {p_local_id: yo.id, p_pin: pin, p_nuevo: a});
-      if(!/^t\./.test(pin)){ pin = a; guardarSesion(); }
+      pin = a; guardarSesion();
       al.className = 'alert ok'; al.textContent = 'Listo, tu PIN cambió. Usalo la próxima vez que ingreses.'; al.hidden = false;
       $('p-nuevo').value = $('p-nuevo2').value = '';
     }catch(err){ manejarError(err); }
-  });
-});
-
-// ---------- KPIs ----------
-let kpPer = 28, kpDatos = null, kpSel = null;
-const DIAS_KP = [[1,'Lun'],[2,'Mar'],[3,'Mié'],[4,'Jue'],[5,'Vie'],[6,'Sáb'],[0,'Dom']];
-function tendencia(act, ant, sufijo = ''){
-  if(ant === null) return '<span class="kp-tr cero">Sin datos para comparar</span>';
-  const d = act - ant;
-  if(d === 0) return `<span class="kp-tr cero">= igual</span>`;
-  return `<span class="kp-tr ${d > 0 ? 'sube' : 'baja'}">${d > 0 ? '▲ +' : '▼ '}${d}${sufijo}</span>`;
-}
-function filaSem(tit, sub, valor, tr, ant){
-  return `<div class="kp-fila"><div class="grow"><p class="t">${tit}</p><p class="s">${sub}</p>
-    <p class="kp-cmp">${tr}<span>Semana anterior: ${ant}</span></p></div><b>${valor}</b></div>`;
-}
-async function cargarKpis(){
-  try{
-    const k = await rpc('tc_local_kpis', {p_local_id: yo.id, p_pin: pin});
-    $('kp-vis').textContent = k.visibles; $('kp-ped').textContent = k.pedidos; $('kp-usa').textContent = k.usados;
-    const tasa = k.ped_sem ? Math.round(k.usa_sem / k.ped_sem * 100) : null, tasaAnt = k.ped_ant ? Math.round(k.usa_ant / k.ped_ant * 100) : null;
-    $('kp-sem').innerHTML =
-      filaSem('Canjes', 'Cupones usados en el local', k.canjes, tendencia(k.canjes, k.canjes_ant), k.canjes_ant) +
-      filaSem('Clientes nuevos', 'Pidieron un código tuyo por primera vez', k.nuevos, tendencia(k.nuevos, k.nuevos_ant), k.nuevos_ant) +
-      filaSem('Tasa de canje', k.ped_sem ? `De ${k.ped_sem} ${k.ped_sem === 1 ? 'código pedido' : 'códigos pedidos'}, ${k.usa_sem} ${k.usa_sem === 1 ? 'se usó' : 'se usaron'}` : 'Todavía no hay códigos pedidos esta semana',
-        tasa === null ? '—' : tasa + '%', tasa === null || tasaAnt === null ? tendencia(0, null) : tendencia(tasa, tasaAnt, ' pts'), tasaAnt === null ? '—' : tasaAnt + '%');
-  }catch(err){ manejarError(err); }
-  cargarMapa();
-}
-const minutos = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
-// ¿La hora "h" del día "d" tiene algún cupón con promo?
-function esPromo(d, h, franjas){
-  return franjas.some(f => {
-    if(f.dias && !f.dias.includes(d)) return false;
-    if(!f.d1) return true;
-    return [[f.d1, f.h1], [f.d2, f.h2]].some(([a, b]) => {
-      if(!a) return false;
-      const ini = minutos(a), fin = minutos(b), s = h * 60, e = s + 60;
-      return ini < fin ? (s < fin && e > ini) : (e > ini || s < fin);
-    });
-  });
-}
-async function cargarMapa(){
-  $$('[data-per]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.per === kpPer)));
-  try{ kpDatos = await rpc('tc_local_mapa', {p_local_id: yo.id, p_pin: pin, p_dias: kpPer}); }
-  catch(err){ return manejarError(err); }
-  kpSel = null; pintarMapa();
-}
-function pintarMapa(){
-  const cel = {}, det = {};
-  kpDatos.celdas.forEach(c => { const k = c.d + '-' + c.h; cel[k] = (cel[k] || 0) + c.n; (det[k] = det[k] || []).push(c); });
-  const horas = kpDatos.celdas.map(c => c.h), hMin = Math.min(7, ...horas), hMax = Math.max(22, ...horas);
-  const max = Math.max(0, ...Object.values(cel)), total = Object.values(cel).reduce((a, b) => a + b, 0);
-  let enPromo = 0;
-  let html = '<span></span>' + DIAS_KP.map(([, n]) => `<span class="kp-dia">${n}</span>`).join('');
-  for(let h = hMin; h <= hMax; h++){
-    html += `<span class="kp-h">${h} h</span>`;
-    DIAS_KP.forEach(([d, n]) => {
-      const k = d + '-' + h, v = cel[k] || 0, pr = esPromo(d, h, kpDatos.franjas);
-      if(pr) enPromo += v;
-      const nivel = !v ? 0 : max <= 1 ? 4 : Math.min(4, Math.ceil(v / max * 4));
-      html += `<button type="button" class="kp-c n${nivel}${pr ? ' promo' : ''}${kpSel === k ? ' sel' : ''}" data-cel="${k}" data-dn="${n}" data-hh="${h}" aria-label="${n} ${h} h: ${v} ${v === 1 ? 'canje' : 'canjes'}${pr ? ', horario con promo' : ''}"></button>`;
-    });
-  }
-  $('kp-mapa').innerHTML = html;
-  const per = {7: 'los últimos 7 días', 28: 'las últimas 4 semanas', 90: 'los últimos 3 meses'}[kpPer];
-  $('kp-res').innerHTML = total ? `En ${per} hubo <b>${total}</b> ${total === 1 ? 'canje' : 'canjes'}. <b>${Math.round(enPromo / total * 100)}%</b> cayó en horarios con promo (recuadro verde).`
-    : `En ${per} todavía no hubo canjes. Los recuadros verdes marcan tus horarios con promo.`;
-  $('kp-mapa').onclick = e => {
-    const b = e.target.closest('[data-cel]'); if(!b) return;
-    kpSel = b.dataset.cel; $$('.kp-c.sel').forEach(x => x.classList.remove('sel')); b.classList.add('sel');
-    const lista = det[kpSel] || [], n = lista.reduce((a, c) => a + c.n, 0), h = +b.dataset.hh;
-    const franja = `${b.dataset.dn} de ${h} a ${h + 1} h`;
-    $('kp-det').innerHTML = n ? `<b>${franja}:</b> ${n} ${n === 1 ? 'canje' : 'canjes'}<br>${lista.sort((a, c) => c.n - a.n).map(c => `${esc(c.cupon)} <b>× ${c.n}</b>`).join('<br>')}`
-      : `<b>${franja}:</b> sin canjes${b.classList.contains('promo') ? ' (tenés promo en este horario)' : ''}.`;
-  };
-}
-$$('[data-per]').forEach(b => b.addEventListener('click', () => { kpPer = +b.dataset.per; cargarMapa(); }));
-
-// ---------- Referir ----------
-async function prepararReferir(){
-  $('rf-alert').hidden = true;
-  if($('rf-rubro').options.length) return;
-  try{
-    const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin});
-    $('rf-rubro').innerHTML = '<option value="">Elegí el rubro</option>' + p.rubros.map(r => `<option value="${esc(r.nombre)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('') + '<option value="Otro">Otro</option>';
-  }catch(err){ manejarError(err); }
-}
-$('f-ref').addEventListener('submit', async e => {
-  e.preventDefault();
-  const al = $('rf-alert'), d = {local: $('rf-local').value.trim(), contacto: $('rf-contacto').value.trim(), telefono: $('rf-tel').value.trim(), rubro: $('rf-rubro').value, comentario: $('rf-com').value.trim()};
-  const err = (m, id) => { al.className = 'alert'; al.textContent = m; al.hidden = false; if(id) $(id).focus(); };
-  if(!d.local) return err('Poné el nombre del local que recomendás.', 'rf-local');
-  if(!d.contacto) return err('Poné el nombre de la persona de contacto.', 'rf-contacto');
-  if(d.telefono.replace(/\D/g, '').length < 8) return err('Poné un teléfono o WhatsApp con código de área.', 'rf-tel');
-  if(!d.rubro) return err('Elegí el rubro.', 'rf-rubro');
-  await conBoton(e.target.querySelector('.btn.full'), async () => {
-    try{
-      await rpc('tc_local_referir', {p_local_id: yo.id, p_pin: pin, p_ref: d});
-      ['rf-local', 'rf-contacto', 'rf-tel', 'rf-com'].forEach(id => $(id).value = ''); $('rf-rubro').value = '';
-      al.className = 'alert ok'; al.textContent = `¡Gracias! Recibimos tu recomendación de ${d.local}. El equipo de Tucupón se va a contactar.`; al.hidden = false;
-    }catch(x){ if(/PIN incorrecto/i.test(x.message)) return manejarError(x); err(x.message); }
   });
 });
 
@@ -1312,20 +633,15 @@ async function cargarPerfil(){
   avisoPerfil('');
   try{
     perfil = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); logoNuevo = undefined;
-    $('pf-nombre').value = perfil.nombre; $('pf-resp').value = perfil.responsable || '';
-    $('pf-prov').innerHTML = provinciaSelectHTML(); $('pf-prov').value = perfil.provincia || 'Tucumán';
-    ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio, $('pf-prov').value);
+    $('pf-nombre').value = perfil.nombre;
+    ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio);
     $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
-    $('pf-dir').value = perfil.dir; $('pf-tel').value = perfil.telefono || '';
-    const sucs = perfil.sucursales || [];
-    $('pf-suc').hidden = $('pf-suc-hint').hidden = !sucs.length;
-    $('pf-suc-lista').innerHTML = sucs.map(x => `<li><b>${esc(x.dir)}</b> · ${esc(x.barrio)}</li>`).join('');
+    $('pf-dir').value = perfil.dir; $('pf-horario').value = perfil.horario;
     pintarLogoPerfil();
   }catch(err){ manejarError(err); }
 }
 $('pf-nombre').addEventListener('input', () => perfil && pintarLogoPerfil());
 unirBarrio($('pf-barrio'), $('pf-barrio-otro'));
-unirProvincia($('pf-prov'), $('pf-barrio'), $('pf-barrio-otro'));
 $('pf-file').addEventListener('change', async e => {
   const f = e.target.files[0]; e.target.value = '';
   if(!f) return;
@@ -1335,16 +651,10 @@ $('pf-file').addEventListener('change', async e => {
 $('pf-quitar').addEventListener('click', () => { logoNuevo = null; pintarLogoPerfil(); avisoPerfil('Tocá “Guardar perfil” para quitar el logo.', true); });
 $('f-perfil').addEventListener('submit', async e => {
   e.preventDefault(); avisoPerfil('');
-  const datos = {nombre: $('pf-nombre').value.trim(), responsable: $('pf-resp').value.trim(), provincia: $('pf-prov').value, barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), telefono: $('pf-tel').value.trim()};
-  $$('#f-perfil .field').forEach(i => i.removeAttribute('aria-invalid'));
-  const falta = (m, id) => { avisoPerfil(m); if(id){ $(id).setAttribute('aria-invalid', 'true'); $(id).focus(); } };
-  if(!datos.nombre) return falta('Poné el nombre del local.', 'pf-nombre');
-  if(!datos.responsable) return falta('Poné tu nombre y apellido.', 'pf-resp');
-  if(!datos.provincia) return falta('Elegí la provincia.', 'pf-prov');
-  if(!datos.barrio) return falta($('pf-barrio').value === '__otro' ? 'Escribí el barrio o la zona.' : 'Elegí el barrio.', $('pf-barrio').value === '__otro' ? 'pf-barrio-otro' : 'pf-barrio');
-  if(!datos.rubro) return falta('Elegí el rubro.', 'pf-rubro');
-  if(!datos.dir) return falta('Poné la dirección.', 'pf-dir');
-  if(datos.telefono.replace(/\D/g, '').length < 8) return falta('Poné un teléfono o WhatsApp con código de área.', 'pf-tel');
+  const datos = {nombre: $('pf-nombre').value.trim(), barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), horario: $('pf-horario').value.trim()};
+  if(!datos.nombre) return avisoPerfil('Poné el nombre del local.');
+  if(!datos.barrio) return avisoPerfil($('pf-barrio').value === '__otro' ? 'Escribí el nombre del barrio.' : 'Elegí el barrio.');
+  if(!datos.dir) return avisoPerfil('Poné la dirección.');
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
     try{
@@ -1356,7 +666,7 @@ $('f-perfil').addEventListener('submit', async e => {
 });
 
 cargarLocales();
-if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; if(p.rol) yo.rol = p.rol; if('sucursal' in p) yo.sucursal = p.sucursal; guardarSesion(); aplicarRol(); pintarCabecera(); }).catch(() => {}); }
+if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; pintarCabecera(); }).catch(() => {}); }
 </script>
 </body>
 </html>
