@@ -125,6 +125,24 @@ a.banner:active{transform:scale(.99)}
 .box .sedes li::before{content:none!important;display:none!important}
 .sedes li span{min-width:0;overflow-wrap:anywhere}
 .sedes svg{flex:none;color:var(--brand)}
+/* Tarjeta de sellos */
+.tarjeta{border-radius:26px;padding:18px;background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff;box-shadow:0 18px 36px -18px rgba(43,15,99,.6)}
+.tarjeta .tt{display:flex;align-items:center;gap:8px;font-weight:900;font-size:1.05rem}
+.tarjeta .pr{margin-top:4px;font-size:.9rem;opacity:.9}
+.tarjeta .pr b{color:#C4F04A}
+.sellos{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sellos i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px dashed rgba(255,255,255,.45);font-style:normal;font-size:1.05rem}
+.sellos i.on{border:0;background:#C4F04A;color:#1E0B45;box-shadow:0 4px 10px -4px rgba(0,0,0,.4)}
+.sellos i.prem{border:2px solid #C4F04A;color:#C4F04A}
+.tarjeta .est{margin-top:12px;font-weight:800;font-size:.9rem}
+.tarjeta .tbtn{margin-top:12px;display:block;width:100%;border:0;border-radius:16px;padding:12px;font:inherit;font-weight:800;background:#C4F04A;color:#1E0B45;cursor:pointer}
+.tarjeta.completa{background:linear-gradient(140deg,#B0249F,#5B1FD1)}
+.tj-mini{flex:0 0 min(70%,15rem)!important;border-radius:22px;padding:14px;background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff;text-align:left;border:0;font:inherit;cursor:pointer}
+.tj-mini .n{font-weight:800;display:flex;align-items:center;gap:8px}
+.tj-mini .n .logo{width:34px;height:34px;min-width:34px;border-radius:10px;font-size:.72rem}
+.tj-mini .sellos{gap:5px;margin-top:10px}.tj-mini .sellos i{width:20px;height:20px;font-size:.6rem;border-width:1.5px}
+.tj-mini .f{margin-top:8px;font-size:.8rem;font-weight:700;opacity:.9}
+.chip-sellos{display:inline-flex;align-items:center;gap:4px;margin-left:6px;border-radius:999px;padding:1px 8px;background:var(--surface-2);color:var(--brand);font-size:.72rem;font-weight:800;vertical-align:1px}
 /* Caja Sorpresa */
 @keyframes regalo{0%,55%,100%{transform:translateY(0) rotate(0) scale(1)}10%{transform:translateY(-5px) rotate(-12deg) scale(1.12)}20%{transform:translateY(0) rotate(10deg) scale(1.05)}30%{transform:translateY(-3px) rotate(-8deg) scale(1.08)}40%{transform:translateY(0) rotate(4deg) scale(1)}}
 .regalo{display:inline-block;transform-origin:50% 80%;animation:regalo 2.4s ease-in-out infinite}
@@ -136,7 +154,7 @@ a.banner:active{transform:scale(.99)}
 .caja.agotada{filter:grayscale(.6);opacity:.85}
 .caja .tag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;background:rgba(255,255,255,.16);font-weight:800;font-size:.82rem}
 .caja .loc{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:800;text-align:left;color:#fff}
-.caja .loc .lg{width:38px;height:38px;border-radius:12px;font-size:.8rem}
+.caja .loc .logo{width:42px;height:42px;min-width:42px;border-radius:12px;font-size:.8rem}
 .caja .desc{margin-top:10px;font-size:.92rem;opacity:.92;line-height:1.35}
 .caja .precios{display:flex;align-items:baseline;gap:10px;margin-top:12px;flex-wrap:wrap}
 .caja .antes{font-weight:700;opacity:.75;text-decoration:line-through}
@@ -515,6 +533,10 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         </section>
 
         <div id="ban-inicio" class="ban-slot"></div>
+        <section id="sec-tarjetas" class="sec" hidden>
+          <div class="sec-h"><h2>🎟️ Tus tarjetas</h2><span class="count" id="tj-count"></span></div>
+          <div id="tj-rail" class="rail" style="padding-bottom:10px"></div>
+        </section>
         <section class="sec">
           <div class="sec-h"><h2>Tus favoritos</h2><button type="button" class="count" data-go-favs style="color:var(--brand)">Ver todos</button></div>
           <div id="favs-row"></div>
@@ -561,6 +583,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
     <!-- LOCAL -->
     <div id="v-local" hidden>
       <div id="ficha" class="ficha"></div>
+      <div id="local-tarjeta" style="margin-top:18px" hidden></div>
       <div id="local-caja" class="rail solo" style="margin-top:18px" hidden></div>
       <section class="sec">
         <div class="sec-h"><h2>Descuentos</h2><span id="local-count" class="count"></span></div>
@@ -781,6 +804,76 @@ function abrirCompartido(){
   verDetalle(c.id);
 }
 
+// ---------- Tarjeta de sellos ----------
+let TARJETAS = {}, MISTARJ = {}, abiertaVisita = null;
+async function cargarTarjetas(){
+  try{ const r = await rpc('tc_tarjetas'); TARJETAS = {}; (Array.isArray(r) ? r : []).forEach(t => TARJETAS[t.local] = t); }catch(e){ TARJETAS = {}; }
+}
+async function cargarMisTarjetas(){
+  try{ const r = await rpc('tc_mis_tarjetas'); MISTARJ = {}; (Array.isArray(r) ? r : []).forEach(t => MISTARJ[t.local] = t); }catch(e){}
+}
+function estTarjeta(id){
+  const t = TARJETAS[id]; if(!t) return null;
+  const m = MISTARJ[id] || {};
+  const sellos = Math.min(m.sellos || 0, t.requeridos);
+  return {req: t.requeridos, premio: t.premio, sellos, completa: (m.sellos || 0) >= t.requeridos, premios: m.premios || 0, visita: m.visita};
+}
+const sellosHTML = e => `<div class="sellos">${Array.from({length: e.req}, (_, i) => i < e.sellos ? '<i class="on">✓</i>' : `<i${i === e.req - 1 ? ' class="prem"' : ''}>${i === e.req - 1 ? '🎁' : ''}</i>`).join('')}</div>`;
+function tarjetaHTML(id){
+  const e = estTarjeta(id); if(!e) return '';
+  const falta = e.req - e.sellos;
+  return `<div class="tarjeta ${e.completa ? 'completa' : ''}">
+    <p class="tt">🎟️ Tarjeta de sellos</p>
+    <p class="pr">Sumá ${e.req} visitas y llevate: <b>${esc(e.premio)}</b></p>
+    ${sellosHTML(e)}
+    <p class="est">${e.completa ? `🎉 ¡Completaste la tarjeta! En tu próxima visita te entregan: ${esc(e.premio)}` : e.sellos ? `Llevás ${e.sellos} de ${e.req}. ¡Te ${falta === 1 ? 'falta 1' : 'faltan ' + falta}!` : 'Cada vez que vengas y uses un cupón o sumes tu visita, ganás un sello.'}</p>
+    <button type="button" class="tbtn" data-visita="${id}">${e.completa ? 'Mostrar código para mi premio' : 'Sumar mi visita de hoy'}</button>
+    <p style="margin-top:8px;font-size:.78rem;opacity:.75">Máximo un sello por día. Los cupones y Cajas Sorpresa también suman.</p>
+  </div>`;
+}
+function tjMini(id){
+  const l = localDe({local: id}), e = estTarjeta(id); if(!l || !e) return '';
+  return `<button type="button" class="tj-mini" data-local="${id}"><span class="n">${logo(l)}${esc(l.nombre)}</span>${sellosHTML(e)}<p class="f">${e.completa ? '🎉 ¡Premio listo!' : `${e.sellos}/${e.req} · ${esc(e.premio)}`}</p></button>`;
+}
+async function abrirVisita(id){
+  try{
+    const r = await rpc('tc_codigo_visita', {p_local_id: id});
+    MISTARJ[id] = Object.assign(MISTARJ[id] || {local: id, sellos: 0, premios: 0}, {visita: {codigo: r.codigo, estado: r.estado}});
+  }catch(e){ return toast(e.message); }
+  abierto = null; abiertaCaja = null; abiertaVisita = id; pintarHojaVisita(); abrirHoja('sheet-code');
+  try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
+  clearInterval(poll);
+  const antes = (MISTARJ[id] || {}).sellos || 0, antesPrem = (MISTARJ[id] || {}).premios || 0;
+  poll = setInterval(async () => {
+    if(abiertaVisita !== id || document.hidden) return;
+    const v = (MISTARJ[id] || {}).visita; if(v && v.estado === 'usado') return;
+    try{
+      await cargarMisTarjetas();
+      const m = MISTARJ[id] || {};
+      if(m.visita && m.visita.estado === 'usado' || (m.sellos || 0) !== antes || (m.premios || 0) !== antesPrem){
+        if(m.visita) m.visita.estado = 'usado';
+        pintarHojaVisita(); render(); try{ navigator.vibrate && navigator.vibrate([60, 40, 60]); }catch(_){}
+      }
+    }catch(e){}
+  }, 4000);
+}
+function pintarHojaVisita(){
+  const id = abiertaVisita, l = localDe({local: id}), e = estTarjeta(id), m = MISTARJ[id] || {}, v = m.visita || {};
+  const ok = v.estado === 'usado';
+  $('s-badge').textContent = '🎟️';
+  $('s-title').textContent = e && e.completa && !ok ? '¡Tu premio te espera!' : 'Sumar visita';
+  $('s-local').textContent = l ? l.nombre : '';
+  $('s-code').textContent = v.codigo || '';
+  $('s-cond').textContent = '';
+  $('s-stamp').hidden = !ok; $('s-stamp').querySelector('span').textContent = 'SELLADO';
+  $('s-status').className = 'status' + (ok ? ' ok' : '');
+  $('s-status').querySelector('.pulse').hidden = ok;
+  $('s-status-t').textContent = ok ? '¡Listo! El local confirmó tu visita' : 'Esperando que el local lo confirme';
+  $('s-sub').textContent = ok ? (e ? `Llevás ${e.sellos} de ${e.req} sellos` : '') : (e && e.completa ? `Mostrá este código y te entregan: ${e.premio}` : 'Mostrá este código al pagar para sumar tu sello');
+  const hs = $('s-hor'); hs.hidden = !e;
+  if(e){ hs.className = 'box s-hor ok'; hs.innerHTML = `<p class="k">🎟️ Tu tarjeta · ${e.sellos}/${e.req}</p><p class="v2">Premio: <b>${esc(e.premio)}</b>${e.premios ? ` · Ya ganaste ${e.premios} ${e.premios === 1 ? 'vez' : 'veces'}` : ''}</p>`; }
+}
+
 // ---------- Caja Sorpresa ----------
 let CAJAS = [], MISCAJAS = {}, abiertaCaja = null, cajaRes = null;
 const pesos = n => '$ ' + Number(n || 0).toLocaleString('es-AR');
@@ -851,7 +944,7 @@ function pintarHojaCaja(){
   }
 }
 async function abrirCaja(id){
-  abierto = null; abiertaCaja = id; pintarHojaCaja(); abrirHoja('sheet-code');
+  abierto = null; abiertaVisita = null; abiertaCaja = id; pintarHojaCaja(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
   poll = setInterval(async () => {
@@ -907,7 +1000,7 @@ function clicBanner(id){
 }
 async function cargarCatalogo(){
   cargarBanners();
-  const pc = cargarCajas();
+  const pc = cargarCajas(), pt = cargarTarjetas();
   const antes = Date.now(), d = await rpc('tc_catalogo');
   if(d.ahora) desfase = new Date(d.ahora).getTime() - (antes + Date.now()) / 2;
   RUBROS = d.rubros || [];
@@ -915,17 +1008,17 @@ async function cargarCatalogo(){
   LOCALES = (d.locales || []).map(l => ({...l, cupones: CUPONES.filter(c => c.local === l.id)}));
   favs = d.favoritos || [];
   calcBarrios();
-  await pc;
+  await pc; await pt;
 }
 function calcBarrios(){
   BARRIOS = [...new Set(LOCALES.filter(enProv).flatMap(l => sedes(l).map(x => x.barrio)))].sort((a, b) => a.localeCompare(b, 'es'));
   if(barrio !== 'Todos' && !BARRIOS.includes(barrio)) barrio = 'Todos';
 }
 async function cargarMios(){
-  const pm = cargarMisCajas();
+  const pm = cargarMisCajas(), ptj = cargarMisTarjetas();
   const rows = await rpc('tc_mis_codigos');
   mios = {}; (rows || []).forEach(r => mios[r.cupon_id] = r);
-  await pm;
+  await pm; await ptj;
 }
 
 let desfase = 0;   // diferencia entre el reloj del servidor y el del celular
@@ -1016,7 +1109,7 @@ function localCard(l){
     <button type="button" data-local="${l.id}" style="display:flex;gap:14px;align-items:center;flex:1;min-width:0;text-align:left">
       ${logo(l)}
       <span class="min">
-        <span class="ln">${esc(l.nombre)}</span>
+        <span class="ln">${esc(l.nombre)}${TARJETAS[l.id] ? '<span class="chip-sellos">🎟️ Sellos</span>' : ''}</span>
         <span class="dir">${esc(sedeVista(l).barrio)} · ${esc(sedeVista(l).dir)}${sucTexto(l)}</span>
       </span>
     </button>
@@ -1156,6 +1249,11 @@ function pintarHome(){
     $('cajas-count').textContent = cajas.length ? (disp ? `${disp} ${disp === 1 ? 'disponible' : 'disponibles'}` : 'Agotadas por hoy') : '';
     $('cajas-rail').classList.toggle('solo', cajas.length === 1);
     $('cajas-rail').innerHTML = cajas.map(cj => cajaCard(cj)).join('');
+    const tjs = Object.keys(MISTARJ).map(Number).filter(id => { const l = localDe({local: id}), e = estTarjeta(id); return l && enProv(l) && e && (e.sellos > 0 || e.completa || e.premios); })
+      .sort((a, b) => estTarjeta(b).completa - estTarjeta(a).completa || (estTarjeta(b).sellos / estTarjeta(b).req) - (estTarjeta(a).sellos / estTarjeta(a).req));
+    $('sec-tarjetas').hidden = !tjs.length;
+    $('tj-count').textContent = tjs.length ? `${tjs.length} ${tjs.length === 1 ? 'local' : 'locales'}` : '';
+    $('tj-rail').innerHTML = tjs.map(tjMini).join('');
     const top = CUPONES.filter(c => !esRel(c) && localDe(c) && porBarrio(localDe(c))).sort((a, b) => b.pedidos - a.pedidos || pct(b) - pct(a)).slice(0, 6);
     $('top-rail').classList.toggle('solo', top.length === 1);
     $('top-rail').innerHTML = top.length ? top.map((c, i) => tarjeta(c, c.pedidos ? i + 1 : 0)).join('') : vacio(barrio !== 'Todos' ? 'No hay cupones en este barrio por ahora.' : `No hay cupones en ${esc(prov)} por ahora.`);
@@ -1177,6 +1275,7 @@ function pintarLocal(){
   $('ficha').innerHTML = `<div class="top">${logo(l)}<div style="min-width:0;flex:1"><p class="muted" style="font-size:.8rem;font-weight:800">${esc(r.icono)} ${esc(r.nombre)}</p><h2>${esc(l.nombre)}</h2></div>${favBtn(l)}</div>
     ${masSuc(l) ? `<p class="label" style="margin:16px 0 6px">${masSuc(l) + 1} sucursales · los descuentos valen en todas</p>${sedesHTML(l)}`
       : `<dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`}`;
+  $('local-tarjeta').hidden = !TARJETAS[l.id]; $('local-tarjeta').innerHTML = tarjetaHTML(l.id);
   const cjl = cajaDelLocal(l.id);
   $('local-caja').hidden = !cjl; $('local-caja').innerHTML = cjl ? cajaCard(cjl, true) : '';
   const cs = l.cupones.slice().sort((a, b) => b.pedidos - a.pedidos), vis = filtro === 'ahora' ? cs.filter(enHorario) : cs;
@@ -1237,7 +1336,7 @@ const abrirHoja = id => $(id).setAttribute('aria-hidden', 'false');
 function cerrar(id){
   $(id).setAttribute('aria-hidden', 'true');
   if(id === 'sheet-det') detalle = null;
-  if(id === 'sheet-code'){ abierto = null; abiertaCaja = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
+  if(id === 'sheet-code'){ abierto = null; abiertaCaja = null; abiertaVisita = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
 }
 $$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrar(w.id); }));
 document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); cerrar('sheet-prov'); cerrar('sheet-caja'); } });
@@ -1353,7 +1452,7 @@ function pintarHoja(){
   }
 }
 async function abrir(id){
-  abiertaCaja = null; abierto = id; pintarHoja(); abrirHoja('sheet-code');
+  abiertaCaja = null; abiertaVisita = null; abierto = id; pintarHoja(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
   poll = setInterval(async () => {
@@ -1435,6 +1534,7 @@ document.addEventListener('click', ev => {
   if((b = t('[data-rubro]'))){ ir('rubro', {rubro: b.dataset.rubro}); return; }
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
   if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
+  if((b = t('[data-visita]'))){ abrirVisita(+b.dataset.visita); return; }
   if((b = t('[data-caja-res]'))){ abrirReservaCaja(+b.dataset.cajaRes); return; }
   if((b = t('[data-caja-ver]'))){ abrirCaja(+b.dataset.cajaVer); return; }
   if((b = t('[data-caja-cancel]'))){ cancelarCaja(+b.dataset.cajaCancel, b); return; }
@@ -1464,6 +1564,7 @@ async function refrescar(){
     render(); if(f === 'q') $('q').focus();
     if(abierto) pintarHoja();
     if(abiertaCaja) pintarHojaCaja();
+    if(abiertaVisita) pintarHojaVisita();
   }catch(e){ /* sin conexión: se reintenta en la próxima vuelta */ }
   finally{ refrescando = false; }
 }
