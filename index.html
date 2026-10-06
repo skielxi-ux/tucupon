@@ -142,27 +142,6 @@ a.banner:active{transform:scale(.99)}
 .tj-mini .n .logo{width:34px;height:34px;min-width:34px;border-radius:10px;font-size:.72rem}
 .tj-mini .sellos{gap:5px;margin-top:10px}.tj-mini .sellos i{width:20px;height:20px;font-size:.6rem;border-width:1.5px}
 .tj-mini .f{margin-top:8px;font-size:.8rem;font-weight:700;opacity:.9}
-.tarjeta .ru{margin-top:12px;border-radius:16px;padding:12px;background:rgba(255,255,255,.12);display:grid;gap:8px}
-.tarjeta .ru p{font-weight:800;font-size:.9rem}.tarjeta .ru small{display:block;font-weight:600;opacity:.85;font-size:.8rem;margin-top:2px}
-.tarjeta .ru .tbtn{margin-top:0}
-.tarjeta .tbtn.alt{background:rgba(255,255,255,.18);color:#fff}
-.giro-ban{margin-top:18px;display:flex;align-items:center;gap:12px;width:100%;border:0;font:inherit;text-align:left;cursor:pointer;border-radius:22px;padding:14px 16px;background:linear-gradient(120deg,#B0249F,#5B1FD1);color:#fff;box-shadow:0 14px 30px -16px rgba(91,31,209,.7)}
-.giro-ban .em{font-size:2rem;display:inline-block;animation:girito 3s ease-in-out infinite}
-.giro-ban b{display:block;font-size:1.02rem}.giro-ban small{opacity:.9;font-weight:600}
-.giro-ban .go{margin-left:auto;background:#C4F04A;color:#1E0B45;border-radius:12px;padding:8px 12px;font-weight:800;white-space:nowrap}
-@keyframes girito{0%,60%,100%{transform:rotate(0)}80%{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.giro-ban .em{animation:none}}
-.ruleta-w{position:relative;width:min(100%,300px);margin:16px auto 0}
-.rueda{width:100%;display:block;filter:drop-shadow(0 10px 22px rgba(43,15,99,.35))}
-.rueda .rg{transition:transform 4.8s cubic-bezier(.12,.72,.1,1)}
-.ru-ley{display:grid;gap:6px;font-size:.86rem;padding:0;margin:14px 0 0}
-.ru-ley li{display:flex;gap:8px;align-items:center;list-style:none;color:var(--ink)}
-.ru-ley i{width:12px;height:12px;border-radius:4px;flex:none}
-.ru-ley b{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted)}
-.ru-res{margin-top:14px;border-radius:18px;padding:14px;text-align:center;animation:up .35s ease}
-.ru-res.gano{background:linear-gradient(140deg,#B0249F,#5B1FD1);color:#fff}
-.ru-res.gano b{color:#C4F04A;font-size:1.25rem;display:block;margin:4px 0}
-.ru-res.nada{background:var(--surface-2,#F1ECFB);color:var(--ink)}
 .sec-extr{margin-top:26px;border-radius:26px;padding:16px 16px 4px;margin-inline:-6px;background:linear-gradient(135deg,rgba(255,111,177,.16),rgba(123,63,240,.14))}
 .sec-extr .rail{padding-bottom:16px}
 .extr-ban{margin-top:18px;display:flex;align-items:center;gap:10px;width:100%;border:0;font:inherit;text-align:left;cursor:pointer;border-radius:18px;padding:12px 14px;background:linear-gradient(135deg,#FFE3F0,#EFE6FF);color:#3A145F}
@@ -543,7 +522,6 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       </section>
 
       <div id="home-main">
-        <div id="giros-home"></div>
         <section id="sec-rel" class="sec-rel" hidden>
           <div class="sec-h"><h2><span class="rayo" aria-hidden="true">⚡</span>Cupones relámpago</h2><span class="count" id="rel-count"></span></div>
           <p class="muted" style="font-size:.88rem;margin-top:4px">Por pocas horas y hasta agotar stock. ¡Pedí tu código antes de que se terminen!</p>
@@ -668,17 +646,6 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <h3 id="cj-title" style="font-size:1.3rem;color:var(--heading)"><span class="regalo" aria-hidden="true">🎁</span> ¿Reservás esta Caja Sorpresa?</h3>
       <div id="cj-body"></div>
       <div class="act"><button type="button" class="main" id="cj-ok">Reservar</button><button type="button" class="sec-btn" data-close>Cancelar</button></div>
-    </div>
-  </div>
-  <!-- Hoja: ruleta -->
-  <div id="sheet-ruleta" class="sheet-wrap" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ru-title">
-      <div class="grip"></div>
-      <h3 id="ru-title" style="font-size:1.3rem;color:var(--heading)">🎡 Ruleta de premios</h3>
-      <p id="ru-sub" class="muted" style="margin-top:4px;font-size:.9rem"></p>
-      <div id="ru-wheel" class="ruleta-w"></div>
-      <div id="ru-body"></div>
-      <div class="act"><button type="button" class="main" id="ru-girar">¡Girar!</button><button type="button" class="sec-btn" data-close>Cerrar</button></div>
     </div>
   </div>
   <!-- Hoja: provincia -->
@@ -868,24 +835,23 @@ function tarjetaHTML(id){
   const falta = e.req - e.sellos;
   return `<div class="tarjeta ${e.completa ? 'completa' : ''}">
     <p class="tt">🎟️ Tarjeta de sellos</p>
-    <p class="pr">Sumá ${e.req} visitas y llevate: <b>${esc(e.premio)}</b>${TARJETAS[id].ruleta ? ' + 🎡 <b>un giro en la ruleta</b>' : ''}</p>
+    <p class="pr">Sumá ${e.req} visitas y llevate: <b>${esc(e.premio)}</b></p>
     ${sellosHTML(e)}
     <p class="est">${e.completa ? `🎉 ¡Completaste la tarjeta! En tu próxima visita te entregan: ${esc(e.premio)}` : e.sellos ? `Llevás ${e.sellos} de ${e.req}. ¡Te ${falta === 1 ? 'falta 1' : 'faltan ' + falta}!` : 'Cada vez que vengas y uses un cupón o sumes tu visita, ganás un sello.'}</p>
     <button type="button" class="tbtn" data-visita="${id}">${e.completa ? 'Mostrar código para mi premio' : 'Sumar mi visita de hoy'}</button>
-    ${girosHTML(id)}
     <p style="margin-top:8px;font-size:.78rem;opacity:.75">Máximo un sello por día. Los cupones y Cajas Sorpresa también suman.</p>
   </div>`;
 }
 function tjMini(id){
   const l = localDe({local: id}), e = estTarjeta(id); if(!l || !e) return '';
-  return `<button type="button" class="tj-mini" data-local="${id}"><span class="n">${logo(l)}${esc(l.nombre)}</span>${sellosHTML(e)}<p class="f">${girosDe(id, 'disponible').length ? '🎡 ¡Tenés un giro en la ruleta!' : e.completa ? '🎉 ¡Premio listo!' : `${e.sellos}/${e.req} · ${esc(e.premio)}`}</p></button>`;
+  return `<button type="button" class="tj-mini" data-local="${id}"><span class="n">${logo(l)}${esc(l.nombre)}</span>${sellosHTML(e)}<p class="f">${e.completa ? '🎉 ¡Premio listo!' : `${e.sellos}/${e.req} · ${esc(e.premio)}`}</p></button>`;
 }
 async function abrirVisita(id){
   try{
     const r = await rpc('tc_codigo_visita', {p_local_id: id});
     MISTARJ[id] = Object.assign(MISTARJ[id] || {local: id, sellos: 0, premios: 0}, {visita: {codigo: r.codigo, estado: r.estado}});
   }catch(e){ return toast(e.message); }
-  abierto = null; abiertaCaja = null; abiertoGiro = null; abiertaVisita = id; pintarHojaVisita(); abrirHoja('sheet-code');
+  abierto = null; abiertaCaja = null; abiertaVisita = id; pintarHojaVisita(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
   const antes = (MISTARJ[id] || {}).sellos || 0, antesPrem = (MISTARJ[id] || {}).premios || 0;
@@ -893,13 +859,11 @@ async function abrirVisita(id){
     if(abiertaVisita !== id || document.hidden) return;
     const v = (MISTARJ[id] || {}).visita; if(v && v.estado === 'usado') return;
     try{
-      await Promise.all([cargarMisTarjetas(), cargarMisGiros()]);
+      await cargarMisTarjetas();
       const m = MISTARJ[id] || {};
       if(m.visita && m.visita.estado === 'usado' || (m.sellos || 0) !== antes || (m.premios || 0) !== antesPrem){
         if(m.visita) m.visita.estado = 'usado';
         pintarHojaVisita(); render(); try{ navigator.vibrate && navigator.vibrate([60, 40, 60]); }catch(_){}
-        const g = girosDe(id, 'disponible')[0];
-        if(g && (m.premios || 0) !== antesPrem){ cerrar('sheet-code'); setTimeout(() => abrirRuleta(g.id), 450); }
       }
     }catch(e){}
   }, 4000);
@@ -919,122 +883,6 @@ function pintarHojaVisita(){
   $('s-sub').textContent = ok ? (e ? `Llevás ${e.sellos} de ${e.req} sellos` : '') : (e && e.completa ? `Mostrá este código y te entregan: ${e.premio}` : 'Mostrá este código al pagar para sumar tu sello');
   const hs = $('s-hor'); hs.hidden = !e;
   if(e){ hs.className = 'box s-hor ok'; hs.innerHTML = `<p class="k">🎟️ Tu tarjeta · ${e.sellos}/${e.req}</p><p class="v2">Premio: <b>${esc(e.premio)}</b>${e.premios ? ` · Ya ganaste ${e.premios} ${e.premios === 1 ? 'vez' : 'veces'}` : ''}</p>`; }
-}
-
-// ---------- Ruleta de premios ----------
-let MISGIROS = [], giroRu = null, girando = false, abiertoGiro = null;
-async function cargarMisGiros(){
-  try{ const r = await rpc('tc_mis_giros'); MISGIROS = Array.isArray(r) ? r : []; }catch(e){}
-}
-const girosDe = (id, est) => MISGIROS.filter(g => g.local === id && (!est || g.estado === est));
-const giroDe = id => MISGIROS.find(g => g.id === id);
-const fDia = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {day: 'numeric', month: 'numeric'}) : '';
-function girosHTML(id){
-  const disp = girosDe(id, 'disponible'), gan = girosDe(id, 'ganado');
-  if(!disp.length && !gan.length) return '';
-  return `<div class="ru">${disp.length ? `<p>🎡 ¡Ganaste ${disp.length === 1 ? 'un giro' : disp.length + ' giros'} en la ruleta!<small>Girala y lo que salga lo usás en tu próxima visita.</small></p><button type="button" class="tbtn" data-girar="${disp[0].id}">Girar la ruleta</button>` : ''}
-    ${gan.map(g => `<p>🎡 Premio: ${esc(g.premio)}<small>Usalo ${g.desde > hoyISO_AR() ? 'desde el ' + fDia(g.desde) + ' ' : ''}hasta el ${fDia(g.vence)}</small></p><button type="button" class="tbtn alt" data-giro-ver="${g.id}">Ver código · <span class="mono">${esc(g.codigo)}</span></button>`).join('')}</div>`;
-}
-const hoyISO_AR = () => new Date(ahoraMs()).toLocaleDateString('en-CA', {timeZone: 'America/Argentina/Buenos_Aires'});
-const RU_COL = ['#7B3FF0', '#C4F04A', '#FF6FB1', '#2BB7A3', '#FFB020', '#43198F'];
-function ruColores(sl){ let ci = 0; return sl.map(x => x.nada ? '#ECE6F8' : RU_COL[ci++ % RU_COL.length]); }
-function ruMedios(sl){ const tot = sl.reduce((s, x) => s + (+x.p || 0), 0) || 1; let a = 0; return sl.map(x => { const sp = (+x.p || 0) / tot * 360, m = a + sp / 2; a += sp; return {m, sp}; }); }
-function ruedaSVG(sl){
-  const tot = sl.reduce((s, x) => s + (+x.p || 0), 0) || 1, cols = ruColores(sl);
-  const pt = (r, d) => [(r * Math.sin(d * Math.PI / 180)).toFixed(2), (-r * Math.cos(d * Math.PI / 180)).toFixed(2)];
-  let a = 0;
-  const partes = sl.map((x, i) => {
-    const span = (+x.p || 0) / tot * 360, a0 = a, a1 = a + span, mid = a0 + span / 2; a = a1;
-    const col = cols[i], tc = x.nada || col === '#C4F04A' || col === '#FFB020' ? '#1E0B45' : '#fff';
-    let d;
-    if(span >= 359.9) d = 'M0,-100 A100,100 0 1,1 -0.01,-100 Z';
-    else{ const [x0, y0] = pt(100, a0), [x1, y1] = pt(100, a1); d = `M0,0 L${x0},${y0} A100,100 0 ${span > 180 ? 1 : 0},1 ${x1},${y1} Z`; }
-    const txt = x.t.length > 15 ? x.t.slice(0, 14) + '…' : x.t;
-    const lab = span >= 22 ? `<text transform="rotate(${mid.toFixed(1)}) translate(0,-58) rotate(${mid > 180 ? 90 : -90})" text-anchor="middle" dominant-baseline="middle" fill="${tc}" font-size="${x.nada ? 8 : 9.5}" font-weight="800">${esc(txt)}</text>` : '';
-    return `<path d="${d}" fill="${col}" stroke="#fff" stroke-width="1.5"/>${lab}`;
-  }).join('');
-  return `<svg class="rueda" viewBox="-112 -118 224 230" role="img" aria-label="Ruleta de premios"><circle r="108" fill="#1E0B45"/><g class="rg" style="transform-origin:0 0">${partes}</g>
-    <circle r="15" fill="#fff" stroke="#1E0B45" stroke-width="3"/><text text-anchor="middle" dominant-baseline="central" font-size="13">🎡</text>
-    <path d="M-11,-116 L11,-116 L0,-92 Z" fill="#C4F04A" stroke="#1E0B45" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
-}
-const ruLeyenda = sl => { const cols = ruColores(sl); return `<ul class="ru-ley">${sl.map((x, i) => `<li><i style="background:${cols[i]}"></i><span>${esc(x.t)}</span><b>${x.p}%</b></li>`).join('')}</ul>`; };
-function abrirRuleta(gid){
-  const g = giroDe(gid); if(!g) return;
-  const l = localDe({local: g.local});
-  giroRu = gid; girando = false; delete $('ru-girar').dataset.ruVer;
-  $('ru-title').textContent = `🎡 Ruleta de ${l ? l.nombre : 'premios'}`;
-  $('ru-sub').textContent = g.estado === 'disponible' ? 'Ganaste un giro por completar tu tarjeta. ¡Suerte!' : '';
-  if(!g.slices){ $('ru-wheel').innerHTML = ''; $('ru-body').innerHTML = '<div class="ru-res nada">El local pausó su ruleta por ahora. Tu giro te queda guardado.</div>'; $('ru-girar').hidden = true; abrirHoja('sheet-ruleta'); return; }
-  $('ru-wheel').innerHTML = ruedaSVG(g.slices);
-  $('ru-body').innerHTML = ruLeyenda(g.slices);
-  $('ru-girar').hidden = g.estado !== 'disponible'; $('ru-girar').disabled = false; $('ru-girar').textContent = '¡Girar!';
-  abrirHoja('sheet-ruleta');
-  if(g.estado !== 'disponible') ruResultado(g);
-}
-function ruResultado(g){
-  const l = localDe({local: g.local}) || {};
-  $('ru-sub').textContent = '';
-  $('ru-body').innerHTML = g.estado === 'nada'
-    ? `<div class="ru-res nada"><p style="font-size:1.6rem">🙃</p><p style="font-weight:800;margin-top:4px">¡Uy! Esta vez salió "Seguí participando"</p><p class="muted" style="font-size:.88rem;margin-top:4px">Completá otra tarjeta en ${esc(l.nombre || 'el local')} para volver a girar.</p></div>`
-    : `<div class="ru-res gano"><p>🎉 ¡Ganaste!</p><b>${esc(g.premio)}</b><p style="font-size:.88rem;opacity:.92">Usalo en tu próxima visita a ${esc(l.nombre || 'el local')}: desde el ${fDia(g.desde)} hasta el ${fDia(g.vence)}. Lo tenés en "Mis códigos".</p></div>`;
-  $('ru-girar').hidden = g.estado === 'nada';
-  if(g.estado !== 'nada'){ $('ru-girar').hidden = false; $('ru-girar').disabled = false; $('ru-girar').textContent = 'Ver mi código'; $('ru-girar').dataset.ruVer = g.id; }
-}
-async function girarRuleta(){
-  const b = $('ru-girar');
-  if(b.dataset.ruVer){ const id = +b.dataset.ruVer; delete b.dataset.ruVer; cerrar('sheet-ruleta'); abrirGiro(id); return; }
-  if(girando || !giroRu) return;
-  girando = true; b.disabled = true; b.textContent = 'Girando…';
-  const rg = document.querySelector('#ru-wheel .rg'), sl = (giroDe(giroRu) || {}).slices || [];
-  if(rg){ rg.style.transition = 'transform 1.2s linear'; rg.style.transform = 'rotate(540deg)'; }   // arranca a girar mientras responde
-  let g;
-  try{ g = await rpc('tc_girar_ruleta', {p_giro_id: giroRu}); }
-  catch(e){ girando = false; b.disabled = false; b.textContent = '¡Girar!'; if(rg){ rg.style.transition = 'none'; rg.style.transform = 'rotate(0deg)'; } return toast(e.message); }
-  const ms = ruMedios(g.slices || sl), m = ms[g.porcion] || {m: 0, sp: 0};
-  const jit = (Math.random() - .5) * m.sp * .6, R = 360 * 7 - m.m + jit;
-  if(rg){ void rg.getBoundingClientRect(); rg.style.transition = ''; rg.style.transform = `rotate(${R}deg)`; }
-  MISGIROS = MISGIROS.map(x => x.id === g.id ? g : x);
-  setTimeout(() => {
-    girando = false;
-    try{ navigator.vibrate && navigator.vibrate(g.estado === 'nada' ? 60 : [80, 50, 80, 50, 120]); }catch(_){}
-    ruResultado(g); render(); cargarMisGiros().then(render);
-  }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 5000);
-}
-function pintarHojaGiro(){
-  const g = giroDe(abiertoGiro); if(!g) return;
-  const l = localDe({local: g.local}), ok = g.estado === 'usado', antes = g.desde > hoyISO_AR();
-  $('s-badge').textContent = '🎡';
-  $('s-title').textContent = `Premio: ${g.premio}`;
-  $('s-local').textContent = l ? (masSuc(l) ? `${l.nombre} · en cualquiera de sus sucursales` : `${l.nombre} · ${l.dir}, ${l.barrio}`) : '';
-  $('s-code').textContent = g.codigo || '';
-  $('s-cond').textContent = 'Lo ganaste en la ruleta de premios. Es para vos y se usa una sola vez.';
-  $('s-stamp').hidden = !ok; $('s-stamp').querySelector('span').textContent = 'CANJEADO';
-  $('s-status').className = 'status' + (ok ? ' ok' : '');
-  $('s-status').querySelector('.pulse').hidden = ok;
-  $('s-status-t').textContent = ok ? '¡Listo! El local te entregó tu premio' : antes ? `Se puede usar desde el ${fDia(g.desde)}` : 'Esperando que el local lo confirme';
-  $('s-sub').textContent = ok ? '¡Que lo disfrutes!' : 'Mostrá este código en tu próxima visita';
-  const hs = $('s-hor'); hs.hidden = ok;
-  if(!ok){ hs.className = 'box s-hor ok'; hs.innerHTML = `<p class="k">🗓️ Válido del ${fDia(g.desde)} al ${fDia(g.vence)}</p><p class="v2">${antes ? 'Lo ganaste hoy: guardalo para tu próxima visita.' : 'Mostralo al pedir y el local te lo entrega.'}</p>`; }
-}
-async function abrirGiro(id){
-  abierto = null; abiertaCaja = null; abiertaVisita = null; abiertoGiro = id; pintarHojaGiro(); abrirHoja('sheet-code');
-  try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
-  clearInterval(poll);
-  poll = setInterval(async () => {
-    const g = giroDe(abiertoGiro);
-    if(!abiertoGiro || !g || g.estado === 'usado' || document.hidden) return;
-    try{
-      await cargarMisGiros();
-      const n = giroDe(abiertoGiro);
-      if(n && n.estado === 'usado'){ pintarHojaGiro(); render(); try{ navigator.vibrate && navigator.vibrate([60, 40, 60]); }catch(_){} }
-    }catch(e){}
-  }, 4000);
-}
-function girosHome(){
-  const disp = MISGIROS.filter(g => g.estado === 'disponible' && localDe({local: g.local}) && enProv(localDe({local: g.local})));
-  if(!disp.length) return '';
-  const g = disp[0], l = localDe({local: g.local});
-  return `<button type="button" class="giro-ban" data-girar="${g.id}"><span class="em" aria-hidden="true">🎡</span><span><b>¡Tenés ${disp.length === 1 ? 'un giro' : disp.length + ' giros'} en la ruleta!</b><small>Premio por completar tu tarjeta en ${esc(l.nombre)}</small></span><span class="go">Girar</span></button>`;
 }
 
 // ---------- Te extrañamos ----------
@@ -1118,7 +966,7 @@ function pintarHojaCaja(){
   }
 }
 async function abrirCaja(id){
-  abierto = null; abiertaVisita = null; abiertoGiro = null; abiertaCaja = id; pintarHojaCaja(); abrirHoja('sheet-code');
+  abierto = null; abiertaVisita = null; abiertaCaja = id; pintarHojaCaja(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
   poll = setInterval(async () => {
@@ -1189,10 +1037,10 @@ function calcBarrios(){
   if(barrio !== 'Todos' && !BARRIOS.includes(barrio)) barrio = 'Todos';
 }
 async function cargarMios(){
-  const pm = cargarMisCajas(), ptj = cargarMisTarjetas(), pg = cargarMisGiros(), pe = cargarExtr();
+  const pm = cargarMisCajas(), ptj = cargarMisTarjetas(), pe = cargarExtr();
   const rows = await rpc('tc_mis_codigos');
   mios = {}; (rows || []).forEach(r => mios[r.cupon_id] = r);
-  await pm; await ptj; await pg; await pe;
+  await pm; await ptj; await pe;
 }
 
 let desfase = 0;   // diferencia entre el reloj del servidor y el del celular
@@ -1428,7 +1276,6 @@ function pintarHome(){
     $('sec-tarjetas').hidden = !tjs.length;
     $('tj-count').textContent = tjs.length ? `${tjs.length} ${tjs.length === 1 ? 'local' : 'locales'}` : '';
     $('tj-rail').innerHTML = tjs.map(tjMini).join('');
-    $('giros-home').innerHTML = girosHome();
     const ex = extrValidos();
     $('sec-extr').hidden = !ex.length;
     $('extr-count').textContent = ex.length ? `${ex.length} ${ex.length === 1 ? 'local' : 'locales'}` : '';
@@ -1474,10 +1321,8 @@ function pintarLocal(){
 function pintarMios(){
   const mias = CUPONES.filter(c => mios[c.id] && !mios[c.id].oculto && localDe(c));
   const cjs = Object.values(MISCAJAS).filter(m => localDe({local: m.local}));
-  const grs = MISGIROS.filter(g => (g.estado === 'ganado' || g.estado === 'usado') && g.codigo && localDe({local: g.local}));
-  $('mis').hidden = !mias.length && !cjs.length && !grs.length;
-  $('mis-list').innerHTML = grs.map(g => { const l = localDe({local: g.local}), u = g.estado === 'usado';
-    return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-giro-ver="${g.id}"><span class="ic">🎡</span><span><b>${esc(g.codigo)}</b><small>${u ? 'Usado · ' : esc(g.premio) + ' · '}${esc(l.nombre)}</small></span></button>`; }).join('') + cjs.map(m => { const l = localDe({local: m.local}), u = m.estado === 'retirada';
+  $('mis').hidden = !mias.length && !cjs.length;
+  $('mis-list').innerHTML = cjs.map(m => { const l = localDe({local: m.local}), u = m.estado === 'retirada';
     return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-caja-ver="${m.caja}"><span class="ic">🎁</span><span><b>${esc(m.codigo)}</b><small>${u ? 'Retirada · ' : 'Caja Sorpresa · '}${esc(l.nombre)}</small></span></button>`; }).join('') + mias.map(c => { const m = mios[c.id], u = m.estado === 'usado', l = localDe(c);
     return `<button type="button" class="code-pill ${u ? 'usado' : ''}" data-ver="${c.id}"><span class="ic">${esc(c.icono)}</span><span><b>${esc(m.codigo)}</b><small>${u ? 'Usado · ' + esc(l.nombre) : esc(c.etiqueta) + ' · ' + esc(l.nombre)}</small></span></button>`; }).join('');
 }
@@ -1519,10 +1364,10 @@ const abrirHoja = id => $(id).setAttribute('aria-hidden', 'false');
 function cerrar(id){
   $(id).setAttribute('aria-hidden', 'true');
   if(id === 'sheet-det') detalle = null;
-  if(id === 'sheet-code'){ abierto = null; abiertaCaja = null; abiertaVisita = null; abiertoGiro = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
+  if(id === 'sheet-code'){ abierto = null; abiertaCaja = null; abiertaVisita = null; clearInterval(poll); try{ wake && wake.release(); }catch(e){} wake = null; }
 }
 $$('.sheet-wrap').forEach(w => w.addEventListener('click', e => { if(e.target === w || e.target.closest('[data-close]')) cerrar(w.id); }));
-document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); cerrar('sheet-prov'); cerrar('sheet-caja'); if(!girando) cerrar('sheet-ruleta'); } });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ cerrar('sheet-det'); cerrar('sheet-code'); cerrar('sheet-prov'); cerrar('sheet-caja'); } });
 
 function accionCupon(c){
   const m = mios[c.id];
@@ -1635,7 +1480,7 @@ function pintarHoja(){
   }
 }
 async function abrir(id){
-  abiertaCaja = null; abiertaVisita = null; abiertoGiro = null; abierto = id; pintarHoja(); abrirHoja('sheet-code');
+  abiertaCaja = null; abiertaVisita = null; abierto = id; pintarHoja(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
   poll = setInterval(async () => {
@@ -1718,9 +1563,6 @@ document.addEventListener('click', ev => {
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
   if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
   if((b = t('[data-visita]'))){ abrirVisita(+b.dataset.visita); return; }
-  if((b = t('[data-girar]'))){ abrirRuleta(+b.dataset.girar); return; }
-  if((b = t('[data-giro-ver]'))){ abrirGiro(+b.dataset.giroVer); return; }
-  if(t('#ru-girar')){ girarRuleta(); return; }
   if((b = t('[data-caja-res]'))){ abrirReservaCaja(+b.dataset.cajaRes); return; }
   if((b = t('[data-caja-ver]'))){ abrirCaja(+b.dataset.cajaVer); return; }
   if((b = t('[data-caja-cancel]'))){ cancelarCaja(+b.dataset.cajaCancel, b); return; }
@@ -1751,7 +1593,6 @@ async function refrescar(){
     if(abierto) pintarHoja();
     if(abiertaCaja) pintarHojaCaja();
     if(abiertaVisita) pintarHojaVisita();
-    if(abiertoGiro) pintarHojaGiro();
   }catch(e){ /* sin conexión: se reintenta en la próxima vuelta */ }
   finally{ refrescando = false; }
 }
