@@ -136,6 +136,7 @@ a.banner:active{transform:scale(.99)}
 .sellos i.prem{border:2px solid #C4F04A;color:#C4F04A}
 .tarjeta .est{margin-top:12px;font-weight:800;font-size:.9rem}
 .tarjeta .tbtn{margin-top:12px;display:block;width:100%;border:0;border-radius:16px;padding:12px;font:inherit;font-weight:800;background:#C4F04A;color:#1E0B45;cursor:pointer}
+.tarjeta .tbtn.hecho{background:rgba(255,255,255,.16);color:#fff;cursor:default}
 .tarjeta.completa{background:linear-gradient(140deg,#B0249F,#5B1FD1)}
 .tj-mini{flex:0 0 min(70%,15rem)!important;border-radius:22px;padding:14px;background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff;text-align:left;border:0;font:inherit;cursor:pointer}
 .tj-mini .n{font-weight:800;display:flex;align-items:center;gap:8px}
@@ -827,7 +828,7 @@ function estTarjeta(id){
   const t = TARJETAS[id]; if(!t) return null;
   const m = MISTARJ[id] || {};
   const sellos = Math.min(m.sellos || 0, t.requeridos);
-  return {req: t.requeridos, premio: t.premio, sellos, completa: (m.sellos || 0) >= t.requeridos, premios: m.premios || 0, visita: m.visita};
+  return {req: t.requeridos, premio: t.premio, sellos, completa: (m.sellos || 0) >= t.requeridos, premios: m.premios || 0, visita: m.visita, hoy: !!m.hoy};
 }
 const sellosHTML = e => `<div class="sellos">${Array.from({length: e.req}, (_, i) => i < e.sellos ? '<i class="on">✓</i>' : `<i${i === e.req - 1 ? ' class="prem"' : ''}>${i === e.req - 1 ? '🎁' : ''}</i>`).join('')}</div>`;
 function tarjetaHTML(id){
@@ -837,8 +838,9 @@ function tarjetaHTML(id){
     <p class="tt">🎟️ Tarjeta de sellos</p>
     <p class="pr">Sumá ${e.req} visitas y llevate: <b>${esc(e.premio)}</b></p>
     ${sellosHTML(e)}
-    <p class="est">${e.completa ? `🎉 ¡Completaste la tarjeta! En tu próxima visita te entregan: ${esc(e.premio)}` : e.sellos ? `Llevás ${e.sellos} de ${e.req}. ¡Te ${falta === 1 ? 'falta 1' : 'faltan ' + falta}!` : 'Cada vez que vengas y uses un cupón o sumes tu visita, ganás un sello.'}</p>
-    <button type="button" class="tbtn" data-visita="${id}">${e.completa ? 'Mostrar código para mi premio' : 'Sumar mi visita de hoy'}</button>
+    <p class="est">${e.completa ? `🎉 ¡Completaste la tarjeta! En tu próxima visita${e.hoy ? ' (desde mañana)' : ''} te entregan: ${esc(e.premio)}` : e.sellos ? `Llevás ${e.sellos} de ${e.req}. ¡Te ${falta === 1 ? 'falta 1' : 'faltan ' + falta}!` : 'Cada vez que vengas y uses un cupón o sumes tu visita, ganás un sello.'}</p>
+    ${e.hoy ? `<button type="button" class="tbtn hecho" disabled>${e.completa ? '🎁 Retirá tu premio desde mañana' : '✓ Ya sumaste tu visita de hoy · Volvé mañana'}</button>`
+      : `<button type="button" class="tbtn" data-visita="${id}">${e.completa ? 'Mostrar código para mi premio' : 'Sumar mi visita de hoy'}</button>`}
     <p style="margin-top:8px;font-size:.78rem;opacity:.75">Máximo un sello por día. Los cupones y Cajas Sorpresa también suman.</p>
   </div>`;
 }
@@ -850,7 +852,7 @@ async function abrirVisita(id){
   try{
     const r = await rpc('tc_codigo_visita', {p_local_id: id});
     MISTARJ[id] = Object.assign(MISTARJ[id] || {local: id, sellos: 0, premios: 0}, {visita: {codigo: r.codigo, estado: r.estado}});
-  }catch(e){ return toast(e.message); }
+  }catch(e){ toast(e.message); if(/ya sumaste/i.test(e.message)){ await cargarMisTarjetas(); render(); } return; }
   abierto = null; abiertaCaja = null; abiertaVisita = id; pintarHojaVisita(); abrirHoja('sheet-code');
   try{ wake = await navigator.wakeLock?.request('screen'); }catch(e){}
   clearInterval(poll);
