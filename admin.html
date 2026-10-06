@@ -57,6 +57,7 @@ p{margin:0}
 .btn-top{border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.85rem;color:#fff;flex:none}
 
 .tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:14px 4px}
+@media (min-width:700px){.tabs{flex-wrap:wrap;overflow:visible}}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:700;font-size:.92rem;color:var(--muted)}
 .tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
@@ -237,6 +238,31 @@ a.btn{text-decoration:none}
 #loc-lista .item .grow{flex:1 1 14rem;min-width:0}
 @media (max-width:700px){#loc-lista .acts{flex:1 1 100%;padding-left:60px}}
 @media (max-width:420px){#loc-lista .acts{padding-left:0}}
+#cj-hoy .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+#cj-hoy .stat b{font-size:1.6rem}
+.caja-hero{background:linear-gradient(150deg,#0F8A62,#0B5E46);color:#fff;border:0}
+.caja-hero .t{font-weight:900;font-size:1.2rem}
+.caja-hero p:not(.t){opacity:.9;margin-top:4px;font-size:.92rem}
+.cobrar{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:#E3F7EE;color:#0B5E46;border-radius:16px;padding:12px 16px;font-weight:800}
+.cobrar b{font-size:1.8rem;font-weight:900}
+.sellos-hero{background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff;border:0}
+.sellos-hero .t{font-weight:900;font-size:1.2rem}
+.sellos-hero p:not(.t){opacity:.9;margin-top:4px;font-size:.92rem}
+#tj-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:640px){#tj-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tj-prev{border-radius:18px;padding:14px 16px;background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff}
+.tj-prev .t{font-weight:800;font-size:.8rem;opacity:.75;text-transform:uppercase;letter-spacing:.06em}
+.tj-prev .s{margin-top:4px}.tj-prev .s b{color:#C4F04A}
+.sellos{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.sellos i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px dashed rgba(255,255,255,.45);font-style:normal;font-size:.9rem}
+.sellos i.on{border:0;background:#C4F04A;color:#1E0B45}
+.sellos i.prem{border:2px solid #C4F04A}
+.sello-linea{background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:800;font-size:.88rem;color:var(--head)}
+.premio-ok{display:grid;gap:6px;border-radius:16px;padding:14px;background:linear-gradient(140deg,#B0249F,#5B1FD1);color:#fff;text-align:left}
+.premio-ok .btn{background:#C4F04A;color:#1E0B45;margin-top:4px}
+#ex-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:640px){#ex-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.premio-ok.entregado{background:#E3F7EE;color:#0B5E46}
 </style>
 
 </head>
@@ -473,7 +499,7 @@ a.btn{text-decoration:none}
   <form id="f-rubro" class="sheet" role="dialog" aria-modal="true" aria-labelledby="ru-title" novalidate>
     <div class="row"><h2 id="ru-title" class="grow">Nuevo rubro</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
     <div id="ru-alert" class="alert" hidden></div>
-    <div><label class="label" for="ru-nombre">Nombre</label><input id="ru-nombre" class="field" maxlength="60" placeholder="Sushi y comida asiática"></div>
+    <div><label class="label" for="ru-nombre">Nombre</label><input id="ru-nombre" class="field" maxlength="60" placeholder="Ej.: Gimnasios"></div>
     <div class="grid2">
       <div><span class="label" id="ru-icono-l">Ícono</span><input id="ru-icono" type="hidden"><button type="button" class="icono-btn" data-icono-para="ru-icono" aria-labelledby="ru-icono-l"><span class="em"></span><span>Elegir ícono</span></button></div>
       <div><label class="label" for="ru-color">Color</label><input id="ru-color" class="field" type="color" style="height:48px;padding:4px"></div>
@@ -548,7 +574,7 @@ a.btn{text-decoration:none}
       </div>
       <p class="hint">Sin foto, la tarjeta usa los colores de Tucupón.</p>
     </div>
-    <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="En pizzas grandes de la carta"></div>
+    <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="Ej.: En toda la tienda"></div>
     <div><label class="label" for="cf-descripcion">Descripción (opcional)</label><textarea id="cf-descripcion" class="field" maxlength="300" placeholder="Contá qué incluye la promo"></textarea></div>
     <div><label class="label" for="cf-condiciones">Condiciones</label><textarea id="cf-condiciones" class="field" maxlength="400" placeholder="Válido en salón. No acumulable con otras promos"></textarea><p class="hint">Separá cada condición con un punto.</p></div>
     <div class="rel-box">
@@ -731,7 +757,7 @@ async function abrirFormCupon(c, opciones = {}){
   if(opciones.locales) $('cf-local').innerHTML = opciones.locales.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
   if(opciones.locales) $('cf-local').value = c ? c.local : (opciones.localPorDefecto || opciones.locales[0]?.id || '');
   $('cf-etiqueta').value = c ? c.etiqueta : '';
-  $('cf-icono').value = c && c.icono !== '🎟️' ? c.icono : '🍽️'; pintarBotonIcono('cf-icono');
+  $('cf-icono').value = c && c.icono !== '🎟️' ? c.icono : '🏷️'; pintarBotonIcono('cf-icono');
   $('cf-titulo').value = c ? c.titulo : '';
   $('cf-descripcion').value = c ? c.descripcion : '';
   $('cf-condiciones').value = c ? c.condiciones : '';
@@ -828,7 +854,7 @@ function unirBarrio(sel, otro){
   sel.addEventListener('change', () => { const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro'; if(!w.hidden) otro.focus(); });
 }
 
-// ---------- Selector de íconos (solo comida y bebida) ----------
+// ---------- Selector de íconos ----------
 const ICONOS = [
   ['Pizzas, sándwiches y rápidas', '🍕 🍔 🌭 🍟 🥪 🌮 🌯 🥙 🧆 🥟 🫔 🍗 🍖 🥩 🥓 🍳 🧀 🥚'],
   ['Café, panadería y dulces', '☕ 🥐 🥖 🍞 🥯 🥞 🧇 🍩 🍪 🍰 🎂 🧁 🥧 🍫 🍮 🍬 🍯 🫖'],
@@ -836,11 +862,15 @@ const ICONOS = [
   ['Platos', '🍝 🍜 🍲 🥘 🍛 🍣 🍱 🍤 🦐 🦑 🐟 🥗 🍚 🫕 🥣 🥫'],
   ['Frutas y verduras', '🍎 🍓 🍇 🍉 🍋 🍊 🍍 🥑 🍅 🌽 🥕 🥦 🍄 🫑 🥔 🧄'],
   ['Bebidas', '🥤 🧃 🧉 🍵 🥛 🍺 🍻 🍷 🥂 🍾 🍹 🍸 🥃 🧊'],
+  ['Compras e indumentaria', '🛍️ 👕 👗 👖 👟 👠 👜 🎒 🕶️ 👒 🧢 💍 ⌚ 🧸 🏷️'],
+  ['Deporte, belleza y bienestar', '🏋️ 💪 🧘 🏊 🚴 ⚽ 🎾 🥊 💆 💇 💅 🧴 💄 🦷 🩺'],
+  ['Hospedaje y turismo', '🏨 🛏️ 🏡 🏖️ ⛰️ 🏕️ 🧳 ✈️ 🚌 🚗 🗺️'],
+  ['Servicios y entretenimiento', '🎬 🎟️ 🎮 🎳 🎤 📚 🎨 🐶 🔧 🧺 📱 💻 🚿 🎁 🎉'],
 ];
 let iconoDestino = null;
 function pintarBotonIcono(inputId){
   const i = $(inputId), b = document.querySelector(`[data-icono-para="${inputId}"]`); if(!b) return;
-  b.querySelector('.em').textContent = i.value || '🍽️';
+  b.querySelector('.em').textContent = i.value || '🏷️';
 }
 function abrirIconos(inputId){
   iconoDestino = inputId; const actual = $(inputId).value;
@@ -1256,7 +1286,7 @@ unirProvincia($('lo-prov'), $('lo-barrio'), $('lo-barrio-otro'));
 $('f-local').addEventListener('submit', async e => {
   e.preventDefault(); $('lo-alert').hidden = true;
   const datos = {id: localEdit, nombre: $('lo-nombre').value.trim(), responsable: $('lo-resp').value.trim(), rubro: $('lo-rubro').value, provincia: $('lo-prov').value, barrio: leerBarrio($('lo-barrio'), $('lo-barrio-otro')), dir: $('lo-dir').value.trim(),
-    telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🍽️', color: $('lo-color').value};
+    telefono: $('lo-tel').value.trim(), icono: (D.locales.find(x => x.id === localEdit) || {}).icono || '🏷️', color: $('lo-color').value};
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   const sucs = leerSucursales(), antes = ((D.locales.find(x => x.id === localEdit) || {}).sucursales || []);
   const faltaSuc = sucs.findIndex(x => !x.barrio || !x.dir);
@@ -1500,7 +1530,7 @@ let rubroEdit = null;
 function abrirRubro(r){
   rubroEdit = r ? r.id : null;
   $('ru-title').textContent = r ? 'Editar rubro' : 'Nuevo rubro'; $('ru-alert').hidden = true;
-  $('ru-nombre').value = r ? r.nombre : ''; $('ru-icono').value = r ? r.icono : '🍽️'; pintarBotonIcono('ru-icono');
+  $('ru-nombre').value = r ? r.nombre : ''; $('ru-icono').value = r ? r.icono : '🏷️'; pintarBotonIcono('ru-icono');
   $('ru-color').value = r && /^#[0-9a-f]{6}$/i.test(r.color) ? r.color : '#7B3FF0';
   $('ru-orden').value = r ? r.orden : (Math.max(0, ...D.rubros.map(x => x.orden)) + 1);
   abrirHoja('sheet-rubro'); setTimeout(() => $('ru-nombre').focus(), 250);

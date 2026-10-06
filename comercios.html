@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B0F63">
+<title>Tucupón para comercios · Sumá tu local gratis</title>
+<meta name="description" content="Publicá descuentos para tu comercio en Tucumán: gastronomía, hospedajes, gimnasios, indumentaria y más. Tarjeta de sellos, Caja Sorpresa y estadísticas. Gratis durante el lanzamiento.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tucupón para comercios · Sumá tu local gratis">
+<meta property="og:description" content="Descuentos, tarjeta de sellos y más para tu comercio en Tucumán. Gastronomía, hospedajes, gimnasios, indumentaria y más. Gratis durante el lanzamiento.">
+<meta property="og:image" content="https://tucuponapp.com/icono.png">
+<meta property="og:url" content="https://tucuponapp.com/comercios">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap">
+<style>
+:root{
+  --hero:#2B0F63;--hero-2:#43198F;--brand:#7B3FF0;--brand-deep:#4F1BB5;--lima:#C4F04A;--tinta:#1E0B45;
+  --heading:#2E1270;--bg:#F5F2FC;--surface:#FFFFFF;--surface-2:#EFEAFB;--ink:#22163F;--muted:#6E6585;--line:#E6E0F3;
+  --verde:#0F8A62;--rosa:#FF6FB1;--wa:#25D366;
+  --emoji:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--heading:#D6C8FF;--bg:#120A24;--surface:#1C1233;--surface-2:#261A45;--ink:#F1EDFA;--muted:#A9A0C2;--line:#34285A;color-scheme:dark}}
+:root[data-theme="dark"]{--heading:#D6C8FF;--bg:#120A24;--surface:#1C1233;--surface-2:#261A45;--ink:#F1EDFA;--muted:#A9A0C2;--line:#34285A;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "Outfit",ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%}
+a{color:inherit}
+.wrap{max-width:72rem;margin-inline:auto;padding-inline:16px}
+.em{font-family:var(--emoji);font-style:normal}
+h1,h2,h3{letter-spacing:-.02em;line-height:1.08;margin:0;text-wrap:balance}
+h2{font-size:clamp(1.8rem,4.6vw,2.7rem);font-weight:900;color:var(--heading)}
+.kicker{display:inline-block;font-weight:800;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.lead{font-size:1.08rem;color:var(--muted);max-width:40rem;margin:12px 0 0}
+section{padding-block:64px}
+@media (min-width:900px){section{padding-block:88px}}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:18px;padding:15px 22px;font-family:inherit;font-weight:800;font-size:1.02rem;line-height:1.1;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:22px;height:22px;flex:none}
+.btn.wa{background:var(--wa);color:#0B3D1E;box-shadow:0 14px 28px -14px rgba(37,211,102,.8)}
+.btn.lima{background:var(--lima);color:var(--tinta)}
+.btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.28)}
+.btn.out{background:transparent;color:var(--brand);border:2px solid var(--brand)}
+
+/* Barra superior */
+.nav{position:absolute;inset:0 0 auto;z-index:5}
+.nav .wrap{display:flex;align-items:center;gap:12px;padding-block:18px}
+.nav img{height:36px;width:auto;display:block}
+.nav .tag{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:99px}
+.nav .r{margin-left:auto;display:flex;gap:8px}
+.nav .r a{color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.1)}
+@media (max-width:520px){.nav .r .hide-sm{display:none}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;color:#fff;background:radial-gradient(1200px 500px at 85% -10%,#6A2BE0 0,transparent 60%),linear-gradient(160deg,var(--hero),var(--hero-2));padding:110px 0 70px}
+.hero .blob{position:absolute;border-radius:50%;background:rgba(196,240,74,.12);filter:blur(2px)}
+.hero .grid{display:grid;gap:44px;align-items:center}
+@media (min-width:920px){.hero .grid{grid-template-columns:1.1fr .9fr}.hero{padding:130px 0 90px}}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--lima);color:var(--tinta);font-weight:800;font-size:.86rem;padding:7px 14px;border-radius:99px}
+.hero h1{font-size:clamp(2.3rem,7vw,4rem);font-weight:900;margin-top:18px}
+.hero h1 mark{background:var(--lima);color:var(--tinta);padding:0 .18em;border-radius:.2em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hero p.sub{font-size:1.15rem;opacity:.9;max-width:34rem;margin:18px 0 0}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.hero .chips{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:22px;font-weight:700;font-size:.92rem;opacity:.92}
+.hero .chips span::before{content:"✓ ";color:var(--lima)}
+
+/* Teléfono */
+.phone{position:relative;width:min(100%,330px);margin-inline:auto;border-radius:42px;padding:12px;background:#120826;box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.08)}
+.screen{border-radius:32px;overflow:hidden;background:#F5F2FC;color:#22163F;min-height:560px}
+.scr-top{background:linear-gradient(160deg,#2B0F63,#43198F);padding:22px 16px 18px;color:#fff}
+.scr-top img{height:24px;width:auto;display:block}
+.scr-top b{display:block;font-size:1.25rem;margin-top:12px;line-height:1.1}
+.scr-body{padding:14px;display:grid;gap:12px}
+.cup{position:relative;border-radius:22px;padding:16px;background:linear-gradient(140deg,#4F1BB5,#7B3FF0);color:#fff;overflow:hidden}
+.cup .lc{font-size:.78rem;font-weight:700;opacity:.85}
+.cup .big{font-size:2.4rem;font-weight:900;color:var(--lima);line-height:1;margin-top:6px}
+.cup .tt{font-weight:800;margin-top:2px}
+.cup .h{display:inline-block;font-size:.7rem;font-weight:800;background:rgba(255,255,255,.16);padding:3px 8px;border-radius:99px}
+.cup .go{margin-top:12px;background:var(--lima);color:var(--tinta);text-align:center;font-weight:800;border-radius:14px;padding:10px;font-size:.9rem}
+.cup .ic{position:absolute;right:12px;top:10px;font-size:1.8rem}
+.mini-caja{border-radius:20px;padding:14px;background:linear-gradient(135deg,#0F8A62,#0B5E46);color:#fff;display:flex;gap:12px;align-items:center}
+.mini-caja .e{font-size:1.9rem}
+.mini-caja>span:nth-child(2){flex:1;min-width:0}
+.mini-caja b{display:block}.mini-caja small{opacity:.85;font-weight:600;font-size:.8rem}
+.mini-caja .p{margin-left:auto;white-space:nowrap;text-align:right;font-weight:900;color:var(--lima);font-size:1.1rem;line-height:1.1}
+.mini-caja .p s{display:block;color:#fff;opacity:.6;font-size:.75rem;font-weight:600}
+.mini-sellos{border-radius:20px;padding:14px;background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff}
+.mini-sellos b{font-size:.9rem}
+.dots{display:flex;gap:6px;margin-top:8px}
+.dots i{width:22px;height:22px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.5);display:grid;place-items:center;font-style:normal;font-size:.65rem}
+.dots i.on{background:var(--lima);border:0;color:var(--tinta);font-weight:900}
+.float{position:absolute;background:#fff;color:#22163F;border-radius:18px;padding:10px 14px;box-shadow:0 18px 40px -18px rgba(0,0,0,.5);font-weight:800;font-size:.86rem;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.float small{display:block;font-weight:600;color:#6E6585;font-size:.74rem}
+.float.f1{right:-18px;top:44px;transform:rotate(4deg)}
+.float.f2{left:-22px;bottom:-14px;transform:rotate(-3deg)}
+@media (max-width:600px){.float.f1{right:0;top:-22px}.float.f2{left:0}}
+
+/* Franja de logos / números */
+.strip{background:var(--tinta);color:#fff;padding-block:22px}
+.strip .wrap{display:flex;flex-wrap:wrap;gap:10px 28px;justify-content:center;font-weight:800;font-size:.98rem}
+.strip span{opacity:.9}
+
+/* Rubros */
+.rubros{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.rubros .ru{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:10px 16px;font-weight:800;color:var(--heading)}
+.rubros .ru .em{font-size:1.25rem}
+
+/* Pasos */
+.steps{display:grid;gap:16px;margin-top:34px;counter-reset:p}
+@media (min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:24px;position:relative}
+.step .n{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--brand);color:#fff;font-weight:900;font-size:1.2rem}
+.step h3{font-size:1.25rem;margin-top:14px;color:var(--heading)}
+.step p{color:var(--muted);margin:8px 0 0}
+.step .code{display:inline-block;margin-top:12px;font:800 1.3rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.2em;background:var(--surface-2);color:var(--heading);border:2px dashed var(--brand);border-radius:12px;padding:8px 12px}
+
+/* Funciones */
+.feats{display:grid;gap:16px;margin-top:34px}
+@media (min-width:700px){.feats{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1050px){.feats{grid-template-columns:repeat(3,1fr)}}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:24px;display:flex;flex-direction:column}
+.feat .ic{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;font-size:1.7rem;background:var(--surface-2)}
+.feat h3{font-size:1.25rem;margin-top:14px;color:var(--heading)}
+.feat p{color:var(--muted);margin:8px 0 0}
+.feat ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:.95rem}
+.feat li::before{content:"✓";color:var(--verde);font-weight:900;margin-right:8px}
+.feat.star{background:linear-gradient(150deg,#2B0F63,#5B22C7);color:#fff;border:0}
+.feat.star h3{color:#fff}.feat.star p{color:rgba(255,255,255,.85)}.feat.star .ic{background:rgba(255,255,255,.14)}
+.feat.star li::before{color:var(--lima)}
+.feat.caja{background:linear-gradient(150deg,#0F8A62,#0B5E46);color:#fff;border:0}
+.feat.caja h3{color:#fff}.feat.caja p{color:rgba(255,255,255,.88)}.feat.caja .ic{background:rgba(255,255,255,.14)}
+.feat.caja li::before{color:var(--lima)}
+.tagn{display:inline-block;margin-left:6px;vertical-align:middle;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--lima);color:var(--tinta);padding:3px 8px;border-radius:99px}
+
+/* Panel */
+.panel-sec{background:var(--surface);border-block:1px solid var(--line)}
+.split{display:grid;gap:40px;align-items:center}
+@media (min-width:920px){.split{grid-template-columns:1fr 1fr}}
+.checks{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:14px}
+.checks li{display:flex;gap:12px;align-items:flex-start}
+.checks .i{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--surface-2);font-size:1.1rem}
+.checks b{display:block;color:var(--heading)}
+.checks span{color:var(--muted);font-size:.96rem}
+.mock-panel{border-radius:28px;background:var(--bg);border:1px solid var(--line);padding:16px;box-shadow:0 30px 60px -36px rgba(43,15,99,.45);max-width:440px;margin-inline:auto;width:100%}
+.mp-top{display:flex;align-items:center;gap:10px;background:linear-gradient(160deg,#2B0F63,#43198F);border-radius:18px;padding:12px 14px;color:#fff}
+.mp-top img{height:22px;width:auto}
+.mp-top .t{font-size:.66rem;font-weight:800;letter-spacing:.08em;background:rgba(255,255,255,.16);padding:3px 8px;border-radius:99px}
+.mp-top .r{margin-left:auto;font-weight:800;font-size:.86rem}
+.mp-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:12px}
+.mp-card .lb{font-weight:800;color:var(--heading)}
+.mp-code{margin-top:10px;text-align:center;font:900 1.7rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.3em;color:var(--tinta);background:#EFEAFB;border:2px dashed var(--brand);border-radius:14px;padding:14px}
+.mp-ok{position:relative;margin-top:12px;border-radius:20px;padding:18px 16px;text-align:center;background:var(--surface);border:1px solid var(--line)}
+.stamp{display:inline-block;transform:rotate(-6deg);border:3px solid var(--verde);color:var(--verde);font-weight:900;letter-spacing:.12em;border-radius:12px;padding:4px 14px;font-size:1.15rem}
+.mp-ok p{margin:8px 0 0;font-weight:800;color:var(--heading)}
+.mp-ok small{display:block;color:var(--muted);font-weight:600}
+.mp-sello{margin-top:10px;background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:800;font-size:.88rem;color:var(--heading)}
+.mp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.mp-stats div{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px}
+.mp-stats b{display:block;font-size:1.4rem;font-weight:900;color:var(--heading);line-height:1}
+.mp-stats span{font-size:.72rem;font-weight:700;color:var(--muted)}
+
+/* Vos decidís */
+.control{display:grid;gap:14px;margin-top:30px}
+@media (min-width:700px){.control{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1050px){.control{grid-template-columns:repeat(4,1fr)}}
+.ctl{border-radius:22px;padding:20px;background:var(--surface);border:1px solid var(--line)}
+.ctl .e{font-size:1.6rem}
+.ctl b{display:block;margin-top:8px;color:var(--heading);font-size:1.08rem}
+.ctl span{color:var(--muted);font-size:.95rem}
+
+/* Precio */
+.precio{border-radius:32px;padding:34px 24px;background:radial-gradient(800px 300px at 90% 0,rgba(196,240,74,.25),transparent 60%),linear-gradient(150deg,#2B0F63,#5B22C7);color:#fff;display:grid;gap:24px;align-items:center}
+@media (min-width:900px){.precio{grid-template-columns:1.2fr .8fr;padding:48px}}
+.precio h2{color:#fff}
+.precio .big{font-size:clamp(3rem,10vw,5rem);font-weight:900;color:var(--lima);line-height:1}
+.precio ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px;font-weight:700}
+.precio li::before{content:"✓ ";color:var(--lima);font-weight:900}
+.precio .box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:24px;text-align:center}
+.precio .box p{margin:8px 0 18px;opacity:.85}
+
+/* Clientes */
+.clientes{border-radius:28px;padding:26px;background:var(--surface);border:1px solid var(--line);display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.clientes .e{font-size:2.4rem}
+.clientes h3{font-size:1.35rem;color:var(--heading)}
+.clientes p{margin:4px 0 0;color:var(--muted)}
+.clientes .btn{margin-left:auto}
+@media (max-width:640px){.clientes .btn{margin-left:0;width:100%}}
+
+/* FAQ */
+.faq{display:grid;gap:10px;margin-top:30px;max-width:52rem}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:4px 20px}
+.faq summary{cursor:pointer;list-style:none;font-weight:800;color:var(--heading);padding:16px 0;display:flex;gap:12px;align-items:center;font-size:1.05rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";margin-left:auto;font-size:1.5rem;line-height:1;color:var(--brand);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 18px;color:var(--muted)}
+
+/* CTA final */
+.final{text-align:center;color:#fff;background:radial-gradient(900px 400px at 50% 0,#6A2BE0 0,transparent 70%),linear-gradient(160deg,var(--hero),var(--hero-2))}
+.final h2{color:#fff;max-width:40rem;margin-inline:auto}
+.final p{opacity:.88;max-width:36rem;margin:14px auto 0;font-size:1.1rem}
+.final .ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:28px}
+footer{background:#120826;color:rgba(255,255,255,.75);padding-block:28px;font-size:.92rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+footer img{height:28px;width:auto}
+footer nav{display:flex;flex-wrap:wrap;gap:8px 18px;margin-left:auto}
+footer a{color:#fff;text-decoration:none;font-weight:700}
+footer a:hover{text-decoration:underline}
+
+/* WhatsApp flotante */
+.wa-fab{position:fixed;right:16px;bottom:16px;z-index:20;display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:var(--wa);color:#fff;box-shadow:0 12px 30px -10px rgba(0,0,0,.45);transition:transform .15s}
+.wa-fab:hover{transform:scale(1.06)}
+.wa-fab svg{width:30px;height:30px}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.btn:hover{transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="blob" style="width:340px;height:340px;right:-120px;top:-100px"></div>
+  <div class="blob" style="width:200px;height:200px;left:-80px;bottom:-60px;background:rgba(255,111,177,.12)"></div>
+  <div class="nav"><div class="wrap">
+    <a href="./" aria-label="Ir a Tucupón"><img src="logo.png" alt="Tucupón" width="656" height="160"></a><span class="tag">Comercios</span>
+    <div class="r"><a href="#funciones" class="hide-sm">Funciones</a><a href="local.html">Ingresar</a></div>
+  </div></div>
+  <div class="wrap grid">
+    <div>
+      <span class="pill"><span class="em">🎉</span> Gratis para locales durante el lanzamiento</span>
+      <h1>Más visitas a tu local, <mark>en los horarios que vos elegís</mark></h1>
+      <p class="sub">Tucupón es la plataforma de descuentos de Tucumán: gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Publicás tus cupones, la gente los encuentra en su celular y tu equipo los valida en segundos. Además sumás tarjeta de sellos para que vuelvan.</p>
+      <div class="ctas">
+        <a class="btn wa" data-wa href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Quiero sumar mi local</a>
+        <a class="btn ghost" href="#como">Cómo funciona</a>
+      </div>
+      <div class="chips"><span>Sin instalar nada</span><span>Sin contratos</span><span>Lo pausás cuando quieras</span></div>
+    </div>
+    <div style="position:relative">
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="scr-top"><img src="logo.png" alt="" width="656" height="160"><b>Los mejores descuentos cerca tuyo</b></div>
+          <div class="scr-body">
+            <div class="cup"><span class="ic em">🛍️</span><span class="h">Lun a Jue · 10 a 13 h</span><p class="lc" style="margin:8px 0 0">Tu local · Barrio Norte</p><div class="big">20% OFF</div><div class="tt">En toda la tienda</div><div class="go">Obtener código</div></div>
+            <div class="mini-caja"><span class="e em">🎁</span><span><b>Caja Sorpresa</b><small>Retirá hoy 20 a 21 h</small></span><span class="p">$ 4.000<s>$ 12.000</s></span></div>
+            <div class="mini-sellos"><b><span class="em">🎟️</span> Tarjeta de sellos · 4 de 6</b><div class="dots"><i class="on">✓</i><i class="on">✓</i><i class="on">✓</i><i class="on">✓</i><i></i><i class="em">🎁</i></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="float f1"><span class="em" style="font-size:1.4rem">✅</span><span>Código validado<small>hace 2 minutos</small></span></div>
+      <div class="float f2"><span class="em" style="font-size:1.4rem">🎟️</span><span>+1 sello sumado<small>Le faltan 2 para el premio</small></span></div>
+    </div>
+  </div>
+</header>
+
+<div class="strip"><div class="wrap">
+  <span><span class="em">🏷️</span> Cupones</span><span><span class="em">⚡</span> Relámpago</span><span><span class="em">🎁</span> Caja Sorpresa</span><span><span class="em">🎟️</span> Tarjeta de sellos</span><span><span class="em">💌</span> Te extrañamos</span><span><span class="em">📊</span> Estadísticas</span>
+</div></div>
+
+<main>
+<section id="rubros" style="padding-bottom:0"><div class="wrap">
+  <span class="kicker">Para todo tipo de comercios</span>
+  <h2>Si tenés un negocio en Tucumán, hay lugar para vos</h2>
+  <p class="lead">Tucupón reúne descuentos de todos los rubros en un solo lugar, así la gente entra a buscar una cosa y descubre tu comercio.</p>
+  <div class="rubros">
+    <span class="ru"><span class="em">🍔</span>Gastronomía</span><span class="ru"><span class="em">🏨</span>Hospedajes</span><span class="ru"><span class="em">🏋️</span>Gimnasios</span>
+    <span class="ru"><span class="em">👕</span>Indumentaria</span><span class="ru"><span class="em">💇</span>Belleza y estética</span><span class="ru"><span class="em">☕</span>Cafeterías</span>
+    <span class="ru"><span class="em">🎬</span>Entretenimiento</span><span class="ru"><span class="em">🛍️</span>Comercios</span><span class="ru"><span class="em">✨</span>Y mucho más</span>
+  </div>
+</div></section>
+
+<section id="como"><div class="wrap">
+  <span class="kicker">Cómo funciona</span>
+  <h2>Tres pasos, sin vueltas</h2>
+  <p class="lead">No hay que instalar nada ni comprar equipos. Todo funciona desde el celular o la computadora del local.</p>
+  <div class="steps">
+    <div class="step reveal"><span class="n">1</span><h3>Cargás tus descuentos</h3><p>Elegís qué ofrecer, qué días y en qué horario. Por ejemplo, un 2x1 de lunes a jueves en la franja que tenés más tranquila.</p></div>
+    <div class="step reveal"><span class="n">2</span><h3>El cliente pide su código</h3><p>Entra a Tucupón desde su celular, encuentra tu local y obtiene un código único para usar una sola vez.</p><span class="code">K7M2QX</span></div>
+    <div class="step reveal"><span class="n">3</span><h3>Tu equipo lo valida</h3><p>El encargado escribe el código en el panel y aplica el descuento. El cliente lo ve confirmado al instante en su celular.</p></div>
+  </div>
+</div></section>
+
+<section id="funciones" style="padding-top:0"><div class="wrap">
+  <span class="kicker">Todo lo que incluye</span>
+  <h2>Herramientas para atraer, vender y fidelizar</h2>
+  <p class="lead">Cada función está pensada para un momento distinto del negocio: llenar horarios flojos, vender lo que sobra y lograr que el cliente vuelva.</p>
+  <div class="feats">
+    <article class="feat star reveal"><span class="ic em">🏷️</span><h3>Cupones de descuento</h3><p>Tu vidriera dentro de Tucupón: los clientes ven tus descuentos, eligen y piden su código.</p>
+      <ul><li>2x1, % de descuento, regalos o pases de prueba</li><li>Por días y franjas horarias</li><li>Con fecha de vencimiento si querés</li><li>Foto de tu producto en cada cupón</li></ul></article>
+    <article class="feat reveal"><span class="ic em">⚡</span><h3>Cupones relámpago</h3><p>¿Una tarde floja? Lanzá un descuento por unas horas y con cantidad limitada. Aparece destacado con cuenta regresiva.</p>
+      <ul><li>Duración de pocas horas</li><li>Stock limitado de códigos</li><li>Ideal para mover un día tranquilo</li></ul></article>
+    <article class="feat caja reveal"><span class="ic em">🎁</span><h3>Caja Sorpresa <span class="tagn">Gastronomía</span></h3><p>Lo que no vendiste en el día, en vez de tirarlo, lo ofrecés en una caja a precio bajo. Menos desperdicio y plata que antes se perdía.</p>
+      <ul><li>La publicás con un toque cada día</li><li>El cliente reserva y paga en el local</li><li>Vos elegís precio, cantidad y horario de retiro</li></ul></article>
+    <article class="feat reveal"><span class="ic em">🎟️</span><h3>Tarjeta de sellos</h3><p>La clásica tarjeta de "la décima es gratis", pero digital. Cada visita suma un sello y al completarla el cliente se lleva tu premio.</p>
+      <ul><li>Vos elegís cuántas visitas y qué premio</li><li>Máximo un sello por día</li><li>Los sellos no vencen</li></ul></article>
+    <article class="feat reveal"><span class="ic em">💌</span><h3>Te extrañamos <span class="tagn">Nuevo</span></h3><p>A los clientes que hace tiempo no vienen, Tucupón les muestra uno de tus cupones con el mensaje "Te extrañamos".</p>
+      <ul><li>Elegís después de cuántos días (30, 45 o 60)</li><li>Funciona solo, sin que hagas nada</li><li>Ves cuántos volvieron gracias a eso</li></ul></article>
+    <article class="feat reveal"><span class="ic em">📊</span><h3>Tus números</h3><p>Sabé qué funciona: cuántos códigos se pidieron, cuántos se usaron y cómo viene la semana.</p>
+      <ul><li>Códigos pedidos y canjeados</li><li>Lista de canjes de cada día</li><li>Resultados de Caja Sorpresa y sellos</li></ul></article>
+    <article class="feat reveal"><span class="ic em">🔑</span><h3>PIN para encargados</h3><p>Tu equipo valida códigos con su propio PIN y solo ve la pantalla de canje. Tus números y configuraciones quedan solo para vos.</p>
+      <ul><li>PIN de dueño y PIN de encargado</li><li>Lo cambiás cuando quieras</li></ul></article>
+    <article class="feat reveal"><span class="ic em">📍</span><h3>Sucursales</h3><p>¿Tenés más de un local? Tus descuentos valen en todas las sucursales y cada una tiene su PIN de caja.</p>
+      <ul><li>Los clientes ven todas tus direcciones</li><li>Sabés en qué sucursal se usó cada código</li></ul></article>
+    <article class="feat reveal"><span class="ic em">💬</span><h3>Se comparte solo</h3><p>Los clientes pueden mandar tus cupones por WhatsApp a sus amigos con un toque, y además guardar tu local en favoritos.</p>
+      <ul><li>Link directo a tu descuento</li><li>Tu local en "favoritos" de cada cliente</li></ul></article>
+  </div>
+</div></section>
+
+<section class="panel-sec"><div class="wrap split">
+  <div>
+    <span class="kicker">El panel del local</span>
+    <h2>Validar un código lleva menos de 10 segundos</h2>
+    <p class="lead">Desde cualquier celular, tablet o computadora del mostrador. Sin apps, sin lectores, sin capacitación.</p>
+    <ul class="checks">
+      <li><span class="i em">🔒</span><div><b>Cada código se usa una sola vez</b><span>Es único por cliente y por cupón. Si alguien lo quiere usar dos veces, el panel lo avisa.</span></div></li>
+      <li><span class="i em">🕐</span><div><b>Respeta tus horarios</b><span>Si un cupón vale de 15 a 19 h, fuera de ese horario el panel no deja canjearlo.</span></div></li>
+      <li><span class="i em">⏸️</span><div><b>Pausás cuando quieras</b><span>¿Mucho trabajo hoy? Pausás un cupón con un toque y lo reactivás después.</span></div></li>
+    </ul>
+  </div>
+  <div class="mock-panel reveal" aria-hidden="true">
+    <div class="mp-top"><img src="logo.png" alt="" width="656" height="160"><span class="t">LOCAL</span><span class="r">Tu local</span></div>
+    <div class="mp-card"><span class="lb">Canjear un código</span><div class="mp-code">K7M2QX</div></div>
+    <div class="mp-ok"><span class="stamp">CANJEADO</span><p>🏋️ 2x1 · Clase de prueba</p><small>Aplicá el descuento. El cliente ya lo ve confirmado.</small><div class="mp-sello">🎟️ ＋1 sello · lleva 5 de 6</div></div>
+    <div class="mp-stats"><div><b>18</b><span>Canjes hoy</span></div><div><b>6</b><span>Cajas vendidas</span></div><div><b>42</b><span>Clientes con sellos</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <span class="kicker">Vos tenés el control</span>
+  <h2>Tu local, tus reglas</h2>
+  <div class="control">
+    <div class="ctl reveal"><span class="e em">🎯</span><b>Vos ponés el descuento</b><span>Qué, cuánto y en qué productos. Nadie te impone nada.</span></div>
+    <div class="ctl reveal"><span class="e em">🗓️</span><b>Vos elegís cuándo</b><span>Días y horarios para mover las franjas tranquilas, no las que ya están llenas.</span></div>
+    <div class="ctl reveal"><span class="e em">🔢</span><b>Vos limitás la cantidad</b><span>Cupones con stock, cajas con cantidad fija y un uso por persona.</span></div>
+    <div class="ctl reveal"><span class="e em">⏯️</span><b>Pausás cuando quieras</b><span>Sin permanencia ni contratos. Lo prendés y apagás vos.</span></div>
+  </div>
+</div></section>
+
+<section id="precio" style="padding-top:0"><div class="wrap">
+  <div class="precio reveal">
+    <div>
+      <span class="kicker" style="color:var(--lima)">Precio</span>
+      <h2>Sumarte no te cuesta nada</h2>
+      <p class="lead" style="color:rgba(255,255,255,.85)">Durante el lanzamiento, Tucupón es gratis para los locales. Queremos que lo pruebes, veas cómo funciona en tu negocio y decidas con resultados en la mano.</p>
+      <ul><li>Todas las funciones incluidas</li><li>Te ayudamos a cargar tus primeros cupones</li><li>Sin tarjeta de crédito ni contratos</li></ul>
+    </div>
+    <div class="box">
+      <div class="big">$0</div>
+      <p>durante el lanzamiento</p>
+      <a class="btn wa" data-wa href="#" style="width:100%"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Quiero sumarme</a>
+    </div>
+  </div>
+</div></section>
+
+<section id="faq" style="padding-top:0"><div class="wrap">
+  <span class="kicker">Preguntas frecuentes</span>
+  <h2>Lo que suelen preguntarnos</h2>
+  <div class="faq">
+    <details><summary>¿Cuánto cuesta?</summary><p>Durante el lanzamiento es gratis para los locales, con todas las funciones incluidas. Si en el futuro hay planes pagos, te vamos a avisar con anticipación y vas a poder decidir si seguís.</p></details>
+    <details><summary>¿Tengo que instalar algo?</summary><p>No. Tanto los clientes como tu equipo usan Tucupón desde el navegador del celular o la computadora. Para el panel del local solo necesitás tu PIN.</p></details>
+    <details><summary>¿Cómo evito que usen un cupón dos veces?</summary><p>Cada cliente recibe un código único para cada cupón y se puede validar una sola vez. Si alguien lo intenta de nuevo, el panel avisa que ya fue usado y cuándo.</p></details>
+    <details><summary>¿Mis empleados pueden ver mis números?</summary><p>No. El encargado entra con su propio PIN y solo ve la pantalla para validar códigos. Las estadísticas, los cupones y la configuración quedan solo para el dueño.</p></details>
+    <details><summary>¿Cómo cobro la Caja Sorpresa?</summary><p>El cliente la reserva desde la app y la paga en tu local al retirarla, como cualquier venta. Vos definís el precio, la cantidad del día y el horario de retiro.</p></details>
+    <details><summary>¿Puedo pausar o cambiar mis descuentos?</summary><p>Sí, cuando quieras y desde el panel. Podés editar, pausar o borrar cupones, cambiar horarios y desactivar la Caja Sorpresa o la tarjeta de sellos.</p></details>
+    <details><summary>Tengo varias sucursales, ¿sirve igual?</summary><p>Sí. Tus descuentos valen en todas tus sucursales, los clientes ven todas las direcciones y cada sucursal puede tener su propio PIN de caja.</p></details>
+    <details><summary>¿Cómo me sumo?</summary><p>Escribinos por WhatsApp. Te pedimos los datos básicos del local, te damos tu PIN y te ayudamos a cargar tus primeros cupones. En el día podés estar publicado.</p></details>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="clientes reveal">
+    <span class="e em">🙋</span>
+    <div><h3>¿Buscás descuentos en Tucumán?</h3><p>Registrate gratis en Tucupón y pedí tus códigos en los comercios adheridos.</p></div>
+    <a class="btn out" href="./">Ver descuentos</a>
+  </div>
+</div></section>
+</main>
+
+<section class="final"><div class="wrap">
+  <h2>Probalo en tu local, sin costo</h2>
+  <p>Escribinos por WhatsApp y en pocos minutos te contamos todo y te dejamos listo para publicar tu primer descuento.</p>
+  <div class="ctas">
+    <a class="btn wa" data-wa href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Escribinos por WhatsApp</a>
+    <a class="btn ghost" href="local.html">Ya tengo PIN: ingresar al panel</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <img src="logo.png" alt="Tucupón" width="656" height="160">
+  <span>Hecho en Tucumán</span>
+  <nav><a href="./">Descuentos</a><a href="local.html">Panel del local</a><a href="terminos.html">Términos</a><a href="privacidad.html">Privacidad</a></nav>
+</div></footer>
+
+<a class="wa-fab" data-wa href="#" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg></a>
+
+<script>
+const WA = 'https://wa.me/5493816335234?text=' + encodeURIComponent('Hola Tucupón 👋 Tengo un local y quiero sumarme. ¿Me cuentan cómo empezar?');
+document.querySelectorAll('[data-wa]').forEach(a => { a.href = WA; a.target = '_blank'; a.rel = 'noopener'; });
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .12}) : null;
+document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
+</script>
+</body>
+</html>

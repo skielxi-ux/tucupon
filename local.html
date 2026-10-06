@@ -377,7 +377,7 @@ a.btn{text-decoration:none}
         <div id="tj-alert" class="alert" hidden></div>
         <div class="grid2">
           <div><label class="label" for="tj-req">¿Cuántas visitas?</label><select id="tj-req" class="field"></select><p class="hint">Lo más común: entre 5 y 10.</p></div>
-          <div><label class="label" for="tj-premio">¿Qué se lleva?</label><input id="tj-premio" class="field" maxlength="120" placeholder="Ej.: Una pizza grande gratis"></div>
+          <div><label class="label" for="tj-premio">¿Qué se lleva?</label><input id="tj-premio" class="field" maxlength="120" placeholder="Ej.: Un producto o servicio gratis"></div>
         </div>
         <div id="tj-prev" class="tj-prev"></div>
         <p class="hint" style="margin:0">Los sellos no vencen. Si cambiás la cantidad, los clientes conservan los sellos que ya tienen.</p>
@@ -562,7 +562,7 @@ a.btn{text-decoration:none}
       </div>
       <p class="hint">Sin foto, la tarjeta usa los colores de Tucupón.</p>
     </div>
-    <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="En pizzas grandes de la carta"></div>
+    <div><label class="label" for="cf-titulo">Título</label><input id="cf-titulo" class="field" maxlength="80" placeholder="Ej.: En toda la tienda"></div>
     <div><label class="label" for="cf-descripcion">Descripción (opcional)</label><textarea id="cf-descripcion" class="field" maxlength="300" placeholder="Contá qué incluye la promo"></textarea></div>
     <div><label class="label" for="cf-condiciones">Condiciones</label><textarea id="cf-condiciones" class="field" maxlength="400" placeholder="Válido en salón. No acumulable con otras promos"></textarea><p class="hint">Separá cada condición con un punto.</p></div>
     <div class="rel-box">
@@ -745,7 +745,7 @@ async function abrirFormCupon(c, opciones = {}){
   if(opciones.locales) $('cf-local').innerHTML = opciones.locales.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
   if(opciones.locales) $('cf-local').value = c ? c.local : (opciones.localPorDefecto || opciones.locales[0]?.id || '');
   $('cf-etiqueta').value = c ? c.etiqueta : '';
-  $('cf-icono').value = c && c.icono !== '🎟️' ? c.icono : '🍽️'; pintarBotonIcono('cf-icono');
+  $('cf-icono').value = c && c.icono !== '🎟️' ? c.icono : '🏷️'; pintarBotonIcono('cf-icono');
   $('cf-titulo').value = c ? c.titulo : '';
   $('cf-descripcion').value = c ? c.descripcion : '';
   $('cf-condiciones').value = c ? c.condiciones : '';
@@ -842,7 +842,7 @@ function unirBarrio(sel, otro){
   sel.addEventListener('change', () => { const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro'; if(!w.hidden) otro.focus(); });
 }
 
-// ---------- Selector de íconos (solo comida y bebida) ----------
+// ---------- Selector de íconos ----------
 const ICONOS = [
   ['Pizzas, sándwiches y rápidas', '🍕 🍔 🌭 🍟 🥪 🌮 🌯 🥙 🧆 🥟 🫔 🍗 🍖 🥩 🥓 🍳 🧀 🥚'],
   ['Café, panadería y dulces', '☕ 🥐 🥖 🍞 🥯 🥞 🧇 🍩 🍪 🍰 🎂 🧁 🥧 🍫 🍮 🍬 🍯 🫖'],
@@ -850,11 +850,15 @@ const ICONOS = [
   ['Platos', '🍝 🍜 🍲 🥘 🍛 🍣 🍱 🍤 🦐 🦑 🐟 🥗 🍚 🫕 🥣 🥫'],
   ['Frutas y verduras', '🍎 🍓 🍇 🍉 🍋 🍊 🍍 🥑 🍅 🌽 🥕 🥦 🍄 🫑 🥔 🧄'],
   ['Bebidas', '🥤 🧃 🧉 🍵 🥛 🍺 🍻 🍷 🥂 🍾 🍹 🍸 🥃 🧊'],
+  ['Compras e indumentaria', '🛍️ 👕 👗 👖 👟 👠 👜 🎒 🕶️ 👒 🧢 💍 ⌚ 🧸 🏷️'],
+  ['Deporte, belleza y bienestar', '🏋️ 💪 🧘 🏊 🚴 ⚽ 🎾 🥊 💆 💇 💅 🧴 💄 🦷 🩺'],
+  ['Hospedaje y turismo', '🏨 🛏️ 🏡 🏖️ ⛰️ 🏕️ 🧳 ✈️ 🚌 🚗 🗺️'],
+  ['Servicios y entretenimiento', '🎬 🎟️ 🎮 🎳 🎤 📚 🎨 🐶 🔧 🧺 📱 💻 🚿 🎁 🎉'],
 ];
 let iconoDestino = null;
 function pintarBotonIcono(inputId){
   const i = $(inputId), b = document.querySelector(`[data-icono-para="${inputId}"]`); if(!b) return;
-  b.querySelector('.em').textContent = i.value || '🍽️';
+  b.querySelector('.em').textContent = i.value || '🏷️';
 }
 function abrirIconos(inputId){
   iconoDestino = inputId; const actual = $(inputId).value;
