@@ -60,6 +60,76 @@ p{margin:0}
 .muted{color:var(--muted)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
+
+/* ---------- Portada (sin sesión) ---------- */
+#landing{background:var(--bg);color:var(--ink)}
+.ld-w{max-width:68rem;margin-inline:auto;padding-inline:16px}
+.ld-hero{position:relative;overflow:hidden;color:#fff;background:radial-gradient(900px 420px at 85% -10%,#6A2BE0 0,transparent 60%),linear-gradient(160deg,var(--hero),var(--hero-2));padding:18px 0 56px}
+.ld-hero .blob{position:absolute;border-radius:50%;background:rgba(196,240,74,.12)}
+.ld-nav{position:relative;display:flex;align-items:center;gap:10px}
+.ld-nav img{height:34px;width:auto;display:block}
+.ld-nav .r{margin-left:auto;display:flex;gap:8px}
+.ld-nav .r button,.ld-nav .r a{color:#fff;text-decoration:none;font-weight:800;font-size:.9rem;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.12)}
+@media (max-width:420px){.ld-nav .r .hide-sm{display:none}}
+.ld-grid{position:relative;display:grid;gap:36px;align-items:center;margin-top:34px}
+@media (min-width:900px){.ld-grid{grid-template-columns:1.1fr .9fr;margin-top:56px}.ld-hero{padding-bottom:80px}}
+.ld-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);font-weight:800;font-size:.86rem;padding:6px 13px;border-radius:99px}
+.ld-hero h1{font-size:clamp(2.2rem,7vw,3.8rem);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-top:16px}
+.ld-hero h1 mark{background:var(--accent);color:var(--on-accent);padding:0 .16em;border-radius:.2em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.ld-hero .sub{font-size:1.1rem;opacity:.9;max-width:34rem;margin-top:16px;line-height:1.55;font-weight:500}
+.ld-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.ld-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:18px;padding:15px 22px;font-weight:800;font-size:1.02rem;text-decoration:none;transition:transform .15s}
+.ld-btn:hover{transform:translateY(-2px)}
+.ld-btn.lima{background:var(--accent);color:var(--on-accent);box-shadow:0 14px 28px -14px rgba(196,240,74,.7)}
+.ld-btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.28)}
+.ld-btn.brand{background:var(--brand);color:#fff}
+.ld-btn.out{border:2px solid var(--brand);color:var(--brand)}
+.ld-chips{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:20px;font-weight:700;font-size:.9rem;opacity:.92}
+.ld-chips span::before{content:"✓ ";color:var(--accent)}
+.ld-cards{position:relative;display:grid;gap:12px;max-width:360px;width:100%;margin-inline:auto}
+.ld-cup{position:relative;border-radius:24px;padding:16px 18px;color:#fff;box-shadow:0 24px 50px -24px rgba(0,0,0,.55);overflow:hidden}
+.ld-cup .ic{position:absolute;right:14px;top:12px;font-size:1.9rem}
+.ld-cup .lc{font-size:.78rem;font-weight:700;opacity:.85}
+.ld-cup .big{font-size:2.2rem;font-weight:900;color:var(--accent);line-height:1;margin-top:6px}
+.ld-cup .tt{font-weight:800;margin-top:2px}
+.ld-cup.c1{background:linear-gradient(140deg,#4F1BB5,#7B3FF0);transform:rotate(-2deg)}
+.ld-cup.c2{background:linear-gradient(140deg,#B0249F,#5B1FD1);transform:rotate(1.5deg);margin-left:22px}
+.ld-cup.c3{background:linear-gradient(140deg,#0F8A62,#0B5E46);transform:rotate(-1deg)}
+.ld-sec{padding-block:56px}
+@media (min-width:900px){.ld-sec{padding-block:76px}}
+.ld-k{display:inline-block;font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.ld-sec h2{font-size:clamp(1.7rem,4.6vw,2.5rem);font-weight:900;color:var(--heading);line-height:1.1;margin-top:4px}
+.ld-lead{color:var(--muted);font-size:1.05rem;max-width:40rem;margin-top:10px;line-height:1.55}
+.ld-rubros{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.ld-rubros>span{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:10px 15px;font-weight:800;color:var(--heading)}
+.ld-rubros .ld-e{font-size:1.25rem}
+.ld-steps{display:grid;gap:14px;margin-top:28px}
+@media (min-width:800px){.ld-steps{grid-template-columns:repeat(3,1fr)}}
+.ld-step{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px}
+.ld-step .n{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--brand);color:#fff;font-weight:900;font-size:1.15rem}
+.ld-step h3{font-size:1.2rem;color:var(--heading);margin-top:12px}
+.ld-step p{color:var(--muted);margin-top:6px;line-height:1.5}
+.ld-feats{display:grid;gap:14px;margin-top:28px}
+@media (min-width:700px){.ld-feats{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.ld-feats{grid-template-columns:repeat(3,1fr)}}
+.ld-feat{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px}
+.ld-feat .ld-e{flex:none;display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:var(--surface-2);font-size:1.5rem}
+.ld-feat b{display:block;color:var(--heading);font-size:1.05rem}
+.ld-feat div>span{color:var(--muted);font-size:.95rem;line-height:1.45}
+.ld-local{border-radius:30px;padding:30px 22px;background:radial-gradient(700px 260px at 90% 0,rgba(196,240,74,.22),transparent 60%),linear-gradient(150deg,#2B0F63,#5B22C7);color:#fff;display:grid;gap:18px;align-items:center}
+@media (min-width:860px){.ld-local{grid-template-columns:1fr auto;padding:44px}}
+.ld-local h2{color:#fff}
+.ld-local p{opacity:.88;margin-top:8px;font-size:1.05rem;max-width:36rem;line-height:1.5}
+.ld-final{text-align:center}
+.ld-final .ld-ctas{justify-content:center}
+.ld-pie{border-top:1px solid var(--line);padding-block:22px;font-size:.9rem;color:var(--muted)}
+.ld-pie .ld-w{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.ld-pie nav{display:flex;flex-wrap:wrap;gap:8px 18px;margin-left:auto}
+.ld-pie a{color:var(--heading);font-weight:700;text-decoration:none}
+.ld-pie a:hover{text-decoration:underline}
+.auth-volver{position:absolute;left:12px;top:12px;z-index:2;color:#fff;font-weight:800;font-size:.9rem;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.12)}
+@media (prefers-reduced-motion:reduce){.ld-btn:hover{transform:none}}
+
 /* ---------- Acceso ---------- */
 #auth{min-height:100dvh;display:flex;flex-direction:column;background:linear-gradient(160deg,var(--hero),var(--hero-2));position:relative;overflow:hidden}
 .auth-top{position:relative;padding-block:28px 28px;text-align:center;color:#fff}
@@ -424,7 +494,84 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 <body>
 
 <!-- ================= ACCESO ================= -->
-<section id="auth">
+<section id="landing">
+  <header class="ld-hero">
+    <div class="blob" style="width:320px;height:320px;right:-120px;top:-110px"></div>
+    <div class="blob" style="width:180px;height:180px;left:-70px;bottom:-60px;background:rgba(255,111,177,.12)"></div>
+    <div class="ld-w">
+      <nav class="ld-nav"><img src="logo.png" alt="Tucupón" width="656" height="160">
+        <div class="r"><a href="comercios.html" class="hide-sm">Tengo un local</a><button type="button" data-ir-auth="login">Ingresar</button></div></nav>
+      <div class="ld-grid">
+        <div>
+          <span class="ld-pill"><span class="em">📍</span> Tucumán</span>
+          <h1>Descuentos en Tucumán, <mark>todos en un lugar</mark></h1>
+          <p class="sub">Gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis, elegí un descuento y mostrá tu código al pagar.</p>
+          <div class="ld-ctas"><button type="button" class="ld-btn lima" data-ir-auth="signup">Crear mi cuenta gratis</button><button type="button" class="ld-btn ghost" data-ir-auth="login">Ya tengo cuenta</button></div>
+          <div class="ld-chips"><span>Gratis para vos</span><span>Sin instalar nada</span><span>Desde tu celular</span></div>
+        </div>
+        <div class="ld-cards" aria-hidden="true">
+          <div class="ld-cup c1"><span class="ic em">🍔</span><p class="lc">Gastronomía · Centro</p><div class="big">2x1</div><div class="tt">En hamburguesas</div></div>
+          <div class="ld-cup c2"><span class="ic em">🏋️</span><p class="lc">Gimnasio · Yerba Buena</p><div class="big">Pase gratis</div><div class="tt">Tu primera semana</div></div>
+          <div class="ld-cup c3"><span class="ic em">👕</span><p class="lc">Indumentaria · Barrio Norte</p><div class="big">20% OFF</div><div class="tt">En toda la tienda</div></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="ld-sec" style="padding-bottom:0"><div class="ld-w">
+    <span class="ld-k">Para todos los gustos</span>
+    <h2>Descuentos de todos los rubros</h2>
+    <p class="ld-lead">Encontrá beneficios en los comercios de tu ciudad y descubrí lugares nuevos.</p>
+    <div class="ld-rubros"><span><span class="ld-e em">🍔</span>Gastronomía</span><span><span class="ld-e em">☕</span>Cafeterías</span><span><span class="ld-e em">🏨</span>Hospedajes</span><span><span class="ld-e em">🏋️</span>Gimnasios</span><span><span class="ld-e em">👕</span>Indumentaria</span><span><span class="ld-e em">💇</span>Belleza</span><span><span class="ld-e em">🎬</span>Entretenimiento</span><span><span class="ld-e em">✨</span>Y mucho más</span></div>
+  </div></section>
+
+  <section class="ld-sec"><div class="ld-w">
+    <span class="ld-k">Cómo funciona</span>
+    <h2>Ahorrar es así de fácil</h2>
+    <div class="ld-steps">
+      <div class="ld-step"><span class="n">1</span><h3>Elegí un descuento</h3><p>Buscá por rubro, barrio o nombre del comercio y mirá todos sus beneficios.</p></div>
+      <div class="ld-step"><span class="n">2</span><h3>Pedí tu código</h3><p>Con un toque obtenés un código único, gratis y a tu nombre.</p></div>
+      <div class="ld-step"><span class="n">3</span><h3>Mostralo al pagar</h3><p>El comercio lo valida y se aplica el descuento. Lo ves confirmado en tu celular.</p></div>
+    </div>
+  </div></section>
+
+  <section class="ld-sec" style="padding-top:0"><div class="ld-w">
+    <span class="ld-k">Además</span>
+    <h2>Mucho más que cupones</h2>
+    <div class="ld-feats">
+      <div class="ld-feat"><span class="ld-e em">⚡</span><div><b>Cupones relámpago</b><span>Descuentos por pocas horas y hasta agotar stock. ¡Hay que estar atento!</span></div></div>
+      <div class="ld-feat"><span class="ld-e em">🎟️</span><div><b>Tarjeta de sellos</b><span>Sumá un sello en cada visita y llevate un premio cuando la completes.</span></div></div>
+      <div class="ld-feat"><span class="ld-e em">🎁</span><div><b>Caja Sorpresa</b><span>Lo que los locales no vendieron en el día, a un precio bajísimo.</span></div></div>
+      <div class="ld-feat"><span class="ld-e em">❤️</span><div><b>Tus favoritos</b><span>Guardá tus comercios preferidos para tenerlos siempre a mano.</span></div></div>
+      <div class="ld-feat"><span class="ld-e em">💬</span><div><b>Compartí con amigos</b><span>Mandá cualquier descuento por WhatsApp con un toque.</span></div></div>
+      <div class="ld-feat"><span class="ld-e em">📍</span><div><b>Cerca tuyo</b><span>Filtrá por barrio y encontrá lo que tenés a pocas cuadras.</span></div></div>
+    </div>
+  </div></section>
+
+  <section class="ld-sec" style="padding-top:0"><div class="ld-w">
+    <div class="ld-local">
+      <div><span class="ld-k" style="color:var(--accent)">Para comercios</span><h2>¿Tenés un negocio en Tucumán?</h2>
+        <p>Publicá tus descuentos, sumá tarjeta de sellos y conocé cómo te va. Gratis durante el lanzamiento.</p></div>
+      <a class="ld-btn lima" href="comercios.html">Quiero sumar mi comercio</a>
+    </div>
+  </div></section>
+
+  <section class="ld-sec ld-final" style="padding-top:0"><div class="ld-w">
+    <h2>Empezá a ahorrar hoy</h2>
+    <p class="ld-lead" style="margin-inline:auto">Crear tu cuenta lleva menos de un minuto.</p>
+    <div class="ld-ctas"><button type="button" class="ld-btn brand" data-ir-auth="signup">Crear mi cuenta gratis</button><button type="button" class="ld-btn out" data-ir-auth="login">Ingresar</button></div>
+  </div></section>
+
+  <footer class="ld-pie"><div class="ld-w">
+    <span>© Tucupón · Hecho en Tucumán</span>
+    <nav><a href="comercios.html">Para comercios</a><a href="local.html">Panel del local</a><a href="terminos.html">Términos</a><a href="privacidad.html">Privacidad</a></nav>
+  </div></footer>
+</section>
+<script>/* Si ya hay sesión guardada (o vuelve de un link de email), no mostramos la portada mientras carga */
+try{ if(/access_token|error_description/.test(location.hash) || Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k))) document.getElementById('landing').hidden = true; }catch(e){}</script>
+
+<section id="auth" hidden>
+  <button type="button" class="auth-volver" data-ir-landing>← Volver</button>
   <div class="blob" style="left:-50px;top:150px;width:130px;height:130px"></div>
   <div class="blob" style="right:-30px;top:40px;width:90px;height:90px"></div>
   <div class="auth-top wrap">
@@ -1700,12 +1847,19 @@ $('v-reset').addEventListener('submit', e => {
 });
 $('btn-salir').addEventListener('click', async () => { await sb.auth.signOut(); });
 
+function verLanding(){ $('auth').hidden = true; $('landing').hidden = false; window.scrollTo(0, 0); }
+function verAuth(v){ $('landing').hidden = true; $('auth').hidden = false; if(v) vistaAuth(v); window.scrollTo(0, 0); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ir-auth]');
+  if(b){ verAuth(b.dataset.irAuth); return; }
+  if(e.target.closest('[data-ir-landing]')) verLanding();
+});
 async function entrar(s){
   if(!s || recuperando) return;
   const primeraVez = !sesion || sesion.user.id !== s.user.id;
   sesion = s; email = (s.user.email || '').toLowerCase();
   $('mail').textContent = email; $('avatar').textContent = (email[0] || 'T').toUpperCase();
-  $('auth').hidden = true; $('app').hidden = false;
+  $('auth').hidden = true; $('landing').hidden = true; $('app').hidden = false;
   if(history.replaceState && location.hash) history.replaceState(null, '', location.pathname + location.search);
   if(primeraVez){
     vista = 'home'; pila = []; cargado = false; $('hero-in').innerHTML = ''; render(true);
@@ -1717,12 +1871,12 @@ async function entrar(s){
 function salir(){
   sesion = null; email = ''; mios = {}; favs = [];
   cerrar('sheet-code'); cerrar('sheet-det');
-  $('app').hidden = true; $('auth').hidden = false;
+  $('app').hidden = true;
   ['li-pass','su-pass','su-pass2','re-pass','re-pass2'].forEach(id => $(id).value = '');
-  vistaAuth('login');
+  vistaAuth('login'); verLanding();
 }
 sb.auth.onAuthStateChange((evento, s) => {
-  if(evento === 'PASSWORD_RECOVERY'){ recuperando = true; $('app').hidden = true; $('auth').hidden = false; vistaAuth('reset'); return; }
+  if(evento === 'PASSWORD_RECOVERY'){ recuperando = true; $('app').hidden = true; verAuth('reset'); return; }
   if(evento === 'SIGNED_OUT'){ salir(); return; }
   if(s){ if(sesion && s.user.id === sesion.user.id) sesion = s; else entrar(s); }
 });
@@ -1733,6 +1887,7 @@ sb.auth.onAuthStateChange((evento, s) => {
   if(data.session){ entrar(data.session); return; }
   vistaAuth(compartido ? 'signup' : 'login');
   $('auth-compartido').hidden = !compartido;
+  if(compartido || h.get('error_description')) verAuth(); else verLanding();
   if(h.get('error_description')){
     aviso(traducir({ message: h.get('error_description') }));
     history.replaceState && history.replaceState(null, '', location.pathname + location.search);
