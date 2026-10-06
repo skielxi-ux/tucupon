@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tucupón</title>
+<title>Tucupón · Descuentos en Tucumán</title>
+<meta name="description" content="Descuentos en Tucumán, todos en un lugar: gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis y pedí tu código.">
+<meta property="og:title" content="Tucupón · Descuentos en Tucumán">
+<meta property="og:description" content="Gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis y pedí tu código.">
+<meta property="og:image" content="https://tucuponapp.com/icono.png">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="icono.png">
 
@@ -425,7 +429,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   <div class="blob" style="right:-30px;top:40px;width:90px;height:90px"></div>
   <div class="auth-top wrap">
     <h1 class="sr" style="position:absolute">Tucupón</h1><img src="logo.png" alt="Tucupón" class="logo-img" style="height:64px;width:auto;display:block;margin:0 auto;max-width:100%" width="656" height="160">
-    <p>Descuentos en gastronomía, todos en un lugar</p>
+    <p>Descuentos en Tucumán, todos en un lugar</p>
   </div>
   <div class="auth-card">
     <div id="auth-tabs" class="tabs" role="tablist">
@@ -568,7 +572,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         <h2>Cómo funciona</h2>
         <ol>
           <li><span class="n">1</span><p><b>Elegí un rubro y un local</b> y mirá todos sus descuentos.</p></li>
-          <li><span class="n">2</span><p><b>Tocá “Obtener código”</b> y mostralo cuando pidas.</p></li>
+          <li><span class="n">2</span><p><b>Tocá “Obtener código”</b> y mostralo al momento de pagar.</p></li>
           <li><span class="n">3</span><p><b>El local lo confirma</b> y el descuento se aplica en tu cuenta.</p></li>
         </ol>
       </section>
@@ -614,6 +618,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <nav class="pie-links" aria-label="Información legal">
         <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>
         <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>
+        <a href="comercios.html">Tengo un local</a>
         <a href="local.html">Soy un local adherido</a>
       </nav>
       <p class="fine" style="margin-top:10px">© Tucupón · Hecho en Tucumán</p>
@@ -674,7 +679,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <div id="s-badge" class="s-badge"></div>
       <h3 id="s-title" style="margin-top:12px;font-size:1.25rem"></h3>
       <p id="s-local" class="muted" style="margin-top:2px;font-weight:700;font-size:.9rem"></p>
-      <p id="s-sub" class="muted" style="margin-top:10px;font-size:.9rem">Mostrá este código cuando hagas tu pedido</p>
+      <p id="s-sub" class="muted" style="margin-top:10px;font-size:.9rem">Mostrá este código al momento de pagar</p>
       <div class="s-code-w"><div id="s-code" class="s-code"></div><div id="s-stamp" class="stamp" hidden><span>CANJEADO</span></div></div>
       <div id="s-status" class="status"><span class="pulse"></span><span id="s-status-t">Esperando confirmación del local</span></div>
       <div id="s-hor" class="box s-hor" hidden></div>
@@ -746,7 +751,7 @@ let prov = 'Tucumán';
 try{ const g = localStorage.getItem('tucupon.prov'); if(PROVINCIAS.includes(g)) prov = g; }catch(e){}
 const enProv = l => (l.provincia || 'Tucumán') === prov;
 const localDe = c => LOCALES.find(l => l.id === c.local);
-const rubroDe = id => RUBROS.find(r => r.id === id) || {nombre: '', icono: '🍽️', color: '#7B3FF0'};
+const rubroDe = id => RUBROS.find(r => r.id === id) || {nombre: '', icono: '🏷️', color: '#7B3FF0'};
 
 // Logos: se piden aparte y solo cuando cambian (se guardan en este navegador)
 let LOGOS = {};
@@ -1181,7 +1186,7 @@ function heroHome(){
   const h = new Date().getHours();
   return `<div class="topline"><img src="logo.png" alt="Tucupón" class="logo-img" style="height:40px;width:auto;display:block;max-width:62vw" width="656" height="160"><span class="saludo">${h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches'}</span></div>
     ${provBtn()}
-    <h1>Descuentos para comer<br><span>cerca tuyo</span></h1>
+    <h1>Los mejores descuentos<br><span>cerca tuyo</span></h1>
     <div class="search" role="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <label for="q" class="sr">Buscar local</label>
@@ -1470,7 +1475,7 @@ function pintarHoja(){
   $('s-status').className = 'status' + (ok ? ' ok' : '');
   $('s-status').querySelector('.pulse').hidden = ok;
   $('s-status-t').textContent = ok ? `Confirmado el ${fecha(m.usado_en)} · ¡Que lo disfrutes!` : 'Esperando confirmación del local';
-  $('s-sub').textContent = ok ? 'El local ya aplicó tu descuento' : 'Mostrá este código cuando hagas tu pedido';
+  $('s-sub').textContent = ok ? 'El local ya aplicó tu descuento' : 'Mostrá este código al momento de pagar';
   const hs = $('s-hor'); hs.hidden = ok || (!c.restringido && !esRel(c));
   if(!ok && esRel(c)){
     hs.className = 'box s-hor warn';
