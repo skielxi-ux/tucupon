@@ -260,25 +260,8 @@ a.btn{text-decoration:none}
 .sello-linea{background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:800;font-size:.88rem;color:var(--head)}
 .premio-ok{display:grid;gap:6px;border-radius:16px;padding:14px;background:linear-gradient(140deg,#B0249F,#5B1FD1);color:#fff;text-align:left}
 .premio-ok .btn{background:#C4F04A;color:#1E0B45;margin-top:4px}
-.ru-fila{display:grid;grid-template-columns:minmax(0,1fr) 5.4rem auto;gap:8px;align-items:center}
-#ru-filas{display:grid;gap:8px}
-.ru-pct{position:relative}.ru-pct .field{padding-right:28px}
-.ru-pct span{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-weight:800;color:var(--muted);pointer-events:none}
-.ru-del[hidden]{display:none}
-.ru-p{-moz-appearance:textfield}.ru-p::-webkit-inner-spin-button,.ru-p::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.sello-linea.mal{background:#FDE7E7;color:#B42318}
-.ru-prev{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:16px;align-items:center;background:linear-gradient(140deg,#2B0F63,#5B22C7);border-radius:18px;padding:16px;color:#fff}
-.ru-prev .t{font-weight:800;font-size:.8rem;opacity:.75;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-@media (max-width:440px){.ru-prev{grid-template-columns:1fr;justify-items:center}.ru-prev>div{width:100%;max-width:240px}}
-.rueda{width:100%;display:block;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25))}
-.ru-ley{display:grid;gap:6px;font-size:.88rem;padding:0;margin:0}
-.ru-ley li{display:flex;gap:8px;align-items:center;list-style:none}
-.ru-ley i{width:12px;height:12px;border-radius:4px;flex:none}
-.ru-ley b{margin-left:auto;font-variant-numeric:tabular-nums}
-#ru-stats,#ex-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media (min-width:640px){#ru-stats,#ex-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.premio-ruleta{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;background:linear-gradient(140deg,#B0249F,#5B1FD1);color:#fff;font-weight:700}
-.premio-ruleta b{font-size:1.15rem;color:#C4F04A;text-align:right}
+#ex-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:640px){#ex-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .premio-ok.entregado{background:#E3F7EE;color:#0B5E46}
 </style>
 
@@ -399,29 +382,6 @@ a.btn{text-decoration:none}
         <div id="tj-prev" class="tj-prev"></div>
         <p class="hint" style="margin:0">Los sellos no vencen. Si cambiás la cantidad, los clientes conservan los sellos que ya tienen.</p>
         <button type="submit" class="btn full">Guardar tarjeta</button>
-      </form>
-
-      <form id="f-ruleta" class="card" style="display:grid;gap:14px" novalidate>
-        <div class="row"><h2 class="grow">🎡 Ruleta de premios</h2><label class="switch"><input id="ru-activo" type="checkbox" checked>Activa</label></div>
-        <p class="hint" style="margin:0">Cuando tu equipo entrega el premio de la tarjeta de sellos, el cliente además gana <b>un giro</b>. Lo gira desde su celular y lo que gana lo usa en su <b>próxima visita</b>, con un código que validás acá como siempre.</p>
-        <div id="ru-alert" class="alert" hidden></div>
-        <div>
-          <p class="label" style="margin-bottom:6px">Premios y chance de salir (hasta 6)</p>
-          <div id="ru-filas"></div>
-          <button type="button" id="ru-add" class="btn ghost sm" style="margin-top:8px">+ Agregar premio</button>
-        </div>
-        <p id="ru-resto" class="sello-linea" style="margin:0"></p>
-        <div class="grid2"><div><label class="label" for="ru-val">El premio se puede usar durante</label>
-          <select id="ru-val" class="field"><option value="7">7 días</option><option value="15" selected>15 días</option><option value="30">30 días</option></select>
-          <p class="hint">Desde el día siguiente al giro.</p></div></div>
-        <div id="ru-prev" class="ru-prev"></div>
-        <div id="ru-stats" class="stats" hidden>
-          <div class="stat"><b id="ru-giros">–</b><span>Giros entregados</span></div>
-          <div class="stat"><b id="ru-ganados" style="color:var(--brand)">–</b><span>Premios ganados</span></div>
-          <div class="stat"><b id="ru-canjeados">–</b><span>Premios usados</span></div>
-          <div class="stat"><b id="ru-pend">–</b><span>Por usar</span></div>
-        </div>
-        <button type="submit" class="btn full">Guardar ruleta</button>
       </form>
 
       <form id="f-extr" class="card" style="display:grid;gap:14px" novalidate>
@@ -1066,7 +1026,6 @@ function pintarVerificado(r){
   if(!r.ok){ $('c-result').innerHTML = `<div class="alert">${esc(r.error)}</div>`; return; }
   if(r.tipo === 'caja') return pintarCajaVerificada(r);
   if(r.tipo === 'visita') return pintarVisitaVerificada(r);
-  if(r.tipo === 'ruleta') return pintarRuletaVerificada(r);
   const usado = r.estado === 'usado';
   let aviso = '', puede = !usado;
   if(usado) aviso = `<div class="alert">Este código ya se usó el ${esc(fecha(r.usado_en))}.</div>`;
@@ -1108,22 +1067,6 @@ function pintarVisitaVerificada(r){
     <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
   </div>`;
 }
-function pintarRuletaVerificada(r){
-  let aviso = '', puede = false;
-  if(r.estado === 'usado') aviso = `<div class="alert">Este premio ya se entregó el ${esc(fecha(r.usado_en))}.</div>`;
-  else if(r.vencido) aviso = `<div class="alert">Este premio venció. ${esc(r.horario)}.</div>`;
-  else if(!r.en_horario) aviso = `<div class="alert warn">Lo ganó hoy: se puede usar desde su próxima visita. ${esc(r.horario)}.</div>`;
-  else puede = true;
-  $('c-result').innerHTML = `<div class="card result">
-    <div class="item" style="padding:0"><span class="badge" aria-hidden="true">🎡</span><div class="grow"><p class="t">Premio de ruleta</p><p class="s">Código <b class="mono">${esc(r.codigo)}</b> · Cliente ${esc(r.email)}</p></div></div>
-    <div class="premio-ruleta"><span>Se lleva</span><b>${esc(r.titulo)}</b></div>
-    <p class="muted" style="font-size:.88rem"><b>${esc(r.horario)}</b></p>
-    ${r.sello ? selloLinea(r.sello, r.codigo) : ''}
-    ${aviso}
-    ${puede ? `<button type="button" id="c-ok" class="btn lima full" data-codigo="${esc(r.codigo)}">Entregar premio</button>` : ''}
-    <button type="button" class="btn ghost full" id="c-otro">Buscar otro código</button>
-  </div>`;
-}
 function pintarCajaVerificada(r){
   let aviso = '', puede = false;
   if(r.estado === 'usado') aviso = `<div class="alert">Esta caja ya se retiró el ${esc(fecha(r.usado_en))}.</div>`;
@@ -1158,16 +1101,6 @@ document.addEventListener('click', async e => {
           try{ navigator.vibrate && navigator.vibrate(80); }catch(_){}
           return;
         }
-        if(r.tipo === 'ruleta'){
-          $('c-result').innerHTML = `<div class="card result" style="text-align:center">
-            <span class="stamp">ENTREGADO</span>
-            <p class="t" style="font-weight:800;font-size:1.1rem">🎡 Premio de ruleta · ${esc(r.titulo)}</p>
-            <p class="muted">Entregale el premio. El cliente ya lo ve como usado en su celular.</p>
-            ${selloLinea(r.sello, r.codigo)}
-            <button type="button" class="btn full" id="c-otro">Canjear otro código</button></div>`;
-          try{ navigator.vibrate && navigator.vibrate(80); }catch(_){}
-          return;
-        }
         if(r.tipo === 'visita'){
           const sl = r.sello || {};
           $('c-result').innerHTML = `<div class="card result" style="text-align:center">
@@ -1194,7 +1127,7 @@ document.addEventListener('click', async e => {
     await conBoton(pr, async () => {
       try{
         const r = await rpc('tc_entregar_premio', {p_local_id: yo.id, p_pin: pin, p_codigo: pr.dataset.premio});
-        pr.closest('.premio-ok').outerHTML = `<div class="premio-ok entregado"><p>🎁 <b>Premio entregado:</b> ${esc(r.premio)}</p><p>Su tarjeta empezó de nuevo.</p>${r.giro ? '<p>🎡 Además ganó <b>un giro en la ruleta</b>: que lo gire desde su celular en Tucupón.</p>' : ''}</div>`;
+        pr.closest('.premio-ok').outerHTML = `<div class="premio-ok entregado"><p>🎁 <b>Premio entregado:</b> ${esc(r.premio)}</p><p>Su tarjeta empezó de nuevo.</p></div>`;
         const ok = document.getElementById('c-ok'); if(ok && ok.dataset.codigo === pr.dataset.premio && document.querySelector('.result .t')?.textContent.includes('Sumar visita')) ok.remove();
         try{ navigator.vibrate && navigator.vibrate([60, 40, 60]); }catch(_){}
       }catch(err){ manejarError(err); }
@@ -1226,77 +1159,13 @@ function pintarSellos(){
 }
 async function cargarSellos(){
   try{
-    const [a, b, c] = await Promise.all([rpc('tc_local_tarjeta', {p_local_id: yo.id, p_pin: pin}), rpc('tc_local_ruleta', {p_local_id: yo.id, p_pin: pin}), rpc('tc_local_extranamos', {p_local_id: yo.id, p_pin: pin})]);
-    TJ = a; RU = b; EX = c; pintarSellos(); pintarRuleta(); pintarExtr();
+    const [a, c] = await Promise.all([rpc('tc_local_tarjeta', {p_local_id: yo.id, p_pin: pin}), rpc('tc_local_extranamos', {p_local_id: yo.id, p_pin: pin})]);
+    TJ = a; EX = c; pintarSellos(); pintarExtr();
   }catch(err){ manejarError(err); }
 }
 
-// ---------- Ruleta de premios ----------
-let RU = null, EX = null;
-const RU_COL = ['#7B3FF0', '#C4F04A', '#FF6FB1', '#2BB7A3', '#FFB020', '#43198F'];
-function ruColores(sl){ let ci = 0; return sl.map(x => x.nada ? '#ECE6F8' : RU_COL[ci++ % RU_COL.length]); }
-function ruedaSVG(sl){
-  const tot = sl.reduce((s, x) => s + (+x.p || 0), 0) || 1, cols = ruColores(sl);
-  const pt = (r, d) => [(r * Math.sin(d * Math.PI / 180)).toFixed(2), (-r * Math.cos(d * Math.PI / 180)).toFixed(2)];
-  let a = 0;
-  const partes = sl.map((x, i) => {
-    const span = (+x.p || 0) / tot * 360, a0 = a, a1 = a + span, mid = a0 + span / 2; a = a1;
-    const col = cols[i], tc = x.nada || col === '#C4F04A' || col === '#FFB020' ? '#1E0B45' : '#fff';
-    let d;
-    if(span >= 359.9) d = 'M0,-100 A100,100 0 1,1 -0.01,-100 Z';
-    else{ const [x0, y0] = pt(100, a0), [x1, y1] = pt(100, a1); d = `M0,0 L${x0},${y0} A100,100 0 ${span > 180 ? 1 : 0},1 ${x1},${y1} Z`; }
-    const txt = x.t.length > 15 ? x.t.slice(0, 14) + '…' : x.t;
-    const lab = span >= 22 ? `<text transform="rotate(${mid.toFixed(1)}) translate(0,-58) rotate(${mid > 180 ? 90 : -90})" text-anchor="middle" dominant-baseline="middle" fill="${tc}" font-size="${x.nada ? 8 : 9.5}" font-weight="800">${esc(txt)}</text>` : '';
-    return `<path d="${d}" fill="${col}" stroke="#fff" stroke-width="1.5"/>${lab}`;
-  }).join('');
-  return `<svg class="rueda" viewBox="-112 -118 224 230" role="img" aria-label="Ruleta"><circle r="108" fill="#1E0B45"/><g class="rg" style="transform-origin:0 0">${partes}</g>
-    <circle r="15" fill="#fff" stroke="#1E0B45" stroke-width="3"/><text text-anchor="middle" dominant-baseline="central" font-size="13">🎡</text>
-    <path d="M-11,-116 L11,-116 L0,-92 Z" fill="#C4F04A" stroke="#1E0B45" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
-}
-const ruLeyenda = sl => { const cols = ruColores(sl); return `<ul class="ru-ley">${sl.map((x, i) => `<li><i style="background:${cols[i]}"></i><span>${esc(x.t)}</span><b>${x.p}%</b></li>`).join('')}</ul>`; };
-const filaPremio = (p = {}) => `<div class="ru-fila"><input class="field ru-t" maxlength="60" placeholder="Ej.: Postre gratis" value="${esc(p.t || '')}" aria-label="Premio">
-  <div class="ru-pct"><input class="field ru-p" type="number" min="1" max="100" inputmode="numeric" placeholder="%" value="${p.p || ''}" aria-label="Chance en %"><span>%</span></div>
-  <button type="button" class="btn ghost sm ru-del" aria-label="Quitar premio">✕</button></div>`;
-const leerPremios = () => $$('#ru-filas .ru-fila').map(f => ({t: f.querySelector('.ru-t').value.trim(), p: Math.round(+f.querySelector('.ru-p').value || 0)}));
-function prevRuleta(){
-  const ps = leerPremios(), suma = ps.reduce((s, x) => s + x.p, 0), resto = 100 - suma;
-  $('ru-add').hidden = ps.length >= 6;
-  $$('#ru-filas .ru-del').forEach(b => b.hidden = ps.length <= 1);
-  const r = $('ru-resto');
-  r.textContent = suma > 100 ? `⚠️ Los % suman ${suma}. Bajalos hasta llegar a 100.` : resto > 0 ? `🙃 "Seguí participando" sale en el ${resto}% de los giros.` : '✅ Siempre gana algo: los % suman 100.';
-  r.classList.toggle('mal', suma > 100);
-  const sl = ps.filter(x => x.t && x.p > 0).map(x => ({t: x.t, p: x.p}));
-  if(suma < 100) sl.push({t: 'Seguí participando', p: resto, nada: true});
-  $('ru-prev').innerHTML = `<div>${ruedaSVG(sl)}</div><div><p class="t">Así la ve el cliente</p>${ruLeyenda(sl)}</div>`;
-}
-function avisoRuleta(m, ok){ const a = $('ru-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
-function pintarRuleta(){
-  const r = RU && RU.ruleta;
-  $('ru-filas').innerHTML = (r && r.premios.length ? r.premios : [{}, {}]).map(filaPremio).join('');
-  if(r){ $('ru-activo').checked = r.activo; $('ru-val').value = String(r.validez); }
-  $('ru-stats').hidden = !r;
-  if(r){ $('ru-giros').textContent = RU.giros; $('ru-ganados').textContent = RU.ganados; $('ru-canjeados').textContent = RU.canjeados; $('ru-pend').textContent = RU.pendientes; }
-  prevRuleta();
-}
-$('ru-filas').addEventListener('input', prevRuleta);
-$('ru-filas').addEventListener('click', e => { const b = e.target.closest('.ru-del'); if(b){ b.closest('.ru-fila').remove(); prevRuleta(); } });
-$('ru-add').addEventListener('click', () => { if($$('#ru-filas .ru-fila').length >= 6) return; $('ru-filas').insertAdjacentHTML('beforeend', filaPremio()); prevRuleta(); $$('#ru-filas .ru-t').pop().focus(); });
-$('f-ruleta').addEventListener('submit', async e => {
-  e.preventDefault(); avisoRuleta('');
-  const ps = leerPremios().filter(x => x.t || x.p);
-  if(!ps.length) return avisoRuleta('Cargá al menos un premio.');
-  if(ps.some(x => !x.t)) return avisoRuleta('Escribí el nombre de cada premio.');
-  if(ps.some(x => x.p < 1 || x.p > 100)) return avisoRuleta('Cada premio necesita un % entre 1 y 100.');
-  if(ps.reduce((s, x) => s + x.p, 0) > 100) return avisoRuleta('Los % no pueden sumar más de 100.');
-  if(!(TJ && TJ.tarjeta && TJ.tarjeta.activo)) return avisoRuleta('Primero activá tu tarjeta de sellos: los giros se ganan al completarla.');
-  await conBoton(e.target.querySelector('.btn.full'), async () => {
-    try{ const nueva = !(RU && RU.ruleta); RU = await rpc('tc_local_guardar_ruleta', {p_local_id: yo.id, p_pin: pin, p_ruleta: {premios: ps, validez: +$('ru-val').value, activo: $('ru-activo').checked}}); pintarRuleta();
-      avisoRuleta(nueva ? '¡Listo! Desde ahora, cada premio de tarjeta que entregues suma un giro.' : 'Ruleta guardada.', true); }
-    catch(err){ if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err); avisoRuleta(err.message); }
-  });
-});
-
 // ---------- Te extrañamos ----------
+let EX = null;
 function avisoExtr(m, ok){ const a = $('ex-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
 function pintarExtr(){
   const x = EX; if(!x) return;
