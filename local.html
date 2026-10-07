@@ -264,6 +264,23 @@ a.btn{text-decoration:none}
 @media (min-width:640px){#ex-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
 
+
+/* Resumen del día */
+.resumen{display:grid;gap:8px;border-radius:24px;padding:18px;margin-bottom:16px;color:#fff;background:linear-gradient(140deg,#2B0F63,#5B22C7);box-shadow:0 18px 36px -20px rgba(43,15,99,.7)}
+.resumen.bien{background:linear-gradient(140deg,#0B5E46,#0F8A62)}
+.resumen.mal{background:linear-gradient(140deg,#7A1F4D,#B0249F)}
+.resumen p{font-size:.95rem;line-height:1.45}.resumen b{color:#C4F04A}
+.resumen .rs-k{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+.resumen .rs-t{font:900 1.35rem/1.15 var(--font-display)}
+.rs-fr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:4px 0}
+.rs-fr div{background:rgba(255,255,255,.12);border-radius:12px;padding:7px 5px;text-align:center;border:2px solid transparent}
+.rs-fr div.baja{border-color:#FF8A8A;background:rgba(255,80,80,.18)}
+.rs-fr div.sube{border-color:#C4F04A}
+.rs-fr span{display:block;font-size:.66rem;font-weight:700;opacity:.85}
+.rs-fr b{display:block;font-size:1.15rem;color:#fff}
+.rs-fr em{display:block;font-style:normal;font-size:.6rem;opacity:.8}
+.rs-acc{display:flex;gap:8px;justify-content:space-between}
+.rs-acc .btn{background:rgba(255,255,255,.14);color:#fff}
 /* Contador de clientes */
 .contador{display:grid;gap:12px;margin-top:16px}
 .ct-main{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
@@ -396,6 +413,7 @@ a.btn{text-decoration:none}
 
     <!-- Canjear -->
     <section id="t-canjear" class="panel">
+      <div id="resumen" class="resumen" hidden></div>
       <form id="f-codigo" class="card" style="display:grid;gap:12px" novalidate>
         <h2>Canjear un código</h2>
         <p class="muted" style="font-size:.92rem">Pedile al cliente el código de 6 letras y números que ve en su celular.</p>
@@ -1085,7 +1103,7 @@ function tab(t){
   if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
   ['canjear', 'hoy', 'kpis', 'cupones', 'caja', 'sellos', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
-  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarCierre(); }
+  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarCierre(); cargarNegocio(); }
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
   if(t === 'cupones') cargarCupones();
   if(t === 'caja') cargarCaja();
@@ -1304,6 +1322,7 @@ $('f-cierre').addEventListener('submit', async e => {
   await conBoton($('ci-ok'), async () => {
     try{
       CI = await rpc('tc_local_guardar_cierre', {p_local_id: yo.id, p_pin: pin, p_cierre: datos}); ciEditado = false; pintarCierre();
+      if(!esCaja()){ try{ localStorage.removeItem('tucupon.resumen.' + yo.id); }catch(_){} await cargarNegocio(); if(!$('resumen').hidden) $('resumen').scrollIntoView({behavior: 'smooth', block: 'start'}); }
       const n = CLAVES.reduce((s, k) => s + datos[k], 0);
       avisoCierre(`¡Listo! Cierre de ${ciDia} guardado: ${numAR(n)} ${n === 1 ? 'cliente' : 'clientes'}${datos.total ? ' · $ ' + numAR(datos.total) : ''}.`, true);
       try{ navigator.vibrate && navigator.vibrate(60); }catch(_){}
@@ -1392,7 +1411,7 @@ function detalleNg(k){
 }
 async function cargarNegocio(){
   if(!yo || esCaja()) return;
-  try{ NG = await rpc('tc_local_negocio', {p_local_id: yo.id, p_pin: pin}); pintarNegocio(); }catch(err){ manejarError(err); }
+  try{ NG = await rpc('tc_local_negocio', {p_local_id: yo.id, p_pin: pin}); pintarNegocio(); pintarResumen(); }catch(err){ manejarError(err); }
 }
 document.addEventListener('click', async e => {
   let b;
@@ -1404,6 +1423,87 @@ document.addEventListener('click', async e => {
     $$('#cf-dias input').forEach(i => i.checked = +i.value === d);
     ponerHora('cf-desde', FRANJAS[f].d); ponerHora('cf-hasta', FRANJAS[f].h); resumenHorarios();
   }
+});
+
+
+// ---------- Resumen del día (solo dueño) ----------
+const UMBRAL = .20, MIN_IGUALES = 2;
+const elegir = (arr, semilla) => arr[[...semilla].reduce((a, ch) => a + ch.charCodeAt(0), 0) % arr.length];
+const fechaLarga = d => new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {weekday: 'long', day: 'numeric', month: 'long'});
+function resumenDia(cierres, dia){
+  const c = cierres.find(x => x.dia === dia); if(!c) return null;
+  const sumar = a => a.reduce((x, y) => x + y, 0), total = sumar(c.c);
+  const previos = cierres.filter(x => x.dow === c.dow && x.dia < dia).slice(-6);
+  const r = {dia, dow: c.dow, total, c: c.c, previos: previos.length, caidas: [], subidas: [], monto: c.total != null ? +c.total : null};
+  r.mejor = c.c.indexOf(Math.max(...c.c));
+  if(previos.length < MIN_IGUALES) return r;
+  const prom = f => previos.reduce((s, x) => s + x.c[f], 0) / previos.length;
+  r.base = [0, 1, 2, 3].map(prom); r.baseTotal = sumar(r.base);
+  r.delta = r.baseTotal ? (total - r.baseTotal) / r.baseTotal : 0;
+  const conPlata = previos.filter(x => x.total != null);
+  if(r.monto != null && conPlata.length) { r.baseMonto = conPlata.reduce((s, x) => s + +x.total, 0) / conPlata.length; r.deltaMonto = r.baseMonto ? (r.monto - r.baseMonto) / r.baseMonto : null; }
+  r.base.forEach((b, f) => {
+    if(b < 3) return;   // franjas con muy poco movimiento: no sacamos conclusiones
+    const d = (c.c[f] - b) / b;
+    if(d <= -UMBRAL){
+      let seguidas = 1;   // ¿viene cayendo también en los mismos días anteriores?
+      for(let i = previos.length - 1; i >= 0; i--){ const otros = previos.filter((_, j) => j !== i), bo = otros.length ? otros.reduce((s, x) => s + x.c[f], 0) / otros.length : 0; if(bo && previos[i].c[f] <= bo * (1 - UMBRAL)) seguidas++; else break; }
+      r.caidas.push({f, d, v: c.c[f], b, seguidas});
+    }
+    if(d >= UMBRAL) r.subidas.push({f, d, v: c.c[f], b});
+  });
+  r.caidas.sort((a, b) => a.d - b.d); r.subidas.sort((a, b) => b.d - a.d);
+  return r;
+}
+function textoResumen(r){
+  const dn = DIAS_S[r.dow], dnp = DIAS_N[r.dow], fr = f => FRANJAS[f].n.toLowerCase(), pc = x => Math.round(Math.abs(x) * 100) + '%';
+  const art = f => f === 0 ? 'la mañana' : f === 1 ? 'el mediodía' : f === 2 ? 'la tarde' : 'la noche';
+  let titulo, cuerpo = [], cta = null, tono;
+  if(r.base === undefined){
+    titulo = `📊 Tu ${dn}: ${numAR(r.total)} clientes`;
+    cuerpo.push(`Tu franja más fuerte fue ${art(r.mejor)} (${numAR(r.c[r.mejor])} clientes).`);
+    { const fal = MIN_IGUALES - r.previos; cuerpo.push(`Cuando tengas ${fal === 1 ? 'un ' + dn : fal + ' ' + dnp} más ${fal === 1 ? 'cargado' : 'cargados'}, te vamos a decir si fue un buen día comparado con otros ${dnp} y qué franja conviene reforzar.`); }
+    return {titulo, cuerpo, cta, tono: 'neutro'};
+  }
+  if(r.delta >= .10){ tono = 'bien'; titulo = elegir(['🎉 ¡Gran día!', '🚀 ¡Muy buen día!', '👏 ¡Día redondo!'], r.dia); cuerpo.push(`Atendiste <b>${numAR(r.total)} clientes</b>, un <b>${pc(r.delta)} más</b> que un ${dn} normal.`); }
+  else if(r.delta <= -.10){ tono = 'mal'; titulo = elegir(['📉 Un día más tranquilo', '😕 Hoy se movió menos', '📉 Día más flojo de lo habitual'], r.dia); cuerpo.push(`Atendiste <b>${numAR(r.total)} clientes</b>, un <b>${pc(r.delta)} menos</b> que un ${dn} normal (${numAR(Math.round(r.baseTotal))}).`); }
+  else { tono = 'normal'; titulo = r.caidas.length ? '👀 Día normal, con una franja para mirar' : elegir(['✅ Un día dentro de lo normal', '👌 Día estable', '✅ Todo en línea'], r.dia); cuerpo.push(`Atendiste <b>${numAR(r.total)} clientes</b>, parecido a un ${dn} normal (${numAR(Math.round(r.baseTotal))}).`); }
+  if(r.deltaMonto != null && Math.abs(r.deltaMonto) >= .05) cuerpo.push(`Vendiste <b>$ ${numAR(Math.round(r.monto))}</b>, un ${pc(r.deltaMonto)} ${r.deltaMonto > 0 ? 'más' : 'menos'} que el promedio de los ${dnp}.`);
+  if(r.caidas.length){
+    const k = r.caidas[0];
+    cuerpo.push(`${r.delta >= .10 ? 'Pero ' : ''}<b>${art(k.f)[0].toUpperCase() + art(k.f).slice(1)} cayó un ${pc(k.d)}</b>: ${numAR(k.v)} clientes, cuando un ${dn} normal tiene ${numAR(Math.round(k.b))}.`);
+    if(r.caidas[1]) cuerpo.push(`También bajó ${art(r.caidas[1].f)} (${pc(r.caidas[1].d)} menos).`);
+    cuerpo.push(k.seguidas >= 2 ? `Ya es el <b>${k.seguidas}º ${dn} seguido</b> con ${art(k.f)} baja: es un patrón. 💡 Un descuento de ${FRANJAS[k.f].r} los ${dnp} te puede ayudar a llenarla.`
+      : elegir([`💡 Si se repite, es un buen momento para un descuento de ${FRANJAS[k.f].r}.`, `💡 Ahí tenés lugar libre: un descuento los ${dnp} de ${FRANJAS[k.f].r} puede traerte clientes sin tocar tus horarios fuertes.`], r.dia));
+    cta = {d: r.dow, f: k.f, t: `Crear cupón para los ${dnp} · ${FRANJAS[k.f].r}`};
+  }else{
+    cuerpo.push(r.subidas.length ? `Lo mejor: ${art(r.subidas[0].f)}, con un <b>${pc(r.subidas[0].d)} más</b> que de costumbre.` : 'Ninguna franja cayó: todas estuvieron en su nivel habitual.');
+    if(tono !== 'mal') cuerpo.push(elegir(['¡Seguí así! 💪', 'No hace falta descuento hoy: tus franjas se sostienen solas.', 'Buen ritmo. 👍'], r.dia));
+  }
+  return {titulo, cuerpo, cta, tono};
+}
+function pintarResumen(){
+  const el = $('resumen'); el.hidden = true;
+  if(!NG || esCaja()) return;
+  const hoy = NG.hoy, ayer = new Date(new Date(hoy + 'T00:00:00') - 864e5).toLocaleDateString('en-CA');
+  const dia = NG.cierres.some(c => c.dia === hoy) ? hoy : NG.cierres.some(c => c.dia === ayer) ? ayer : null;
+  if(!dia) return;
+  let visto = null; try{ visto = localStorage.getItem('tucupon.resumen.' + yo.id); }catch(_){}
+  if(visto === dia) return;
+  const r = resumenDia(NG.cierres, dia); if(!r) return;
+  const t = textoResumen(r);
+  el.className = 'resumen ' + t.tono;
+  el.innerHTML = `<p class="rs-k">Resumen del ${esc(fechaLarga(dia))}</p><p class="rs-t">${t.titulo}</p>${t.cuerpo.map(x => `<p>${x}</p>`).join('')}
+    <div class="rs-fr">${FRANJAS.map((f, i) => { const caida = r.caidas.some(k => k.f === i), sube = r.subidas.some(k => k.f === i);
+      return `<div class="${caida ? 'baja' : sube ? 'sube' : ''}"><span>${f.e} ${f.n}</span><b>${numAR(r.c[i])}</b>${r.base ? `<em>${caida ? '▼' : sube ? '▲' : '≈'} normal ${numAR(Math.round(r.base[i]))}</em>` : ''}</div>`; }).join('')}</div>
+    ${t.cta ? `<button type="button" class="btn lima full" data-ng-cupon="${t.cta.d}-${t.cta.f}">${esc(t.cta.t)}</button>` : ''}
+    <div class="rs-acc"><button type="button" class="btn ghost sm" data-rs-ok="${dia}">Entendido</button><button type="button" class="btn ghost sm" data-rs-ver>Ver mi negocio →</button></div>`;
+  el.hidden = false;
+}
+document.addEventListener('click', e => {
+  const ok = e.target.closest('[data-rs-ok]');
+  if(ok){ try{ localStorage.setItem('tucupon.resumen.' + yo.id, ok.dataset.rsOk); }catch(_){} $('resumen').hidden = true; return; }
+  if(e.target.closest('[data-rs-ver]')) tab('kpis');
 });
 
 // ---------- Tarjeta de sellos (configuración) ----------
