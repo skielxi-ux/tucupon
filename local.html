@@ -265,6 +265,17 @@ a.btn{text-decoration:none}
 
 
 
+
+/* Buscador de local (ingreso) */
+.ac{position:relative}
+.ac-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;list-style:none;margin:0;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px -16px rgba(30,11,69,.35);max-height:320px;overflow:auto}
+.ac-list li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;cursor:pointer}
+.ac-list li span{font-size:.85rem;color:var(--muted);white-space:nowrap}
+.ac-list li[aria-selected="true"],.ac-list li:hover{background:var(--surface-2)}
+.ac-list .ac-vacio{cursor:default;color:var(--muted);font-size:.9rem;display:block}
+.ac-sel{display:flex;align-items:center;gap:10px;border:2px solid var(--brand);border-radius:16px;padding:11px 12px;background:var(--surface)}
+.ac-sel .ac-ok{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:.8rem;font-weight:900}
+.ac-sel button{font-weight:800;color:var(--brand);font-size:.88rem}
 /* Resumen del día */
 .resumen{display:grid;gap:8px;border-radius:24px;padding:18px;margin-bottom:16px;color:#fff;background:linear-gradient(140deg,#2B0F63,#5B22C7);box-shadow:0 18px 36px -20px rgba(43,15,99,.7)}
 .resumen.bien{background:linear-gradient(140deg,#0B5E46,#0F8A62)}
@@ -349,7 +360,12 @@ a.btn{text-decoration:none}
     <img src="logo-oscuro.png" alt="Tucupón" class="logo-claro" style="height:44px;width:auto" width="656" height="160"><img src="logo.png" alt="Tucupón" class="logo-noche" style="height:44px;width:auto" width="656" height="160">
     <div><h1 style="font-size:1.5rem">Panel del local</h1><p class="muted" style="margin-top:4px">Confirmá los códigos de tus clientes y manejá tus cupones.</p></div>
     <div id="l-alert" class="alert" hidden></div>
-    <div><label class="label" for="l-local">Tu local</label><select id="l-local" class="field"><option value="">Cargando locales…</option></select></div>
+    <div class="ac"><label class="label" for="l-buscar">Tu local</label>
+      <input id="l-local" type="hidden">
+      <input id="l-buscar" class="field" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Escribí el nombre de tu local" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="l-sug">
+      <div id="l-sel" class="ac-sel" hidden><span class="ac-ok" aria-hidden="true">✓</span><span id="l-sel-n" class="grow"></span><button type="button" id="l-cambiar">Cambiar</button></div>
+      <ul id="l-sug" class="ac-list" role="listbox" hidden></ul>
+    </div>
     <div><label class="label" for="l-pin">PIN</label><input id="l-pin" class="field mono" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" placeholder="6 números" style="letter-spacing:.3em"></div>
     <button type="submit" class="btn full">Ingresar</button>
     <p class="muted" style="font-size:.82rem;text-align:center">Entrá con tu PIN de dueño o con el PIN de encargado.<br>¿No tenés PIN? Pedíselo al equipo de Tucupón.</p>
@@ -1039,19 +1055,60 @@ $('cf-rel').addEventListener('change', () => { pintarRelampago(); if($('cf-rel')
 let yo = null, pin = '', cupones = [];
 try{ const s = JSON.parse(sessionStorage.getItem('tucupon.local') || 'null'); if(s){ yo = s.yo; pin = s.pin; } }catch(e){}
 
+// ---------- Elegir el local: buscador que se autocompleta ----------
+let LOCS = [], acIdx = -1;
+const sinTildes = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 async function cargarLocales(){
   try{
-    const ls = await rpc('tc_locales_para_panel');
-    $('l-local').innerHTML = '<option value="">Elegí tu local</option>' + ls.map(l => `<option value="${l.id}">${esc(l.nombre)} · ${esc(l.barrio)}</option>`).join('');
-    let ult = null; try{ ult = localStorage.getItem('tucupon.ultimoLocal'); }catch(e){}
-    if(ult && ls.some(l => String(l.id) === ult)) $('l-local').value = ult;
-  }catch(e){ $('l-local').innerHTML = '<option value="">No se pudieron cargar</option>'; avisoLogin(e.message); }
+    LOCS = await rpc('tc_locales_para_panel');
+    try{ localStorage.removeItem('tucupon.ultimoLocal'); }catch(e){}
+    const pre = new URLSearchParams(location.search).get('l');   // link personal: local.html?l=ID
+    const l = pre && LOCS.find(x => String(x.id) === pre);
+    if(l) elegirLocal(l, true);
+  }catch(e){ avisoLogin(e.message); }
 }
+function sugerencias(){
+  const q = sinTildes($('l-buscar').value.trim()), ul = $('l-sug');
+  if(!q){ ul.hidden = true; $('l-buscar').setAttribute('aria-expanded', 'false'); return; }
+  const ws = q.split(/\s+/);
+  const ls = LOCS.filter(l => { const t = sinTildes(l.nombre + ' ' + l.barrio); return ws.every(w => t.includes(w)); })
+    .sort((a, b) => sinTildes(b.nombre).startsWith(q) - sinTildes(a.nombre).startsWith(q) || a.nombre.localeCompare(b.nombre, 'es')).slice(0, 8);
+  acIdx = ls.length ? 0 : -1;
+  ul.innerHTML = ls.length ? ls.map((l, i) => `<li role="option" id="ac-${l.id}" data-ac="${l.id}" aria-selected="${i === 0}"><b>${esc(l.nombre)}</b><span>${esc(l.barrio)}</span></li>`).join('')
+    : '<li class="ac-vacio">No encontramos ese local. Revisá el nombre o pedile tu acceso al equipo de Tucupón.</li>';
+  ul.hidden = false; $('l-buscar').setAttribute('aria-expanded', 'true');
+}
+function marcarAc(i){
+  const it = $$('#l-sug [data-ac]'); if(!it.length) return;
+  acIdx = (i + it.length) % it.length;
+  it.forEach((x, j) => x.setAttribute('aria-selected', String(j === acIdx)));
+  it[acIdx].scrollIntoView({block: 'nearest'});
+}
+function elegirLocal(l, desdeLink){
+  $('l-local').value = l.id;
+  $('l-sel-n').innerHTML = `<b>${esc(l.nombre)}</b> · ${esc(l.barrio)}`;
+  $('l-sel').hidden = false; $('l-buscar').hidden = true; $('l-sug').hidden = true;
+  avisoLogin('');
+  if(!desdeLink) setTimeout(() => $('l-pin').focus(), 30);
+}
+$('l-buscar').addEventListener('input', sugerencias);
+$('l-buscar').addEventListener('focus', () => { if($('l-buscar').value.trim()) sugerencias(); });
+$('l-buscar').addEventListener('keydown', e => {
+  const ul = $('l-sug');
+  if(e.key === 'ArrowDown'){ e.preventDefault(); marcarAc(acIdx + 1); }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); marcarAc(acIdx - 1); }
+  else if(e.key === 'Enter'){ const it = $$('#l-sug [data-ac]')[acIdx]; if(!ul.hidden && it){ e.preventDefault(); elegirLocal(LOCS.find(x => x.id === +it.dataset.ac)); } }
+  else if(e.key === 'Escape'){ ul.hidden = true; }
+});
+$('l-sug').addEventListener('mousedown', e => e.preventDefault());   // que no se pierda el foco antes del clic
+$('l-sug').addEventListener('click', e => { const it = e.target.closest('[data-ac]'); if(it) elegirLocal(LOCS.find(x => x.id === +it.dataset.ac)); });
+$('l-buscar').addEventListener('blur', () => setTimeout(() => $('l-sug').hidden = true, 120));
+$('l-cambiar').addEventListener('click', () => { $('l-local').value = ''; $('l-sel').hidden = true; $('l-buscar').hidden = false; $('l-buscar').value = ''; $('l-buscar').focus(); });
 function avisoLogin(m){ $('l-alert').textContent = m || ''; $('l-alert').hidden = !m; }
 $('f-login').addEventListener('submit', async e => {
   e.preventDefault();
   const id = +$('l-local').value, p = $('l-pin').value.trim();
-  if(!id){ avisoLogin('Elegí tu local.'); return $('l-local').focus(); }
+  if(!id){ avisoLogin('Escribí el nombre de tu local y elegilo de la lista.'); return $('l-buscar').focus(); }
   if(!/^\d{6}$/.test(p)){ avisoLogin('El PIN tiene 6 números.'); return $('l-pin').focus(); }
   avisoLogin('');
   await conBoton(e.submitter || e.target.querySelector('.btn'), async () => {
@@ -1059,7 +1116,6 @@ $('f-login').addEventListener('submit', async e => {
       const r = await rpc('tc_local_login', {p_local_id: id, p_pin: p});
       if(!r.ok){ avisoLogin(r.error || 'PIN incorrecto'); $('l-pin').select(); return; }
       yo = r; pin = r.token || p; delete yo.token; guardarSesion();
-      try{ localStorage.setItem('tucupon.ultimoLocal', String(id)); }catch(_){}
       entrar();
     }catch(err){ avisoLogin(err.message); }
   });

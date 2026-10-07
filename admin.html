@@ -265,6 +265,17 @@ a.btn{text-decoration:none}
 
 
 
+
+/* Buscador de local (ingreso) */
+.ac{position:relative}
+.ac-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;list-style:none;margin:0;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px -16px rgba(30,11,69,.35);max-height:320px;overflow:auto}
+.ac-list li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;cursor:pointer}
+.ac-list li span{font-size:.85rem;color:var(--muted);white-space:nowrap}
+.ac-list li[aria-selected="true"],.ac-list li:hover{background:var(--surface-2)}
+.ac-list .ac-vacio{cursor:default;color:var(--muted);font-size:.9rem;display:block}
+.ac-sel{display:flex;align-items:center;gap:10px;border:2px solid var(--brand);border-radius:16px;padding:11px 12px;background:var(--surface)}
+.ac-sel .ac-ok{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:.8rem;font-weight:900}
+.ac-sel button{font-weight:800;color:var(--brand);font-size:.88rem}
 /* Resumen del día */
 .resumen{display:grid;gap:8px;border-radius:24px;padding:18px;margin-bottom:16px;color:#fff;background:linear-gradient(140deg,#2B0F63,#5B22C7);box-shadow:0 18px 36px -20px rgba(43,15,99,.7)}
 .resumen.bien{background:linear-gradient(140deg,#0B5E46,#0F8A62)}
@@ -1303,6 +1314,7 @@ function pintarLocales(){
       <div class="acts">
         <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
         <button type="button" class="btn ghost sm" data-lpin="${l.id}">${l.tiene_pin ? 'Nuevo PIN' : 'Crear PIN'}</button>
+        <button type="button" class="btn ghost sm" data-llink="${l.id}" title="Abre el panel con este local ya elegido">🔗 Link del panel</button>
         <button type="button" class="btn sm ${l.activo ? 'danger' : 'lima'}" data-lpausa="${l.id}">${l.activo ? 'Pausar' : 'Reactivar'}</button>
         <button type="button" class="btn ghost sm btn-borrar" data-lborrar="${l.id}" aria-label="Eliminar ${esc(l.nombre)}">Eliminar</button>
       </div></div>`;
@@ -1424,6 +1436,13 @@ $('bo-ok').addEventListener('click', async e => {
 $('loc-lista').addEventListener('click', e => {
   const ed = e.target.closest('[data-ledit]'), pn = e.target.closest('[data-lpin]'), pa = e.target.closest('[data-lpausa]'), bo = e.target.closest('[data-lborrar]');
   if(bo) abrirBorrar(D.locales.find(l => l.id === +bo.dataset.lborrar));
+  const lk = e.target.closest('[data-llink]');
+  if(lk){
+    const l = D.locales.find(x => x.id === +lk.dataset.llink), url = `${location.origin}${location.pathname.replace(/admin\.html$/, '')}local.html?l=${l.id}`;
+    const txt = `Panel de ${l.nombre} en Tucupón 👉 ${url}\nEntrá con tu PIN (el de dueño o el de encargado).`;
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Link copiado: pegalo en WhatsApp para el dueño o el encargado.')).catch(() => prompt('Copiá el link:', url));
+    return;
+  }
   if(ed) abrirLocal(D.locales.find(l => l.id === +ed.dataset.ledit));
   if(pn){
     const l = D.locales.find(x => x.id === +pn.dataset.lpin);
