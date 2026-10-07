@@ -349,6 +349,11 @@ a.btn{text-decoration:none}
 .ng-c.flojo{border-color:#C4382F}
 .ng-c.sel{outline:3px solid var(--brand);outline-offset:1px}
 .premio-ok.entregado{background:#E3F7EE;color:#0B5E46}
+.pf-contacto{display:grid;gap:12px;padding:14px;border-radius:16px;background:var(--surface-2,#F6F2FF);border:1px dashed var(--line)}
+.pf-contacto-t{margin:0;font-weight:800;color:var(--heading)}
+.pf-contacto .row{gap:8px;align-items:center;flex-wrap:wrap}
+.pf-contacto .row .field{flex:1 1 170px;min-width:0}
+.pf-contacto .row .btn{white-space:nowrap;flex:none}
 </style>
 
 </head>
@@ -599,6 +604,10 @@ a.btn{text-decoration:none}
         <div><label class="label" for="pf-dir">Dirección <span class="req">*</span></label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"><p id="pf-suc-hint" class="hint" hidden>Es la dirección de tu sucursal principal.</p></div>
         <div id="pf-suc" hidden><span class="label">Tus otras sucursales</span><ul id="pf-suc-lista" class="suc-lista"></ul><p class="hint">Tus cupones valen en todas. Para sumar, cambiar o quitar una sucursal, escribile al equipo de Tucupón.</p></div>
         <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto <span class="req">*</span></label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
+        <div class="pf-contacto"><p class="pf-contacto-t">📣 Para que tus clientes te encuentren <span class="muted">(opcional)</span></p>
+          <div><label class="label" for="pf-link">Instagram, Facebook o sitio web</label><input id="pf-link" class="field" type="url" inputmode="url" maxlength="300" placeholder="@tulocal · instagram.com/tulocal · www.tulocal.com" autocapitalize="off" spellcheck="false"></div>
+          <div><label class="label" for="pf-wa">WhatsApp para clientes</label><div class="row"><input id="pf-wa" class="field grow" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><button type="button" class="btn ghost sm" id="pf-wa-igual">Mismo número de arriba</button></div><p class="hint">Con código de área, sin el 0 ni el 15. Los dos aparecen como botones en la ficha de tu local.</p></div>
+        </div>
         <p class="hint" style="margin-top:-4px"><span class="req">*</span> Campos obligatorios</p>
         <button type="submit" class="btn full">Guardar perfil</button>
       </form>
@@ -1049,6 +1058,9 @@ function pintarRelampago(){
   else { est.textContent = 'Empieza apenas guardes el cupón. El código vale hasta que termina.'; est.className = 'hint'; }
 }
 $('cf-rel').addEventListener('change', () => { pintarRelampago(); if($('cf-rel').checked && !$('cf-stock').value) $('cf-stock').focus(); });
+
+// 5493815551234 → 381 555-1234 (para mostrar en los formularios)
+function fmtWa(n){ n = String(n || ''); const m = n.match(/^549(\d{3})(\d{3})(\d{4})$/); return m ? `${m[1]} ${m[2]}-${m[3]}` : (n.startsWith('549') ? n.slice(3) : n ? '+' + n : ''); }
 
 
 // ---------- Sesión del local (se guarda solo en esta pestaña) ----------
@@ -1919,7 +1931,7 @@ async function cargarPerfil(){
     $('pf-prov').innerHTML = provinciaSelectHTML(); $('pf-prov').value = perfil.provincia || 'Tucumán';
     ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio, $('pf-prov').value);
     $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
-    $('pf-dir').value = perfil.dir; $('pf-tel').value = perfil.telefono || '';
+    $('pf-dir').value = perfil.dir; $('pf-tel').value = perfil.telefono || ''; $('pf-link').value = perfil.link || ''; $('pf-wa').value = perfil.whatsapp ? fmtWa(perfil.whatsapp) : '';
     const sucs = perfil.sucursales || [];
     $('pf-suc').hidden = $('pf-suc-hint').hidden = !sucs.length;
     $('pf-suc-lista').innerHTML = sucs.map(x => `<li><b>${esc(x.dir)}</b> · ${esc(x.barrio)}</li>`).join('');
@@ -1938,7 +1950,7 @@ $('pf-file').addEventListener('change', async e => {
 $('pf-quitar').addEventListener('click', () => { logoNuevo = null; pintarLogoPerfil(); avisoPerfil('Tocá “Guardar perfil” para quitar el logo.', true); });
 $('f-perfil').addEventListener('submit', async e => {
   e.preventDefault(); avisoPerfil('');
-  const datos = {nombre: $('pf-nombre').value.trim(), responsable: $('pf-resp').value.trim(), provincia: $('pf-prov').value, barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), telefono: $('pf-tel').value.trim()};
+  const datos = {nombre: $('pf-nombre').value.trim(), responsable: $('pf-resp').value.trim(), provincia: $('pf-prov').value, barrio: leerBarrio($('pf-barrio'), $('pf-barrio-otro')), rubro: $('pf-rubro').value, dir: $('pf-dir').value.trim(), telefono: $('pf-tel').value.trim(), link: $('pf-link').value.trim(), whatsapp: $('pf-wa').value.trim()};
   $$('#f-perfil .field').forEach(i => i.removeAttribute('aria-invalid'));
   const falta = (m, id) => { avisoPerfil(m); if(id){ $(id).setAttribute('aria-invalid', 'true'); $(id).focus(); } };
   if(!datos.nombre) return falta('Poné el nombre del local.', 'pf-nombre');
@@ -1959,6 +1971,8 @@ $('f-perfil').addEventListener('submit', async e => {
 });
 
 cargarLocales();
+$('pf-wa-igual').addEventListener('click', () => { $('pf-wa').value = $('pf-tel').value; $('pf-wa').focus(); });
+
 if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; if(p.rol) yo.rol = p.rol; if('sucursal' in p) yo.sucursal = p.sucursal; guardarSesion(); aplicarRol(); pintarCabecera(); }).catch(() => {}); }
 </script>
 </body>
