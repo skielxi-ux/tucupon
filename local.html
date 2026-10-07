@@ -354,6 +354,13 @@ a.btn{text-decoration:none}
 .pf-contacto .row{gap:8px;align-items:center;flex-wrap:wrap}
 .pf-contacto .row .field{flex:1 1 170px;min-width:0}
 .pf-contacto .row .btn{white-space:nowrap;flex:none}
+.rs-btn .rs-n{color:var(--heading);font-weight:700}
+.rs-btn .rs-cambiar{font-size:.85rem;color:var(--brand);font-weight:800}
+.rs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:12px}
+.rs-grid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;padding:10px 6px;border-radius:16px;background:var(--surface-2);border:2px solid transparent;font-weight:700;font-size:.82rem;line-height:1.2;color:var(--heading);text-align:center;transition:transform .1s}
+.rs-grid button .em{font-size:2rem;line-height:1}
+.rs-grid button:hover{transform:scale(1.04);border-color:var(--line)}
+.rs-grid button[aria-pressed="true"]{border-color:var(--brand);background:var(--surface)}
 </style>
 
 </head>
@@ -742,6 +749,13 @@ a.btn{text-decoration:none}
     <div id="ic-grupos"></div>
   </div>
 </div>
+<!-- Hoja: elegir rubro -->
+<div id="sheet-rubros" class="sheet-wrap" aria-hidden="true" style="z-index:50">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rs-title">
+    <div class="row"><h2 id="rs-title" class="grow">Elegí el rubro</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="rs-grid" class="rs-grid"></div>
+  </div>
+</div>
 <div id="toast" hidden></div>
 
 
@@ -1061,6 +1075,41 @@ $('cf-rel').addEventListener('change', () => { pintarRelampago(); if($('cf-rel')
 
 // 5493815551234 → 381 555-1234 (para mostrar en los formularios)
 function fmtWa(n){ n = String(n || ''); const m = n.match(/^549(\d{3})(\d{3})(\d{4})$/); return m ? `${m[1]} ${m[2]}-${m[3]}` : (n.startsWith('549') ? n.slice(3) : n ? '+' + n : ''); }
+
+// ---------- Selector de rubro (todos a la vista, con su ícono) ----------
+let rubroDestino = null;
+function pintarRubro(selId){
+  const s = $(selId), b = document.querySelector(`[data-rubro-para="${selId}"]`); if(!s || !b) return;
+  const o = s.options[s.selectedIndex];
+  const [em, ...resto] = o ? o.textContent.trim().split(' ') : ['🏷️'];
+  b.querySelector('.em').textContent = o ? em : '🏷️';
+  b.querySelector('.rs-n').textContent = o ? resto.join(' ') : 'Elegir rubro';
+}
+function prepararRubro(selId){
+  const s = $(selId); if(!s || s.dataset.rsListo) return; s.dataset.rsListo = '1';
+  s.hidden = true;
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'icono-btn rs-btn'; b.dataset.rubroPara = selId;
+  b.innerHTML = '<span class="em">🏷️</span><span class="rs-n grow">Elegir rubro</span><span class="rs-cambiar">Cambiar</span>';
+  s.after(b);
+  const lbl = document.querySelector(`label[for="${selId}"]`); if(lbl){ b.id = selId + '-btn'; lbl.htmlFor = b.id; }
+  new MutationObserver(() => pintarRubro(selId)).observe(s, {childList: true});
+  s.addEventListener('change', () => pintarRubro(selId));
+  pintarRubro(selId);
+}
+function abrirRubros(selId){
+  rubroDestino = selId; const s = $(selId);
+  $('rs-grid').innerHTML = [...s.options].filter(o => o.value).map(o => {
+    const [em, ...resto] = o.textContent.trim().split(' ');
+    return `<button type="button" data-rs="${esc(o.value)}" aria-pressed="${o.value === s.value}"><span class="em">${esc(em)}</span><span>${esc(resto.join(' '))}</span></button>`;
+  }).join('');
+  abrirHoja('sheet-rubros');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-rubro-para]'); if(b){ abrirRubros(b.dataset.rubroPara); return; }
+  const r = e.target.closest('[data-rs]');
+  if(r && rubroDestino){ const s = $(rubroDestino); s.value = r.dataset.rs; s.dispatchEvent(new Event('change', {bubbles: true})); pintarRubro(rubroDestino); cerrarHoja('sheet-rubros'); }
+});
 
 
 // ---------- Sesión del local (se guarda solo en esta pestaña) ----------
@@ -1930,7 +1979,7 @@ async function cargarPerfil(){
     $('pf-nombre').value = perfil.nombre; $('pf-resp').value = perfil.responsable || '';
     $('pf-prov').innerHTML = provinciaSelectHTML(); $('pf-prov').value = perfil.provincia || 'Tucumán';
     ponerBarrio($('pf-barrio'), $('pf-barrio-otro'), perfil.barrio, $('pf-prov').value);
-    $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro;
+    $('pf-rubro').innerHTML = perfil.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join(''); $('pf-rubro').value = perfil.rubro; pintarRubro('pf-rubro');
     $('pf-dir').value = perfil.dir; $('pf-tel').value = perfil.telefono || ''; $('pf-link').value = perfil.link || ''; $('pf-wa').value = perfil.whatsapp ? fmtWa(perfil.whatsapp) : '';
     const sucs = perfil.sucursales || [];
     $('pf-suc').hidden = $('pf-suc-hint').hidden = !sucs.length;
@@ -1971,6 +2020,7 @@ $('f-perfil').addEventListener('submit', async e => {
 });
 
 cargarLocales();
+prepararRubro('pf-rubro');
 $('pf-wa-igual').addEventListener('click', () => { $('pf-wa').value = $('pf-tel').value; $('pf-wa').focus(); });
 
 if(yo && pin){ entrar(); rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}).then(p => { yo.logo = p.logo; yo.activo = p.activo; yo.motivo_pausa = p.motivo_pausa; if(p.rol) yo.rol = p.rol; if('sucursal' in p) yo.sucursal = p.sucursal; guardarSesion(); aplicarRol(); pintarCabecera(); }).catch(() => {}); }
