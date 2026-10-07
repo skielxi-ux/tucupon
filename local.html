@@ -263,6 +263,26 @@ a.btn{text-decoration:none}
 #ex-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media (min-width:640px){#ex-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
+
+/* Contador de clientes */
+.contador{display:grid;gap:12px;margin-top:16px}
+.ct-main{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.ct-num{text-align:center}
+.ct-num b{display:block;font:900 2.8rem/1 var(--font-display);color:var(--heading);font-variant-numeric:tabular-nums}
+.ct-num span{font-size:.8rem;font-weight:700;color:var(--muted)}
+.ct-mas{width:120px;height:120px;border-radius:32px;background:linear-gradient(140deg,#7B3FF0,#4F1BB5);color:#fff;font:900 2.4rem/1 var(--font-display);display:grid;place-content:center;box-shadow:0 14px 26px -12px rgba(79,27,181,.7);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.ct-mas small{font-size:.8rem;font-weight:800;opacity:.85;margin-top:4px}
+.ct-menos{width:56px;height:56px;border-radius:18px;background:var(--surface-2);color:var(--muted);font-weight:900;font-size:1.1rem;touch-action:manipulation}
+.ct-menos:disabled{opacity:.4}
+.ct-mas.pop,.ct-menos.pop{animation:ctpop .18s ease}
+@keyframes ctpop{50%{transform:scale(.92)}}
+.ct-fr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.ct-fr div{background:var(--surface-2);border-radius:12px;padding:6px 4px;text-align:center;border:2px solid transparent}
+.ct-fr div.act{border-color:var(--brand);background:var(--surface)}
+.ct-fr span{display:block;font-size:.66rem;font-weight:700;color:var(--muted);line-height:1.2}
+.ct-fr b{font-size:1.05rem;font-weight:900;color:var(--heading)}
+.ci-auto{background:var(--surface-2);border-radius:12px;padding:9px 12px;font-size:.86rem;font-weight:700;color:var(--heading);margin:0}
+@media (prefers-reduced-motion:reduce){.ct-mas.pop,.ct-menos.pop{animation:none}}
 /* Cierre del día */
 .cierre{display:grid;gap:12px;margin-top:16px}
 .ci-dia{display:flex;gap:6px}
@@ -385,6 +405,17 @@ a.btn{text-decoration:none}
       </form>
       <div id="c-result"></div>
 
+      <div id="contador" class="card contador">
+        <div class="row"><h2 class="grow">👥 Contador de clientes</h2><span id="ct-franja" class="chip"></span></div>
+        <p class="muted" style="font-size:.88rem;margin-top:-4px">Tocá <b>+1</b> cada vez que atendés a un cliente o cobrás un ticket. Al cerrar, el cierre del día ya viene completo.</p>
+        <div class="ct-main">
+          <button type="button" class="ct-menos" id="ct-menos" aria-label="Restar un cliente">−1</button>
+          <div class="ct-num"><b id="ct-total">0</b><span>clientes hoy</span></div>
+          <button type="button" class="ct-mas" id="ct-mas">+1<small>cliente</small></button>
+        </div>
+        <div class="ct-fr" id="ct-fr"></div>
+      </div>
+
       <form id="f-cierre" class="card cierre" novalidate>
         <div class="row"><h2 class="grow">🧾 Cierre del día</h2><span id="ci-racha" class="chip" hidden></span></div>
         <p class="muted" style="font-size:.9rem;margin-top:-4px">¿Cuántos clientes atendieron en cada franja? Con esto ves qué días y horarios son flojos, para no hacer descuentos a ciegas.</p>
@@ -396,6 +427,7 @@ a.btn{text-decoration:none}
           <label class="ci-f"><span class="ci-l">🌙 Noche<small>desde las 20 h</small></span><input id="ci-3" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
         </div>
         <div><label class="label" for="ci-total">💵 Total vendido en el día <span class="muted" style="font-weight:600">(opcional)</span></label><input id="ci-total" class="field" inputmode="numeric" placeholder="$ 0" autocomplete="off"></div>
+        <p id="ci-auto" class="ci-auto" hidden>👥 Lo completamos con el contador. Revisalo, sumá el total si querés y guardá.</p>
         <div id="ci-alert" class="alert" hidden></div>
         <button type="submit" class="btn full" id="ci-ok">Guardar cierre</button>
       </form>
@@ -1204,26 +1236,63 @@ const FRANJAS = [
   {n: 'Noche', e: '🌙', r: 'desde las 20 h', d: '20:00', h: '24:00'},
 ];
 const CLAVES = ['manana', 'mediodia', 'tarde', 'noche'];
-let CI = null, ciDia = 'hoy';
+let CI = null, ciDia = 'hoy', ciEditado = false;
 const numAR = n => Number(n || 0).toLocaleString('es-AR');
 function avisoCierre(m, ok){ const a = $('ci-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
 function pintarCierre(){
-  const c = CI && CI[ciDia];
+  pintarContador();
+  const guardado = CI && CI[ciDia], cont = CI && CI.contador && CI.contador[ciDia], hayCont = cont && cont.some(v => v > 0);
+  const c = guardado || (hayCont ? {manana: cont[0], mediodia: cont[1], tarde: cont[2], noche: cont[3], total: null} : null);
+  $('ci-auto').hidden = !!guardado || !hayCont || ciEditado;
+  const rc0 = $('ci-racha'), r0 = CI ? CI.racha : 0; rc0.hidden = !r0; rc0.textContent = r0 === 1 ? '🔥 1 día' : `🔥 ${r0} días seguidos`;
+  $('ci-ok').textContent = guardado ? 'Actualizar cierre' : 'Guardar cierre';
   $$('[data-ci-dia]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ciDia === ciDia)));
+  if(ciEditado) return;
   CLAVES.forEach((k, i) => $('ci-' + i).value = c ? c[k] : '');
   $('ci-total').value = c && c.total != null ? numAR(Math.round(c.total)) : '';
-  $('ci-ok').textContent = c ? 'Actualizar cierre' : 'Guardar cierre';
-  const r = CI ? CI.racha : 0, rc = $('ci-racha');
-  rc.hidden = !r; rc.textContent = r === 1 ? '🔥 1 día' : `🔥 ${r} días seguidos`;
 }
 async function cargarCierre(){
   if(!yo) return;
-  try{ CI = await rpc('tc_local_cierre', {p_local_id: yo.id, p_pin: pin}); pintarCierre(); }catch(err){ /* sin conexión: queda el formulario vacío */ }
+  try{ const r = await rpc('tc_local_cierre', {p_local_id: yo.id, p_pin: pin}); if(ctPend) return; CI = r; pintarCierre(); }catch(err){ /* sin conexión: queda el formulario vacío */ }
 }
+// ---------- Contador de clientes ----------
+let ctCola = Promise.resolve(), ctPend = 0;
+function pintarContador(){
+  const ct = CI && CI.contador; if(!ct) return;
+  const a = ct.actual || [0, 0, 0, 0], f = ct.franja ?? 0;
+  $('ct-total').textContent = numAR(a.reduce((x, y) => x + y, 0));
+  $('ct-franja').textContent = `${FRANJAS[f].e} Ahora: ${FRANJAS[f].n.toLowerCase()}`;
+  $('ct-fr').innerHTML = FRANJAS.map((fr, i) => `<div class="${i === f ? 'act' : ''}"><span>${fr.e}<br>${fr.n}</span><b>${numAR(a[i])}</b></div>`).join('');
+  $('ct-menos').disabled = !a[f];
+}
+function contar(delta){
+  const ct = CI && CI.contador; if(!ct) return;
+  const f = ct.franja ?? 0;
+  if(delta < 0 && !ct.actual[f]) return;
+  ct.actual[f] += delta;                      // se ve al instante; el servidor confirma después
+  if(ct.dia_comercial === hoyISO()) ct.hoy[f] += delta;
+  pintarContador(); ctPend++;
+  try{ navigator.vibrate && navigator.vibrate(delta > 0 ? 25 : [15, 30, 15]); }catch(_){}
+  const btn = $(delta > 0 ? 'ct-mas' : 'ct-menos'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
+  ctCola = ctCola.then(async () => {
+    try{
+      const r = await rpc('tc_local_contar', {p_local_id: yo.id, p_pin: pin, p_delta: delta});
+      ctPend--; if(!ctPend){ CI = r; pintarCierre(); }
+    }catch(err){
+      ctPend--; if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err);
+      toast('No se pudo guardar el último toque. Revisá la conexión.'); cargarCierre();
+    }
+  });
+}
+$('ct-mas').addEventListener('click', () => contar(1));
+$('ct-menos').addEventListener('click', () => contar(-1));
+setInterval(() => { if(yo && !$('t-canjear').hidden && !ctPend && !document.hidden) cargarCierre(); }, 5 * 60000);   // cambia de franja sola
+
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-ci-dia]'); if(!b) return;
-  ciDia = b.dataset.ciDia; avisoCierre(''); pintarCierre();
+  ciDia = b.dataset.ciDia; ciEditado = false; avisoCierre(''); pintarCierre();
 });
+$('f-cierre').addEventListener('input', () => { ciEditado = true; $('ci-auto').hidden = true; });
 $('ci-total').addEventListener('input', e => { const d = e.target.value.replace(/\D/g, ''); e.target.value = d ? numAR(+d) : ''; });
 $('f-cierre').addEventListener('submit', async e => {
   e.preventDefault(); avisoCierre('');
@@ -1234,12 +1303,13 @@ $('f-cierre').addEventListener('submit', async e => {
   const datos = {dia: ciDia, total: tot ? +tot : null}; CLAVES.forEach((k, i) => datos[k] = +v[i] || 0);
   await conBoton($('ci-ok'), async () => {
     try{
-      CI = await rpc('tc_local_guardar_cierre', {p_local_id: yo.id, p_pin: pin, p_cierre: datos}); pintarCierre();
+      CI = await rpc('tc_local_guardar_cierre', {p_local_id: yo.id, p_pin: pin, p_cierre: datos}); ciEditado = false; pintarCierre();
       const n = CLAVES.reduce((s, k) => s + datos[k], 0);
       avisoCierre(`¡Listo! Cierre de ${ciDia} guardado: ${numAR(n)} ${n === 1 ? 'cliente' : 'clientes'}${datos.total ? ' · $ ' + numAR(datos.total) : ''}.`, true);
       try{ navigator.vibrate && navigator.vibrate(60); }catch(_){}
     }catch(err){ if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err); avisoCierre(err.message); }
   });
+  $('ci-ok').textContent = CI && CI[ciDia] ? 'Actualizar cierre' : 'Guardar cierre';
 });
 
 // ---------- Cómo se mueve tu negocio (solo dueño) ----------
