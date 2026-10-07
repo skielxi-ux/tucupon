@@ -262,6 +262,44 @@ a.btn{text-decoration:none}
 .premio-ok .btn{background:#C4F04A;color:#1E0B45;margin-top:4px}
 #ex-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media (min-width:640px){#ex-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Cierre del día */
+.cierre{display:grid;gap:12px;margin-top:16px}
+.ci-dia{display:flex;gap:6px}
+.ci-dia button{border:2px solid var(--line);border-radius:999px;padding:6px 16px;font-weight:800;font-size:.9rem;color:var(--muted);background:var(--surface)}
+.ci-dia button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.ci-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:640px){.ci-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.ci-f{display:grid;gap:6px;background:var(--surface-2);border-radius:16px;padding:10px 12px}
+.ci-l{font-weight:800;font-size:.92rem;color:var(--heading)}
+.ci-l small{display:block;font-weight:600;font-size:.74rem;color:var(--muted)}
+.ci-f .field{font-size:1.3rem;font-weight:800;text-align:center;background:var(--surface)}
+.ci-f .field::-webkit-inner-spin-button{-webkit-appearance:none}.ci-f .field{-moz-appearance:textfield}
+/* Cómo se mueve tu negocio */
+.ng{display:grid;gap:4px}
+.ng-prog{height:12px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:14px}
+.ng-prog i{display:block;height:100%;background:linear-gradient(90deg,#7B3FF0,#C4F04A);border-radius:99px}
+.ng-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:10px;margin-top:12px}
+.ng-kpis>div{background:var(--surface-2);border-radius:16px;padding:12px 14px}
+.ng-kpis span{display:block;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.ng-kpis b{display:block;font:900 1.7rem/1.1 var(--font-display);color:var(--heading);margin-top:4px;font-variant-numeric:tabular-nums}
+.ng-kpis em{display:block;font-style:normal;font-size:.78rem;font-weight:700;color:var(--muted);margin-top:2px}
+.up{color:#0B7A54!important}.down{color:#C4382F!important}
+.ng-reco{margin-top:14px;border-radius:18px;padding:14px 16px;background:linear-gradient(140deg,#2B0F63,#5B22C7);color:#fff;display:grid;gap:8px}
+.ng-reco .t{font-weight:900;font-size:1.05rem}
+.ng-reco p{font-size:.94rem;line-height:1.45}.ng-reco b{color:#C4F04A}
+.ng-mejor{margin-top:10px;font-size:.9rem;color:var(--ink)}
+.ng-mapa{display:grid;grid-template-columns:52px repeat(7,minmax(30px,1fr));gap:4px;min-width:290px}
+.ng-d{text-align:center;font-size:.75rem;font-weight:800;color:var(--muted)}
+.ng-f{display:flex;flex-direction:column;justify-content:center;font-size:1rem;line-height:1.1}
+.ng-f small{font-size:.62rem;font-weight:700;color:var(--muted)}
+.ng-c{height:44px;border-radius:10px;font-weight:800;font-size:.85rem;border:2px solid transparent;color:#1E0B45}
+.ng-c.g1,.kp-ley .g1{background:#FDE0E0}.ng-c.n1{background:#FDE0E0}
+.ng-c.n2,.kp-ley .g2{background:#FFE7B8}.ng-c.n3,.kp-ley .g3{background:#D7F0A0}.ng-c.n4,.kp-ley .g4{background:#7BC96F}
+.kp-ley .g1{background:#FDE0E0}
+.ng-c.cer,.ng-c.sd{background:var(--surface-2);color:var(--muted)}
+.ng-c.flojo{border-color:#C4382F}
+.ng-c.sel{outline:3px solid var(--brand);outline-offset:1px}
 .premio-ok.entregado{background:#E3F7EE;color:#0B5E46}
 </style>
 
@@ -303,6 +341,7 @@ a.btn{text-decoration:none}
 
     <!-- KPIs -->
     <section id="t-kpis" class="panel" hidden>
+      <div id="ng" class="card ng"></div>
       <div class="kp-top">
         <div class="kp-card dest"><span>Cupones visibles</span><b id="kp-vis">–</b></div>
         <div class="kp-card"><span>Pedidos</span><b id="kp-ped">–</b></div>
@@ -345,6 +384,21 @@ a.btn{text-decoration:none}
         <button type="submit" class="btn full">Buscar código</button>
       </form>
       <div id="c-result"></div>
+
+      <form id="f-cierre" class="card cierre" novalidate>
+        <div class="row"><h2 class="grow">🧾 Cierre del día</h2><span id="ci-racha" class="chip" hidden></span></div>
+        <p class="muted" style="font-size:.9rem;margin-top:-4px">¿Cuántos clientes atendieron en cada franja? Con esto ves qué días y horarios son flojos, para no hacer descuentos a ciegas.</p>
+        <div class="ci-dia" role="group" aria-label="Día del cierre"><button type="button" data-ci-dia="hoy" aria-pressed="true">Hoy</button><button type="button" data-ci-dia="ayer" aria-pressed="false">Ayer</button></div>
+        <div class="ci-grid">
+          <label class="ci-f"><span class="ci-l">☀️ Mañana<small>hasta las 12 h</small></span><input id="ci-0" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
+          <label class="ci-f"><span class="ci-l">🍽️ Mediodía<small>12 a 15 h</small></span><input id="ci-1" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
+          <label class="ci-f"><span class="ci-l">🌤️ Tarde<small>15 a 20 h</small></span><input id="ci-2" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
+          <label class="ci-f"><span class="ci-l">🌙 Noche<small>desde las 20 h</small></span><input id="ci-3" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
+        </div>
+        <div><label class="label" for="ci-total">💵 Total vendido en el día <span class="muted" style="font-weight:600">(opcional)</span></label><input id="ci-total" class="field" inputmode="numeric" placeholder="$ 0" autocomplete="off"></div>
+        <div id="ci-alert" class="alert" hidden></div>
+        <button type="submit" class="btn full" id="ci-ok">Guardar cierre</button>
+      </form>
     </section>
 
     <!-- Canjes del día -->
@@ -999,12 +1053,12 @@ function tab(t){
   if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
   ['canjear', 'hoy', 'kpis', 'cupones', 'caja', 'sellos', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
-  if(t === 'canjear') setTimeout(() => $('c-codigo').focus(), 50);
+  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarCierre(); }
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
   if(t === 'cupones') cargarCupones();
   if(t === 'caja') cargarCaja();
   if(t === 'sellos') cargarSellos();
-  if(t === 'kpis') cargarKpis();
+  if(t === 'kpis'){ cargarKpis(); cargarNegocio(); }
   if(t === 'referir') prepararReferir();
   if(t === 'perfil') cargarPerfil();
   if(t === 'ajustes') cargarPinCaja();
@@ -1139,6 +1193,147 @@ document.addEventListener('click', async e => {
     return;
   }
   if(e.target.closest('#c-otro')){ $('c-result').innerHTML = ''; $('c-codigo').value = ''; $('c-codigo').focus(); }
+});
+
+
+// ---------- Cierre del día ----------
+const FRANJAS = [
+  {n: 'Mañana', e: '☀️', r: 'hasta las 12 h', d: '08:00', h: '12:00'},
+  {n: 'Mediodía', e: '🍽️', r: '12 a 15 h', d: '12:00', h: '15:00'},
+  {n: 'Tarde', e: '🌤️', r: '15 a 20 h', d: '15:00', h: '20:00'},
+  {n: 'Noche', e: '🌙', r: 'desde las 20 h', d: '20:00', h: '24:00'},
+];
+const CLAVES = ['manana', 'mediodia', 'tarde', 'noche'];
+let CI = null, ciDia = 'hoy';
+const numAR = n => Number(n || 0).toLocaleString('es-AR');
+function avisoCierre(m, ok){ const a = $('ci-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
+function pintarCierre(){
+  const c = CI && CI[ciDia];
+  $$('[data-ci-dia]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ciDia === ciDia)));
+  CLAVES.forEach((k, i) => $('ci-' + i).value = c ? c[k] : '');
+  $('ci-total').value = c && c.total != null ? numAR(Math.round(c.total)) : '';
+  $('ci-ok').textContent = c ? 'Actualizar cierre' : 'Guardar cierre';
+  const r = CI ? CI.racha : 0, rc = $('ci-racha');
+  rc.hidden = !r; rc.textContent = r === 1 ? '🔥 1 día' : `🔥 ${r} días seguidos`;
+}
+async function cargarCierre(){
+  if(!yo) return;
+  try{ CI = await rpc('tc_local_cierre', {p_local_id: yo.id, p_pin: pin}); pintarCierre(); }catch(err){ /* sin conexión: queda el formulario vacío */ }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-ci-dia]'); if(!b) return;
+  ciDia = b.dataset.ciDia; avisoCierre(''); pintarCierre();
+});
+$('ci-total').addEventListener('input', e => { const d = e.target.value.replace(/\D/g, ''); e.target.value = d ? numAR(+d) : ''; });
+$('f-cierre').addEventListener('submit', async e => {
+  e.preventDefault(); avisoCierre('');
+  const v = [0, 1, 2, 3].map(i => $('ci-' + i).value.trim());
+  if(v.some(x => x !== '' && !/^\d{1,5}$/.test(x))) return avisoCierre('Usá solo números enteros para los clientes.');
+  if(v.every(x => !x || +x === 0)) return avisoCierre('Cargá cuántos clientes tuviste en al menos una franja.');
+  const tot = $('ci-total').value.replace(/\D/g, '');
+  const datos = {dia: ciDia, total: tot ? +tot : null}; CLAVES.forEach((k, i) => datos[k] = +v[i] || 0);
+  await conBoton($('ci-ok'), async () => {
+    try{
+      CI = await rpc('tc_local_guardar_cierre', {p_local_id: yo.id, p_pin: pin, p_cierre: datos}); pintarCierre();
+      const n = CLAVES.reduce((s, k) => s + datos[k], 0);
+      avisoCierre(`¡Listo! Cierre de ${ciDia} guardado: ${numAR(n)} ${n === 1 ? 'cliente' : 'clientes'}${datos.total ? ' · $ ' + numAR(datos.total) : ''}.`, true);
+      try{ navigator.vibrate && navigator.vibrate(60); }catch(_){}
+    }catch(err){ if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err); avisoCierre(err.message); }
+  });
+});
+
+// ---------- Cómo se mueve tu negocio (solo dueño) ----------
+const DIAS_N = ['domingos', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábados'];
+const DIAS_C = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const DIAS_S = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const ORDEN_D = [1, 2, 3, 4, 5, 6, 0];
+let NG = null, ngSel = null;
+const MIN_DIAS = 7;
+function promedios(cierres){
+  const sum = Array.from({length: 7}, () => [0, 0, 0, 0]), cnt = Array(7).fill(0);
+  cierres.forEach(c => { cnt[c.dow]++; c.c.forEach((v, f) => sum[c.dow][f] += v); });
+  return sum.map((fs, d) => fs.map(v => cnt[d] ? v / cnt[d] : null));
+}
+const pctTxt = p => (p > 0 ? '+' : '') + Math.round(p) + '%';
+function analizar(){
+  const cs = NG.cierres, hoy = new Date(NG.hoy + 'T00:00:00');
+  const dias = d => (hoy - new Date(d + 'T00:00:00')) / 864e5;
+  const prom = promedios(cs);
+  const celdas = [];
+  prom.forEach((fs, d) => fs.forEach((v, f) => { if(v !== null && v > 0) celdas.push({d, f, v}); }));
+  const media = celdas.length ? celdas.reduce((s, c) => s + c.v, 0) / celdas.length : 0;
+  const ord = celdas.slice().sort((a, b) => a.v - b.v);
+  const tot = arr => arr.reduce((s, c) => s + c.c.reduce((a, b) => a + b, 0), 0);
+  const u7 = cs.filter(c => dias(c.dia) < 7), p7 = cs.filter(c => dias(c.dia) >= 7 && dias(c.dia) < 14);
+  const conPlata = cs.filter(c => c.total != null && dias(c.dia) < 28);
+  const ticket = conPlata.length ? conPlata.reduce((s, c) => s + +c.total, 0) / Math.max(1, tot(conPlata)) : null;
+  const hoyC = cs.find(c => dias(c.dia) === 0), semPas = cs.find(c => dias(c.dia) === 7);
+  return {prom, media, peor: ord[0], mejor: ord[ord.length - 1], u7, p7, tot, ticket, hoyC, semPas, dias};
+}
+function tendenciaCelda(d, f){
+  const cs = NG.cierres, hoy = new Date(NG.hoy + 'T00:00:00'), dias = x => (hoy - new Date(x + 'T00:00:00')) / 864e5;
+  const avg = arr => arr.length ? arr.reduce((s, c) => s + c.c[f], 0) / arr.length : null;
+  const a = avg(cs.filter(c => c.dow === d && dias(c.dia) < 28)), b = avg(cs.filter(c => c.dow === d && dias(c.dia) >= 28 && dias(c.dia) < 56));
+  return a !== null && b ? (a - b) / b * 100 : null;
+}
+function pintarNegocio(){
+  const el = $('ng'); if(!NG) return;
+  const n = NG.cierres.length;
+  if(n < MIN_DIAS){
+    el.innerHTML = `<h2>📊 Cómo se mueve tu negocio</h2>
+      <p class="muted" style="margin-top:6px;font-size:.92rem">Cargá el <b>cierre del día</b> durante ${MIN_DIAS} días (lo puede hacer tu encargado al cerrar caja) y te mostramos tus días y horarios flojos, para que sepas dónde conviene poner un descuento.</p>
+      <div class="ng-prog"><i style="width:${Math.round(n / MIN_DIAS * 100)}%"></i></div>
+      <p style="font-weight:800;margin-top:8px">Llevás ${n} de ${MIN_DIAS} días${NG.racha > 1 ? ` · 🔥 ${NG.racha} seguidos` : ''}</p>
+      <button type="button" class="btn full" data-ir-cierre style="margin-top:12px">Cargar el cierre de hoy</button>`;
+    return;
+  }
+  const A = analizar(), t7 = A.tot(A.u7), tp = A.tot(A.p7);
+  const tend = A.p7.length && tp ? (t7 - tp) / tp * 100 : null;
+  const maxV = Math.max(...A.prom.flat().filter(v => v !== null), 1);
+  const nivel = v => v === null ? 'sd' : v === 0 ? 'cer' : 'n' + Math.min(4, Math.max(1, Math.ceil(v / maxV * 4)));
+  const reco = A.peor && A.media && A.peor.v < A.media * .85 ? A.peor : null;
+  el.innerHTML = `<div class="row" style="align-items:flex-start"><h2 class="grow">📊 Cómo se mueve tu negocio</h2>${NG.racha ? `<span class="chip">🔥 ${NG.racha} ${NG.racha === 1 ? 'día' : 'días seguidos'}</span>` : ''}</div>
+    <p class="muted" style="font-size:.85rem;font-weight:600">Según los cierres del día de las últimas 12 semanas (${n} ${n === 1 ? 'día' : 'días'} cargados)</p>
+    <div class="ng-kpis">
+      <div><span>Clientes últimos 7 días</span><b>${numAR(t7)}</b>${tend === null ? '' : `<em class="${tend >= 0 ? 'up' : 'down'}">${tend >= 0 ? '▲' : '▼'} ${pctTxt(tend)} vs. semana anterior</em>`}</div>
+      ${A.hoyC && A.semPas ? (() => { const h = A.hoyC.c.reduce((a, b) => a + b, 0), s = A.semPas.c.reduce((a, b) => a + b, 0), p = s ? (h - s) / s * 100 : null;
+        return `<div><span>Hoy</span><b>${numAR(h)}</b>${p === null ? '' : `<em class="${p >= 0 ? 'up' : 'down'}">${p >= 0 ? '▲' : '▼'} ${pctTxt(p)} vs. el ${DIAS_S[A.hoyC.dow]} pasado</em>`}</div>`; })() : ''}
+      ${A.ticket ? `<div><span>Ticket promedio</span><b>$ ${numAR(Math.round(A.ticket))}</b><em>últimas 4 semanas</em></div>` : ''}
+    </div>
+    ${reco ? `<div class="ng-reco"><p class="t">💡 Tu momento más flojo</p>
+      <p>Los <b>${DIAS_N[reco.d]} a la ${FRANJAS[reco.f].n.toLowerCase()}</b> (${FRANJAS[reco.f].r}) tenés en promedio <b>${numAR(Math.round(reco.v))} clientes</b>, un <b>${Math.round((1 - reco.v / A.media) * 100)}% menos</b> que tu promedio. Ahí un descuento te puede sumar ventas sin regalar en tus horarios llenos.</p>
+      <button type="button" class="btn lima full" data-ng-cupon="${reco.d}-${reco.f}">Crear cupón para los ${DIAS_N[reco.d]} · ${FRANJAS[reco.f].r}</button></div>` : ''}
+    ${A.mejor ? `<p class="ng-mejor">⭐ Tu mejor momento: <b>${DIAS_N[A.mejor.d]} a la ${FRANJAS[A.mejor.f].n.toLowerCase()}</b> (${numAR(Math.round(A.mejor.v))} clientes en promedio). Ahí no hace falta descuento.</p>` : ''}
+    <div class="scroll" style="margin-top:14px"><div class="ng-mapa">
+      <span></span>${ORDEN_D.map(d => `<span class="ng-d">${DIAS_C[d]}</span>`).join('')}
+      ${FRANJAS.map((fr, f) => `<span class="ng-f">${fr.e}<small>${fr.n}</small></span>` + ORDEN_D.map(d => { const v = A.prom[d][f];
+        return `<button type="button" class="ng-c ${nivel(v)} ${reco && reco.d === d && reco.f === f ? 'flojo' : ''}" data-ng-c="${d}-${f}" aria-label="${DIAS_N[d]} ${fr.n}: ${v === null ? 'sin datos' : Math.round(v) + ' clientes'}">${v === null ? '·' : v === 0 ? '–' : Math.round(v)}</button>`; }).join('')).join('')}
+    </div></div>
+    <div id="ng-det" class="kp-det">${ngSel ? '' : 'Tocá un cuadro para ver el detalle.'}</div>
+    <div class="kp-ley"><span>Menos</span><i class="g1"></i><i class="g2"></i><i class="g3"></i><i class="g4"></i><span>Más clientes</span><span style="margin-left:auto">– cerrado · sin datos</span></div>`;
+  if(ngSel) detalleNg(ngSel);
+}
+function detalleNg(k){
+  ngSel = k; const [d, f] = k.split('-').map(Number), v = promedios(NG.cierres)[d][f], tr = tendenciaCelda(d, f);
+  $$('.ng-c').forEach(b => b.classList.toggle('sel', b.dataset.ngC === k));
+  $('ng-det').innerHTML = v === null ? `Todavía no cargaste ningún ${DIAS_S[d]}.`
+    : `<b>${DIAS_N[d][0].toUpperCase() + DIAS_N[d].slice(1)} · ${FRANJAS[f].n}</b> (${FRANJAS[f].r}): ${numAR(Math.round(v))} clientes en promedio${tr === null ? '' : ` · <span class="${tr >= 0 ? 'up' : 'down'}">${pctTxt(tr)}</span> vs. las 4 semanas anteriores`}
+       ${v > 0 ? `<br><button type="button" class="btn ghost sm" style="margin-top:8px" data-ng-cupon="${k}">Crear cupón para esta franja</button>` : ''}`;
+}
+async function cargarNegocio(){
+  if(!yo || esCaja()) return;
+  try{ NG = await rpc('tc_local_negocio', {p_local_id: yo.id, p_pin: pin}); pintarNegocio(); }catch(err){ manejarError(err); }
+}
+document.addEventListener('click', async e => {
+  let b;
+  if((b = e.target.closest('[data-ng-c]'))){ detalleNg(b.dataset.ngC); return; }
+  if(e.target.closest('[data-ir-cierre]')){ tab('canjear'); setTimeout(() => $('f-cierre').scrollIntoView({behavior: 'smooth', block: 'start'}), 80); return; }
+  if((b = e.target.closest('[data-ng-cupon]'))){
+    const [d, f] = b.dataset.ngCupon.split('-').map(Number);
+    await abrirFormCupon(null);
+    $$('#cf-dias input').forEach(i => i.checked = +i.value === d);
+    ponerHora('cf-desde', FRANJAS[f].d); ponerHora('cf-hasta', FRANJAS[f].h); resumenHorarios();
+  }
 });
 
 // ---------- Tarjeta de sellos (configuración) ----------
