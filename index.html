@@ -306,6 +306,10 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .local .min{min-width:0;flex:1}
 .local > button{min-width:0}
 .local .ln{display:block;font:800 1.08rem/1.2 var(--font-display);color:var(--heading);overflow-wrap:anywhere}
+.local .tkt{position:relative;display:inline-flex;white-space:nowrap;align-items:center;gap:6px;margin-top:8px;padding:4px 12px 4px 9px;border-radius:8px;background:var(--lima,#C4F04A);color:#1E0B45;font-size:.78rem;font-weight:800;line-height:1.2;-webkit-mask:radial-gradient(circle 4px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 4px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 4px at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 4px at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat}
+.local .tkt .tk{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#1E0B45;color:#C4F04A}
+.local .tkt .tk svg{width:10px;height:10px}
+.local .tkt.rel{background:#FFD84D}
 .local .dir{display:block;font-size:.82rem;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
 .local .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .fav{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;color:var(--muted);transition:transform .15s}
@@ -1338,13 +1342,21 @@ const logo = l => { const src = logoDe(l);
 const tema = c => 't' + ((c.local + c.id) % 4);
 const vacio = txt => `<div class="empty">${txt}</div>`;
 
+// Ticket en la lista: cuántos descuentos activos tiene el local
+function ticketLocal(l){
+  const cs = (l.cupones || []).filter(c => !esRel(c) || new Date(c.relampago_fin).getTime() > ahoraMs());
+  if(!cs.length) return '';
+  const rel = cs.some(esRel), n = cs.length;
+  return `<span class="tkt${rel ? ' rel' : ''}"${rel ? ' title="Tiene un descuento relámpago activo"' : ''}>${rel ? '⚡' : TK} ${n} ${n === 1 ? 'descuento' : 'descuentos'}</span>`;
+}
 function localCard(l){
   return `<div class="local">
     <button type="button" data-local="${l.id}" style="display:flex;gap:14px;align-items:center;flex:1;min-width:0;text-align:left">
       ${logo(l)}
       <span class="min">
         <span class="ln">${esc(l.nombre)}${TARJETAS[l.id] ? '<span class="chip-sellos">🎟️ Sellos</span>' : ''}</span>
-        <span class="dir">${esc(sedeVista(l).barrio)} · ${esc(sedeVista(l).dir)}${sucTexto(l)}</span>
+        <span class="dir">${esc(sedeVista(l).barrio)}${sedeVista(l).dir ? ' · ' + esc(sedeVista(l).dir) : ''}${sucTexto(l)}</span>
+        ${ticketLocal(l)}
       </span>
     </button>
     ${favBtn(l)}
