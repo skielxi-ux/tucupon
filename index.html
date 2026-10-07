@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tucupón · Descuentos en Tucumán</title>
-<meta name="description" content="Descuentos en Tucumán, todos en un lugar: gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis y pedí tu código.">
-<meta property="og:title" content="Tucupón · Descuentos en Tucumán">
-<meta property="og:description" content="Gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis y pedí tu código.">
+<title>Tucupón · Guía de gastronomía y descuentos en Tucumán</title>
+<meta name="description" content="Guía de gastronomía y descuentos en Tucumán. Todos en un lugar: restaurantes, bares, cafeterías, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis y pedí tu código.">
+<meta property="og:title" content="Tucupón · Guía de gastronomía y descuentos en Tucumán">
+<meta property="og:description" content="Todos en un lugar: restaurantes, bares, cafeterías, hospedajes, gimnasios y mucho más. Registrate gratis y pedí tu código.">
 <meta property="og:image" content="https://tucuponapp.com/icono.png">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="icono.png">
@@ -217,6 +217,18 @@ a.banner:active{transform:scale(.99)}
 .tj-mini .n .logo{width:34px;height:34px;min-width:34px;border-radius:10px;font-size:.72rem}
 .tj-mini .sellos{gap:5px;margin-top:10px}.tj-mini .sellos i{width:20px;height:20px;font-size:.6rem;border-width:1.5px}
 .tj-mini .f{margin-top:8px;font-size:.8rem;font-weight:700;opacity:.9}
+.pedi{margin-top:26px;border-radius:26px;padding:20px 18px;background:linear-gradient(135deg,#2B0F63,#5B22C7);color:#fff;position:relative;overflow:hidden}
+.pedi::after{content:"";position:absolute;right:-50px;top:-50px;width:160px;height:160px;border-radius:50%;background:rgba(196,240,74,.18)}
+.pedi h2{color:#fff;font-size:1.25rem;position:relative;z-index:1}
+.pedi p{position:relative;z-index:1;font-size:.9rem;opacity:.88;margin-top:4px}
+.pedi form{position:relative;z-index:1;display:flex;gap:8px;margin-top:14px}
+.pedi input{flex:1;min-width:0;border:0;border-radius:14px;padding:13px 14px;font:inherit;font-weight:600;background:#fff;color:#1E0B45}
+.pedi button{border-radius:14px;padding:0 18px;font-weight:800;background:var(--accent);color:var(--on-accent);white-space:nowrap}
+.pedi .ok{position:relative;z-index:1;margin-top:12px;background:rgba(255,255,255,.14);border-radius:14px;padding:10px 12px;font-weight:700;font-size:.9rem}
+.pedi .ok b{color:var(--accent)}
+.link-local{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border-radius:14px;padding:11px 16px;font-weight:800;text-decoration:none;background:var(--surface-2);color:var(--heading);border:1px solid var(--line)}
+.link-local:hover{border-color:var(--brand)}
+.link-local svg{width:16px;height:16px}
 .sec-extr{margin-top:26px;border-radius:26px;padding:16px 16px 4px;margin-inline:-6px;background:linear-gradient(135deg,rgba(255,111,177,.16),rgba(123,63,240,.14))}
 .sec-extr .rail{padding-bottom:16px}
 .extr-ban{margin-top:18px;display:flex;align-items:center;gap:10px;width:100%;border:0;font:inherit;text-align:left;cursor:pointer;border-radius:18px;padding:12px 14px;background:linear-gradient(135deg,#FFE3F0,#EFE6FF);color:#3A145F}
@@ -503,8 +515,8 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
       <div class="ld-grid">
         <div>
           <span class="ld-pill"><span class="em">📍</span> Tucumán</span>
-          <h1>Descuentos en Tucumán, <mark>todos en un lugar</mark></h1>
-          <p class="sub">Gastronomía, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis, elegí un descuento y mostrá tu código al pagar.</p>
+          <h1>Guía de gastronomía y descuentos <mark>en Tucumán</mark></h1>
+          <p class="sub"><b>Todos en un lugar:</b> restaurantes, bares, cafeterías, hospedajes, gimnasios, indumentaria y mucho más. Registrate gratis, elegí un descuento y mostrá tu código al pagar.</p>
           <div class="ld-ctas"><button type="button" class="ld-btn lima" data-ir-auth="signup">Crear mi cuenta gratis</button><button type="button" class="ld-btn ghost" data-ir-auth="login">Ya tengo cuenta</button></div>
           <div class="ld-chips"><span>Gratis para vos</span><span>Sin instalar nada</span><span>Desde tu celular</span></div>
         </div>
@@ -575,7 +587,7 @@ try{ if(/access_token|error_description/.test(location.hash) || Object.keys(loca
   <div class="blob" style="right:-30px;top:40px;width:90px;height:90px"></div>
   <div class="auth-top wrap">
     <h1 class="sr" style="position:absolute">Tucupón</h1><img src="logo.png" alt="Tucupón" class="logo-img" style="height:64px;width:auto;display:block;margin:0 auto;max-width:100%" width="656" height="160">
-    <p>Descuentos en Tucumán, todos en un lugar</p>
+    <p>Guía de gastronomía y descuentos en Tucumán</p>
   </div>
   <div class="auth-card">
     <div id="auth-tabs" class="tabs" role="tablist">
@@ -706,6 +718,13 @@ try{ if(/access_token|error_description/.test(location.hash) || Object.keys(loca
         <section class="sec">
           <div class="sec-h"><h2>Los más pedidos</h2><span class="chip c-brand">Top de la semana</span></div>
           <div id="top-rail" class="rail"></div>
+        </section>
+
+        <section class="pedi" id="pedi">
+          <h2>💬 ¿Qué comercio te gustaría ver en Tucupón?</h2>
+          <p>Escribí el lugar donde querés tener descuentos. Se lo contamos y le mostramos cuánta gente lo pide.</p>
+          <form id="f-pedi" autocomplete="off"><input id="pedi-in" maxlength="80" placeholder="Ej.: tu bar o café favorito" aria-label="Nombre del comercio"><button type="submit">Pedir</button></form>
+          <div id="pedi-ok" class="ok" hidden></div>
         </section>
       </div>
 
@@ -892,7 +911,7 @@ async function rpc(fn, args = {}, reintento){
 
 // Datos que vienen de la base
 let RUBROS = [], LOCALES = [], CUPONES = [], BARRIOS = [], favs = [], mios = {};
-const PROVINCIAS = ['Buenos Aires','Catamarca','Chaco','Chubut','Ciudad de Buenos Aires','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'];
+const PROVINCIAS = ['Jujuy','Salta','Santiago del Estero','Tucumán']   // por ahora solo estas; para sumar una, agregala acá;
 let prov = 'Tucumán';
 try{ const g = localStorage.getItem('tucupon.prov'); if(PROVINCIAS.includes(g)) prov = g; }catch(e){}
 const enProv = l => (l.provincia || 'Tucumán') === prov;
@@ -1037,6 +1056,31 @@ function pintarHojaVisita(){
   const hs = $('s-hor'); hs.hidden = !e;
   if(e){ hs.className = 'box s-hor ok'; hs.innerHTML = `<p class="k">🎟️ Tu tarjeta · ${e.sellos}/${e.req}</p><p class="v2">Premio: <b>${esc(e.premio)}</b>${e.premios ? ` · Ya ganaste ${e.premios} ${e.premios === 1 ? 'vez' : 'veces'}` : ''}</p>`; }
 }
+
+
+// ---------- Link del local ----------
+function linkLocal(l){
+  if(!l.link || !/^https?:\/\//i.test(l.link)) return '';
+  let host = ''; try{ host = new URL(l.link).hostname.replace(/^www\./, ''); }catch(e){ return ''; }
+  const [ic, txt] = /instagram\.com$/.test(host) ? ['📸', 'Ver su Instagram'] : /facebook\.com$|fb\.com$/.test(host) ? ['👍', 'Ver su Facebook'] : /tiktok\.com$/.test(host) ? ['🎵', 'Ver su TikTok'] : ['🌐', 'Visitar su sitio web'];
+  return `<a class="link-local" href="${esc(l.link)}" target="_blank" rel="noopener nofollow">${ic} ${txt} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>`;
+}
+
+// ---------- Pedir un comercio ----------
+async function pedirComercio(nombre){
+  nombre = (nombre || '').trim().replace(/\s+/g, ' ');
+  const ok = $('pedi-ok');
+  if(nombre.length < 2){ toast('Escribí el nombre del comercio.'); return; }
+  try{
+    const r = await rpc('tc_pedir_comercio', {p_nombre: nombre, p_provincia: prov});
+    ok.hidden = false;
+    ok.innerHTML = r.ya ? `Ya habías pedido <b>${esc(nombre)}</b>. ${r.votos === 1 ? 'Por ahora sos el único' : `Ya somos <b>${r.votos} personas</b>`} que lo queremos en Tucupón. 🙌`
+      : `¡Listo! Pediste <b>${esc(nombre)}</b>${r.votos > 1 ? ` y ya son <b>${r.votos} personas</b> que lo quieren` : ''}. Le vamos a contar que lo están esperando. 🙌`;
+    $('pedi-in').value = '';
+    try{ navigator.vibrate && navigator.vibrate(40); }catch(_){}
+  }catch(e){ toast(e.message); }
+}
+$('f-pedi').addEventListener('submit', e => { e.preventDefault(); pedirComercio($('pedi-in').value); });
 
 // ---------- Te extrañamos ----------
 let EXTR = [];
@@ -1399,7 +1443,7 @@ function pintarHome(){
   if(qn){
     const r = ordenar(LOCALES.filter(l => porBarrio(l) && (norm(l.nombre).includes(qn) || norm(rubroDe(l.rubro).nombre).includes(qn))));
     $('res-count').textContent = `${r.length} ${r.length === 1 ? 'local' : 'locales'}`;
-    $('res-list').innerHTML = r.length ? r.map(localCard).join('') : vacio(`No encontramos locales con “${esc(q.trim())}”${barrio !== 'Todos' ? ' en ' + esc(barrio) : ''}. Probá con otro nombre o con “Todos los barrios”.`);
+    $('res-list').innerHTML = r.length ? r.map(localCard).join('') : vacio(`No encontramos locales con “${esc(q.trim())}”${barrio !== 'Todos' ? ' en ' + esc(barrio) : ''}. Probá con otro nombre o con “Todos los barrios”.`) + `<button type="button" class="link-local" data-pedir-q style="margin:12px auto 0;display:flex">💬 Pedir que “${esc(q.trim())}” se sume a Tucupón</button>`;
   }else{
     const vis = LOCALES.filter(porBarrio);
     $('total-locales').textContent = `${vis.length} ${vis.length === 1 ? 'local adherido' : 'locales adheridos'}`;
@@ -1454,7 +1498,7 @@ function pintarLocal(){
   const r = rubroDe(l.rubro);
   $('ficha').innerHTML = `<div class="top">${logo(l)}<div style="min-width:0;flex:1"><p class="muted" style="font-size:.8rem;font-weight:800">${esc(r.icono)} ${esc(r.nombre)}</p><h2>${esc(l.nombre)}</h2></div>${favBtn(l)}</div>
     ${masSuc(l) ? `<p class="label" style="margin:16px 0 6px">${masSuc(l) + 1} sucursales · los descuentos valen en todas</p>${sedesHTML(l)}`
-      : `<dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`}`;
+      : `<dl><dt>Barrio</dt><dd>${esc(l.barrio)}</dd><dt>Dirección</dt><dd>${esc(l.dir)}</dd></dl>`}${linkLocal(l)}`;
   $('local-tarjeta').hidden = !TARJETAS[l.id]; $('local-tarjeta').innerHTML = tarjetaHTML(l.id);
   $('local-extr').innerHTML = extrBanner(l.id);
   const cjl = cajaDelLocal(l.id);
@@ -1716,6 +1760,7 @@ document.addEventListener('click', ev => {
   if(t('[data-go-favs]')){ ir('rubro', {rubro: 'favs'}); return; }
   if(t('[data-limpiar]')){ abrirHoja('sheet-limpiar'); return; }
   if((b = t('[data-visita]'))){ abrirVisita(+b.dataset.visita); return; }
+  if(t('[data-pedir-q]')){ const n = q.trim(); q = ''; $('q').value = ''; document.querySelector('[data-clear]').hidden = true; pintarHome(); pintarBanners(); $('pedi').scrollIntoView({behavior: 'smooth', block: 'center'}); pedirComercio(n); return; }
   if((b = t('[data-caja-res]'))){ abrirReservaCaja(+b.dataset.cajaRes); return; }
   if((b = t('[data-caja-ver]'))){ abrirCaja(+b.dataset.cajaVer); return; }
   if((b = t('[data-caja-cancel]'))){ cancelarCaja(+b.dataset.cajaCancel, b); return; }
