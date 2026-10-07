@@ -931,11 +931,11 @@ function ponerBarrio(sel, otro, valor, prov){
   otro.value = conocido ? '' : (valor || '');
   const w = otro.closest('[data-otro]'); w.hidden = sel.value !== '__otro';
   const lb = w.querySelector('label'); if(lb){ lb.hidden = !tuc; }
-  otro.placeholder = tuc ? 'Escribí el barrio' : 'Barrio o zona (ej.: Nueva Córdoba)';
+  otro.placeholder = tuc ? 'Escribí el barrio' : 'Barrio o zona (ej.: Centro)';
   w.style.marginTop = tuc ? '8px' : '0';
 }
 // ---------- Provincias ----------
-const PROVINCIAS = ['Buenos Aires','Catamarca','Chaco','Chubut','Ciudad de Buenos Aires','Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy','La Pampa','La Rioja','Mendoza','Misiones','Neuquén','Río Negro','Salta','San Juan','San Luis','Santa Cruz','Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'];
+const PROVINCIAS = ['Jujuy','Salta','Santiago del Estero','Tucumán']   // por ahora solo estas; para sumar una, agregala acá;
 function provinciaSelectHTML(vacio){ return (vacio ? `<option value="">${vacio}</option>` : '') + PROVINCIAS.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join(''); }
 // Al cambiar de provincia se reacomoda el campo de barrio (conserva lo escrito si sirve)
 function unirProvincia(provSel, sel, otro){
