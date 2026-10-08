@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2B0F63">
 <title>Tucupón para comercios · Sumá tu local gratis</title>
-<meta name="description" content="Sumá tu comercio a la guía de gastronomía y descuentos de Tucumán: gastronomía, hospedajes, gimnasios, indumentaria y más. Tarjeta de sellos, Caja Sorpresa y estadísticas. Gratis durante el lanzamiento.">
+<meta name="description" content="Llená tus horarios flojos con descuentos que vos controlás. Cupones, tarjeta de sellos, Caja Sorpresa y el mapa de tus días flojos. Gratis durante el lanzamiento.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Tucupón para comercios · Sumá tu local gratis">
-<meta property="og:description" content="Sumá tu comercio a la guía de gastronomía y descuentos de Tucumán. Descuentos, tarjeta de sellos y más. Gastronomía, hospedajes, gimnasios, indumentaria y más. Gratis durante el lanzamiento.">
+<meta property="og:description" content="Llená tus horarios flojos con descuentos que vos controlás. Gratis durante el lanzamiento.">
 <meta property="og:image" content="https://tucuponapp.com/icono.png">
 <meta property="og:url" content="https://tucuponapp.com/comercios">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -54,7 +54,7 @@ section{padding-block:64px}
 .nav img{height:36px;width:auto;display:block}
 .nav .tag{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:99px}
 .nav .r{margin-left:auto;display:flex;gap:8px}
-.nav .r a{color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.1)}
+.nav .r a{white-space:nowrap;color:#fff;text-decoration:none;font-weight:700;font-size:.9rem;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.1)}
 @media (max-width:520px){.nav .r .hide-sm{display:none}}
 
 /* Hero */
@@ -69,6 +69,8 @@ section{padding-block:64px}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .hero .chips{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:22px;font-weight:700;font-size:.92rem;opacity:.92}
 .hero .chips span::before{content:"✓ ";color:var(--lima)}
+.hero .cuantos{margin:18px 0 0;font-weight:700;font-size:.95rem;opacity:.95}
+.hero .cuantos b{color:var(--lima)}
 
 /* Teléfono */
 .phone{position:relative;width:min(100%,330px);margin-inline:auto;border-radius:42px;padding:12px;background:#120826;box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.08)}
@@ -100,6 +102,7 @@ section{padding-block:64px}
 .float.f1{right:-18px;top:44px;transform:rotate(4deg)}
 .float.f2{left:-22px;bottom:-14px;transform:rotate(-3deg)}
 @media (max-width:600px){.float.f1{right:0;top:-22px}.float.f2{left:0}}
+@media (max-width:600px){.screen{min-height:0}.mini-sellos{display:none}.phone{width:min(100%,300px)}}
 
 /* Franja de logos / números */
 .strip{background:var(--tinta);color:#fff;padding-block:22px}
@@ -114,7 +117,9 @@ section{padding-block:64px}
 /* Pasos */
 .steps{display:grid;gap:16px;margin-top:34px;counter-reset:p}
 @media (min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
-.step{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:24px;position:relative}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;position:relative}
+.como-sec{background:var(--surface);border-block:1px solid var(--line)}
+.como-sec .step{background:var(--bg)}
 .step .n{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--brand);color:#fff;font-weight:900;font-size:1.2rem}
 .step h3{font-size:1.25rem;margin-top:14px;color:var(--heading)}
 .step p{color:var(--muted);margin:8px 0 0}
@@ -123,12 +128,13 @@ section{padding-block:64px}
 /* Funciones */
 .feats{display:grid;gap:16px;margin-top:34px}
 @media (min-width:700px){.feats{grid-template-columns:repeat(2,1fr)}}
-@media (min-width:1050px){.feats{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:1000px){.feats{grid-template-columns:repeat(3,1fr)}}
 .feat{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:24px;display:flex;flex-direction:column}
 .feat .ic{display:grid;place-items:center;width:54px;height:54px;border-radius:18px;font-size:1.7rem;background:var(--surface-2)}
 .feat h3{font-size:1.25rem;margin-top:14px;color:var(--heading)}
 .feat p{color:var(--muted);margin:8px 0 0}
-.feat ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:.95rem}
+.feat ul{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px;font-size:.95rem;line-height:1.45}
+.feat li{position:relative;padding-left:22px}.feat li::before{position:absolute;left:0;top:0}
 .feat li::before{content:"✓";color:var(--verde);font-weight:900;margin-right:8px}
 .feat.star{background:linear-gradient(150deg,#2B0F63,#5B22C7);color:#fff;border:0}
 .feat.star h3{color:#fff}.feat.star p{color:rgba(255,255,255,.85)}.feat.star .ic{background:rgba(255,255,255,.14)}
@@ -140,12 +146,10 @@ section{padding-block:64px}
 
 
 /* Datos del negocio */
-.datos-sec{background:linear-gradient(160deg,#1E0B45,#2E1270);color:#fff}
-.datos-sec h2{color:#fff}
+.datos-sec{background:var(--bg)}
+.datos-sec h2{color:var(--heading)}
 .datos-sec h2 mark{background:var(--lima);color:var(--tinta);padding:0 .15em;border-radius:.18em}
-.datos-sec .lead{color:rgba(255,255,255,.82)}
-.datos-sec .checks b{color:#fff}.datos-sec .checks span{color:rgba(255,255,255,.75)}
-.datos-sec .checks .i{background:rgba(255,255,255,.1)}
+.datos-sec .ng-mock{border:1px solid var(--line);box-shadow:0 30px 60px -34px rgba(43,15,99,.45)}
 .ng-mock{background:#fff;color:#22163F;border-radius:28px;padding:18px;box-shadow:0 40px 70px -30px rgba(0,0,0,.6);max-width:440px;width:100%;margin-inline:auto}
 .ng-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ng-h b{color:#2E1270;font-size:1.08rem}.ng-h span{font-size:.75rem;font-weight:800;background:#EFEAFB;color:#6E6585;border-radius:99px;padding:3px 9px;white-space:nowrap}
@@ -212,7 +216,7 @@ section{padding-block:64px}
 .precio ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px;font-weight:700}
 .precio li::before{content:"✓ ";color:var(--lima);font-weight:900}
 .precio .box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:24px;text-align:center}
-.precio .box p{margin:8px 0 18px;opacity:.85}
+.precio .box p{margin:8px 0 0;opacity:.85}
 
 /* Clientes */
 .clientes{border-radius:28px;padding:26px;background:var(--surface);border:1px solid var(--line);display:flex;flex-wrap:wrap;gap:18px;align-items:center}
@@ -260,25 +264,25 @@ footer a:hover{text-decoration:underline}
   <div class="blob" style="width:200px;height:200px;left:-80px;bottom:-60px;background:rgba(255,111,177,.12)"></div>
   <div class="nav"><div class="wrap">
     <a href="./" aria-label="Ir a Tucupón"><img src="logo.png" alt="Tucupón" width="656" height="160"></a><span class="tag">Comercios</span>
-    <div class="r"><a href="#funciones" class="hide-sm">Funciones</a><a href="local.html">Ingresar</a></div>
+    <div class="r"><a href="local.html">Ingresar al panel</a></div>
   </div></div>
   <div class="wrap grid">
     <div>
       <span class="pill"><span class="em">🎉</span> Gratis para locales durante el lanzamiento</span>
       <h1>Más visitas a tu local, <mark>en los horarios que vos elegís</mark></h1>
-      <p class="sub">Tucupón es la guía de gastronomía y descuentos de Tucumán, todos en un lugar: restaurantes, bares, cafeterías, hospedajes, gimnasios, indumentaria y mucho más. Publicás tus cupones, la gente los encuentra en su celular y tu equipo los valida en segundos. Además sumás tarjeta de sellos para que vuelvan y ves tus horarios flojos para no hacer descuentos a ciegas.</p>
+      <p class="sub">Publicá descuentos en la guía de gastronomía de Tucumán, llená tus días flojos y hacé que tus clientes vuelvan. Todo desde el celular.</p>
       <div class="ctas">
-        <a class="btn wa" data-wa href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Quiero sumar mi local</a>
-        <a class="btn ghost" href="#como">Cómo funciona</a>
+        <a class="btn wa" data-wa href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Escribinos por WhatsApp</a>
       </div>
       <div class="chips"><span>Sin instalar nada</span><span>Sin contratos</span><span>Lo pausás cuando quieras</span></div>
+      <p class="cuantos" id="cuantos" hidden></p>
     </div>
     <div style="position:relative">
       <div class="phone" aria-hidden="true">
         <div class="screen">
           <div class="scr-top"><img src="logo.png" alt="" width="656" height="160"><b>Los mejores descuentos cerca tuyo</b></div>
           <div class="scr-body">
-            <div class="cup"><span class="ic em">🛍️</span><span class="h">Lun a Jue · 10 a 13 h</span><p class="lc" style="margin:8px 0 0">Tu local · Barrio Norte</p><div class="big">20% OFF</div><div class="tt">En toda la tienda</div><div class="go">Obtener código</div></div>
+            <div class="cup"><span class="ic em">🍔</span><span class="h">Lun a Jue · 15 a 19 h</span><p class="lc" style="margin:8px 0 0">Tu local · Barrio Norte</p><div class="big">2x1</div><div class="tt">En hamburguesas dobles</div><div class="go">Obtener código</div></div>
             <div class="mini-caja"><span class="e em">🎁</span><span><b>Caja Sorpresa</b><small>Retirá hoy 20 a 21 h</small></span><span class="p">$ 4.000<s>$ 12.000</s></span></div>
             <div class="mini-sellos"><b><span class="em">🎟️</span> Tarjeta de sellos · 4 de 6</b><div class="dots"><i class="on">✓</i><i class="on">✓</i><i class="on">✓</i><i class="on">✓</i><i></i><i class="em">🎁</i></div></div>
           </div>
@@ -290,69 +294,16 @@ footer a:hover{text-decoration:underline}
   </div>
 </header>
 
-<div class="strip"><div class="wrap">
-  <span><span class="em">🏷️</span> Cupones</span><span><span class="em">⚡</span> Relámpago</span><span><span class="em">🎁</span> Caja Sorpresa</span><span><span class="em">🎟️</span> Tarjeta de sellos</span><span><span class="em">💌</span> Te extrañamos</span><span><span class="em">📊</span> Tus horarios flojos</span>
-</div></div>
-
 <main>
-<section id="rubros" style="padding-bottom:0"><div class="wrap">
-  <span class="kicker">Para todo tipo de comercios</span>
-  <h2>Si tenés un negocio en Tucumán, hay lugar para vos</h2>
-  <p class="lead">Tucupón reúne descuentos de todos los rubros en un solo lugar, así la gente entra a buscar una cosa y descubre tu comercio.</p>
-  <div class="rubros">
-    <span class="ru"><span class="em">🍔</span>Gastronomía</span><span class="ru"><span class="em">🏨</span>Hospedajes</span><span class="ru"><span class="em">🏋️</span>Gimnasios</span>
-    <span class="ru"><span class="em">👕</span>Indumentaria</span><span class="ru"><span class="em">💇</span>Belleza y estética</span><span class="ru"><span class="em">☕</span>Cafeterías</span>
-    <span class="ru"><span class="em">🎬</span>Entretenimiento</span><span class="ru"><span class="em">🛍️</span>Comercios</span><span class="ru"><span class="em">✨</span>Y mucho más</span>
-  </div>
-</div></section>
-
-<section id="como"><div class="wrap">
-  <span class="kicker">Cómo funciona</span>
-  <h2>Tres pasos, sin vueltas</h2>
-  <p class="lead">No hay que instalar nada ni comprar equipos. Todo funciona desde el celular o la computadora del local.</p>
-  <div class="steps">
-    <div class="step reveal"><span class="n">1</span><h3>Cargás tus descuentos</h3><p>Elegís qué ofrecer, qué días y en qué horario. Por ejemplo, un 2x1 de lunes a jueves en la franja que tenés más tranquila.</p></div>
-    <div class="step reveal"><span class="n">2</span><h3>El cliente pide su código</h3><p>Entra a Tucupón desde su celular, encuentra tu local y obtiene un código único para usar una sola vez.</p><span class="code">K7M2QX</span></div>
-    <div class="step reveal"><span class="n">3</span><h3>Tu equipo lo valida</h3><p>El encargado escribe el código en el panel y aplica el descuento. El cliente lo ve confirmado al instante en su celular.</p></div>
-  </div>
-</div></section>
-
-<section id="funciones" style="padding-top:0"><div class="wrap">
-  <span class="kicker">Todo lo que incluye</span>
-  <h2>Herramientas para atraer, vender y fidelizar</h2>
-  <p class="lead">Cada función está pensada para un momento distinto del negocio: llenar horarios flojos, vender lo que sobra y lograr que el cliente vuelva.</p>
-  <div class="feats">
-    <article class="feat star reveal"><span class="ic em">🏷️</span><h3>Cupones de descuento</h3><p>Tu vidriera dentro de Tucupón: los clientes ven tus descuentos, eligen y piden su código.</p>
-      <ul><li>2x1, % de descuento, regalos o pases de prueba</li><li>Por días y franjas horarias</li><li>Con fecha de vencimiento si querés</li><li>Foto de tu producto en cada cupón</li></ul></article>
-    <article class="feat reveal"><span class="ic em">⚡</span><h3>Cupones relámpago</h3><p>¿Una tarde floja? Lanzá un descuento por unas horas y con cantidad limitada. Aparece destacado con cuenta regresiva.</p>
-      <ul><li>Duración de pocas horas</li><li>Stock limitado de códigos</li><li>Ideal para mover un día tranquilo</li></ul></article>
-    <article class="feat caja reveal"><span class="ic em">🎁</span><h3>Caja Sorpresa <span class="tagn">Gastronomía</span></h3><p>Lo que no vendiste en el día, en vez de tirarlo, lo ofrecés en una caja a precio bajo. Menos desperdicio y plata que antes se perdía.</p>
-      <ul><li>La publicás con un toque cada día</li><li>El cliente reserva y paga en el local</li><li>Vos elegís precio, cantidad y horario de retiro</li></ul></article>
-    <article class="feat reveal"><span class="ic em">🎟️</span><h3>Tarjeta de sellos</h3><p>La clásica tarjeta de "la décima es gratis", pero digital. Cada visita suma un sello y al completarla el cliente se lleva tu premio.</p>
-      <ul><li>Vos elegís cuántas visitas y qué premio</li><li>Máximo un sello por día</li><li>Los sellos no vencen</li></ul></article>
-    <article class="feat reveal"><span class="ic em">💌</span><h3>Te extrañamos <span class="tagn">Nuevo</span></h3><p>A los clientes que hace tiempo no vienen, Tucupón les muestra uno de tus cupones con el mensaje "Te extrañamos".</p>
-      <ul><li>Elegís después de cuántos días (30, 45 o 60)</li><li>Funciona solo, sin que hagas nada</li><li>Ves cuántos volvieron gracias a eso</li></ul></article>
-    <article class="feat reveal"><span class="ic em">📊</span><h3>Tus números</h3><p>Sabé qué funciona: cuántos códigos se pidieron, cuántos se usaron y cómo viene la semana.</p>
-      <ul><li>Tus días y horarios flojos, en un mapa</li><li>Códigos pedidos y canjeados</li><li>Resultados de Caja Sorpresa y sellos</li></ul></article>
-    <article class="feat reveal"><span class="ic em">🔑</span><h3>PIN para encargados</h3><p>Tu equipo valida códigos con su propio PIN y solo ve la pantalla de canje. Tus números y configuraciones quedan solo para vos.</p>
-      <ul><li>PIN de dueño y PIN de encargado</li><li>Lo cambiás cuando quieras</li></ul></article>
-    <article class="feat reveal"><span class="ic em">📍</span><h3>Sucursales</h3><p>¿Tenés más de un local? Tus descuentos valen en todas las sucursales y cada una tiene su PIN de caja.</p>
-      <ul><li>Los clientes ven todas tus direcciones</li><li>Sabés en qué sucursal se usó cada código</li></ul></article>
-    <article class="feat reveal"><span class="ic em">💬</span><h3>Se comparte solo</h3><p>Los clientes pueden mandar tus cupones por WhatsApp a sus amigos con un toque, y además guardar tu local en favoritos.</p>
-      <ul><li>Link directo a tu descuento</li><li>Tu local en "favoritos" de cada cliente</li></ul></article>
-  </div>
-</div></section>
-
 <section id="datos" class="datos-sec"><div class="wrap split">
   <div>
-    <span class="kicker" style="color:var(--lima)">Nuevo · Inteligencia para tu negocio</span>
+    <span class="kicker">Lo que nadie más te da</span>
     <h2>No hagas descuentos <mark>a ciegas</mark></h2>
-    <p class="lead">La mayoría de los comercios no sabe con números qué días y horarios son flojos. Tucupón te lo muestra, y te dice dónde conviene poner un descuento y dónde no hace falta.</p>
+    <p class="lead">Tucupón te muestra qué días y horarios son flojos y te dice dónde conviene poner un descuento, y dónde no hace falta.</p>
     <ul class="checks">
-      <li><span class="i em">🧾</span><div><b>Cierre del día en 30 segundos</b><span>Al cerrar, vos o tu encargado cargan cuántos clientes hubo en la mañana, el mediodía, la tarde y la noche. El total vendido es opcional.</span></div></li>
-      <li><span class="i em">🗺️</span><div><b>Tu mapa de la semana</b><span>Ves de un vistazo tus días y franjas flojos (en rojo) y los llenos (en verde).</span></div></li>
-      <li><span class="i em">💡</span><div><b>Te decimos dónde poner el descuento</b><span>"Tus martes a la tarde venden un 80% menos que tu promedio". Con un toque creás el cupón para ese día y horario.</span></div></li>
-      <li><span class="i em">📈</span><div><b>Sabés si funcionó</b><span>Comparás cada franja contra las semanas anteriores y ves si el descuento te trajo más clientes.</span></div></li>
+      <li><span class="i em">🧾</span><div><b>Cierre del día en 30 segundos</b><span>Al cerrar cargás cuántos clientes hubo en cada franja. Lo puede hacer tu encargado.</span></div></li>
+            <li><span class="i em">💡</span><div><b>Te decimos dónde poner el descuento</b><span>"Tus martes a la tarde tienen un 80% menos de clientes". Con un toque creás el cupón para esa franja.</span></div></li>
+      <li><span class="i em">📈</span><div><b>Sabés si funcionó</b><span>Comparás contra las semanas anteriores y ves si el descuento trajo más gente.</span></div></li>
     </ul>
   </div>
   <div class="ng-mock reveal" aria-hidden="true">
@@ -364,33 +315,26 @@ footer a:hover{text-decoration:underline}
   </div>
 </div></section>
 
-<section class="panel-sec"><div class="wrap split">
-  <div>
-    <span class="kicker">El panel del local</span>
-    <h2>Validar un código lleva menos de 10 segundos</h2>
-    <p class="lead">Desde cualquier celular, tablet o computadora del mostrador. Sin apps, sin lectores, sin capacitación.</p>
-    <ul class="checks">
-      <li><span class="i em">🔒</span><div><b>Cada código se usa una sola vez</b><span>Es único por cliente y por cupón. Si alguien lo quiere usar dos veces, el panel lo avisa.</span></div></li>
-      <li><span class="i em">🕐</span><div><b>Respeta tus horarios</b><span>Si un cupón vale de 15 a 19 h, fuera de ese horario el panel no deja canjearlo.</span></div></li>
-      <li><span class="i em">⏸️</span><div><b>Pausás cuando quieras</b><span>¿Mucho trabajo hoy? Pausás un cupón con un toque y lo reactivás después.</span></div></li>
-    </ul>
-  </div>
-  <div class="mock-panel reveal" aria-hidden="true">
-    <div class="mp-top"><img src="logo.png" alt="" width="656" height="160"><span class="t">LOCAL</span><span class="r">Tu local</span></div>
-    <div class="mp-card"><span class="lb">Canjear un código</span><div class="mp-code">K7M2QX</div></div>
-    <div class="mp-ok"><span class="stamp">CANJEADO</span><p>🏋️ 2x1 · Clase de prueba</p><small>Aplicá el descuento. El cliente ya lo ve confirmado.</small><div class="mp-sello">🎟️ ＋1 sello · lleva 5 de 6</div></div>
-    <div class="mp-stats"><div><b>18</b><span>Canjes hoy</span></div><div><b>6</b><span>Cajas vendidas</span></div><div><b>42</b><span>Clientes con sellos</span></div></div>
+<section id="funciones" style="padding-top:0"><div class="wrap">
+  <span class="kicker">Todo lo que incluye</span>
+  <h2>Atraé, fidelizá y controlá</h2>
+  <div class="feats">
+    <article class="feat star reveal"><span class="ic em">🏷️</span><h3>Atraé clientes nuevos</h3><p>Tus descuentos aparecen en la guía donde la gente busca dónde comer.</p>
+      <ul><li><b>Cupones</b> por día y franja horaria, con foto</li><li><b>Relámpago</b>: unas horas y pocos códigos, para mover un día flojo</li><li><b>Caja Sorpresa</b>: vendé lo que sobró en el día en vez de tirarlo</li></ul></article>
+    <article class="feat caja reveal"><span class="ic em">🎟️</span><h3>Hacé que vuelvan</h3><p>Un cliente que vuelve vale más que uno nuevo.</p>
+      <ul><li><b>Tarjeta de sellos</b> digital: vos elegís visitas y premio</li><li><b>Te extrañamos</b>: a quien hace un mes no viene le mostramos tu cupón</li><li>Te guardan en <b>favoritos</b> y comparten tus cupones por WhatsApp</li></ul></article>
+    <article class="feat reveal"><span class="ic em">🔒</span><h3>Controlá todo</h3><p>Validar un código lleva menos de 10 segundos, desde cualquier celular.</p>
+      <ul><li>Cada código es único y <b>se usa una sola vez</b></li><li><b>PIN de encargado</b>: tu equipo valida, pero no ve tus números</li><li>Varias <b>sucursales</b>, cada una con su PIN</li></ul></article>
   </div>
 </div></section>
 
-<section><div class="wrap">
-  <span class="kicker">Vos tenés el control</span>
-  <h2>Tu local, tus reglas</h2>
-  <div class="control">
-    <div class="ctl reveal"><span class="e em">🎯</span><b>Vos ponés el descuento</b><span>Qué, cuánto y en qué productos. Nadie te impone nada.</span></div>
-    <div class="ctl reveal"><span class="e em">🗓️</span><b>Vos elegís cuándo</b><span>Días y horarios para mover las franjas tranquilas, no las que ya están llenas.</span></div>
-    <div class="ctl reveal"><span class="e em">🔢</span><b>Vos limitás la cantidad</b><span>Cupones con stock, cajas con cantidad fija y un uso por persona.</span></div>
-    <div class="ctl reveal"><span class="e em">⏯️</span><b>Pausás cuando quieras</b><span>Sin permanencia ni contratos. Lo prendés y apagás vos.</span></div>
+<section id="como" class="como-sec"><div class="wrap">
+  <span class="kicker">Cómo empezar</span>
+  <h2>En el día podés estar publicado</h2>
+  <div class="steps">
+    <div class="step reveal"><span class="n">1</span><h3>Nos escribís</h3><p>Por WhatsApp. Te pedimos los datos del local y te damos tu PIN.</p></div>
+    <div class="step reveal"><span class="n">2</span><h3>Cargás tus descuentos</h3><p>Qué, cuánto, qué días y en qué horario. Te ayudamos con los primeros.</p></div>
+    <div class="step reveal"><span class="n">3</span><h3>Validás con tu PIN</h3><p>El cliente muestra su código, lo escribís en el panel y listo.</p></div>
   </div>
 </div></section>
 
@@ -399,14 +343,9 @@ footer a:hover{text-decoration:underline}
     <div>
       <span class="kicker" style="color:var(--lima)">Precio</span>
       <h2>Sumarte no te cuesta nada</h2>
-      <p class="lead" style="color:rgba(255,255,255,.85)">Durante el lanzamiento, Tucupón es gratis para los locales. Queremos que lo pruebes, veas cómo funciona en tu negocio y decidas con resultados en la mano.</p>
-      <ul><li>Todas las funciones incluidas</li><li>Te ayudamos a cargar tus primeros cupones</li><li>Sin tarjeta de crédito ni contratos</li></ul>
+      <ul><li>Todas las funciones incluidas</li><li>Sin contratos ni tarjeta de crédito</li><li>Vos ponés el descuento y lo pausás cuando quieras</li></ul>
     </div>
-    <div class="box">
-      <div class="big">$0</div>
-      <p>durante el lanzamiento</p>
-      <a class="btn wa" data-wa href="#" style="width:100%"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Quiero sumarme</a>
-    </div>
+    <div class="box"><div class="big">$0</div><p>durante el lanzamiento</p></div>
   </div>
 </div></section>
 
@@ -416,45 +355,39 @@ footer a:hover{text-decoration:underline}
   <div class="faq">
     <details><summary>¿Cuánto cuesta?</summary><p>Durante el lanzamiento es gratis para los locales, con todas las funciones incluidas. Si en el futuro hay planes pagos, te vamos a avisar con anticipación y vas a poder decidir si seguís.</p></details>
     <details><summary>¿Tengo que instalar algo?</summary><p>No. Tanto los clientes como tu equipo usan Tucupón desde el navegador del celular o la computadora. Para el panel del local solo necesitás tu PIN.</p></details>
-    <details><summary>¿Cómo evito que usen un cupón dos veces?</summary><p>Cada cliente recibe un código único para cada cupón y se puede validar una sola vez. Si alguien lo intenta de nuevo, el panel avisa que ya fue usado y cuándo.</p></details>
+    <details><summary>¿Cómo evito que usen un cupón dos veces?</summary><p>Cada cliente recibe un código único para cada cupón y se puede validar una sola vez. Si alguien lo intenta de nuevo, el panel avisa que ya fue usado y cuándo. Y si el cupón vale en un horario, fuera de esa franja no se puede canjear.</p></details>
     <details><summary>¿Mis empleados pueden ver mis números?</summary><p>No. El encargado entra con su propio PIN y solo ve la pantalla para validar códigos. Las estadísticas, los cupones y la configuración quedan solo para el dueño.</p></details>
+    <details><summary>¿Cómo sé en qué horarios me conviene poner descuentos?</summary><p>Con el cierre del día: al cerrar, cargás cuántos clientes tuviste en cada franja (lleva unos 30 segundos). Después de 7 días, Tucupón te muestra un mapa con tus días y horarios flojos y te sugiere dónde poner un descuento.</p></details>
     <details><summary>¿Cómo cobro la Caja Sorpresa?</summary><p>El cliente la reserva desde la app y la paga en tu local al retirarla, como cualquier venta. Vos definís el precio, la cantidad del día y el horario de retiro.</p></details>
-    <details><summary>¿Puedo pausar o cambiar mis descuentos?</summary><p>Sí, cuando quieras y desde el panel. Podés editar, pausar o borrar cupones, cambiar horarios y desactivar la Caja Sorpresa o la tarjeta de sellos.</p></details>
-    <details><summary>¿Cómo sé en qué horarios me conviene poner descuentos?</summary><p>Con el cierre del día: al cerrar, cargás cuántos clientes tuviste en cada franja (lleva unos 30 segundos y lo puede hacer tu encargado). Después de 7 días, Tucupón te muestra un mapa con tus días y horarios flojos y te sugiere dónde poner un descuento, con un botón para crearlo en el momento.</p></details>
     <details><summary>Tengo varias sucursales, ¿sirve igual?</summary><p>Sí. Tus descuentos valen en todas tus sucursales, los clientes ven todas las direcciones y cada sucursal puede tener su propio PIN de caja.</p></details>
-    <details><summary>¿Cómo me sumo?</summary><p>Escribinos por WhatsApp. Te pedimos los datos básicos del local, te damos tu PIN y te ayudamos a cargar tus primeros cupones. En el día podés estar publicado.</p></details>
-  </div>
-</div></section>
-
-<section style="padding-top:0"><div class="wrap">
-  <div class="clientes reveal">
-    <span class="e em">🙋</span>
-    <div><h3>¿Buscás descuentos en Tucumán?</h3><p>Registrate gratis en Tucupón y pedí tus códigos en los comercios adheridos.</p></div>
-    <a class="btn out" href="./">Ver descuentos</a>
   </div>
 </div></section>
 </main>
 
 <section class="final"><div class="wrap">
   <h2>Probalo en tu local, sin costo</h2>
-  <p>Escribinos por WhatsApp y en pocos minutos te contamos todo y te dejamos listo para publicar tu primer descuento.</p>
+  <p>Escribinos y en pocos minutos te dejamos listo para publicar tu primer descuento.</p>
   <div class="ctas">
     <a class="btn wa" data-wa href="#"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Escribinos por WhatsApp</a>
-    <a class="btn ghost" href="local.html">Ya tengo PIN: ingresar al panel</a>
   </div>
 </div></section>
 
 <footer><div class="wrap">
   <img src="logo.png" alt="Tucupón" width="656" height="160">
   <span>Hecho en Tucumán</span>
-  <nav><a href="./">Descuentos</a><a href="local.html">Panel del local</a><a href="terminos.html">Términos</a><a href="privacidad.html">Privacidad</a></nav>
+  <nav><a href="./">¿Buscás descuentos?</a><a href="local.html">Panel del local</a><a href="terminos.html">Términos</a><a href="privacidad.html">Privacidad</a></nav>
 </div></footer>
 
-<a class="wa-fab" data-wa href="#" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg></a>
 
 <script>
 const WA = 'https://wa.me/5493816335234?text=' + encodeURIComponent('Hola Tucupón 👋 Tengo un local y quiero sumarme. ¿Me cuentan cómo empezar?');
 document.querySelectorAll('[data-wa]').forEach(a => { a.href = WA; a.target = '_blank'; a.rel = 'noopener'; });
+// Cantidad real de locales adheridos (si no carga, no se muestra nada)
+fetch('https://ulkcugdtqxuxjmsyqomy.supabase.co/rest/v1/rpc/tc_catalogo', {method: 'POST', headers: {apikey: 'sb_publishable_8tZa-AWxSmLJo729GPYmlA_tdgOTF1n', 'Content-Type': 'application/json'}, body: '{}'})
+  .then(r => r.ok ? r.json() : null).then(d => {
+    const n = d && Array.isArray(d.locales) ? d.locales.filter(l => (l.provincia || 'Tucumán') === 'Tucumán').length : 0;
+    if(n >= 10){ const el = document.getElementById('cuantos'); el.innerHTML = `📍 Ya son <b>${n} locales</b> en Tucumán`; el.hidden = false; }
+  }).catch(() => {});
 const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .12}) : null;
 document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
 </script>
