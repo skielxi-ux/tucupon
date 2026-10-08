@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B0F63">
+<title>Cómo funciona Tucupón</title>
+<meta name="description" content="Tucupón es una guía y plataforma de beneficios gastronómicos en Tucumán. Los cupones los publica cada local adherido; el resto de los comercios figura solo como directorio informativo.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icono.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap">
+<style>
+:root{--hero:#2B0F63;--hero-2:#43198F;--brand:#7B3FF0;--accent:#C4F04A;--heading:#3A1789;--bg:#F5F2FC;--surface:#FFFFFF;--ink:#22163F;--muted:#6E6585;--line:#E6E0F3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero:#1C0A42;--hero-2:#2E1270;--brand:#9B6BFF;--accent:#CDF55E;--heading:#D6C8FF;--bg:#120A24;--surface:#1C1233;--ink:#F1EDFA;--muted:#A9A0C2;--line:#34285A;color-scheme:dark}}
+:root[data-theme="dark"]{--hero:#1C0A42;--hero-2:#2E1270;--brand:#9B6BFF;--accent:#CDF55E;--heading:#D6C8FF;--bg:#120A24;--surface:#1C1233;--ink:#F1EDFA;--muted:#A9A0C2;--line:#34285A;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 "Outfit",ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.top{background:linear-gradient(160deg,var(--hero),var(--hero-2));color:#fff;padding-block:22px 34px}
+.wrap{max-width:44rem;margin-inline:auto;padding-inline:18px}
+.brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;font-size:1.3rem;color:#fff;text-decoration:none;letter-spacing:-.02em}
+.brand em{font-style:normal;color:var(--accent)}
+.top h1{margin:18px 0 0;font-size:2rem;line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+.top p{margin:6px 0 0;opacity:.8;font-size:.92rem}
+main{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:22px 22px 8px;margin-top:-18px;margin-bottom:40px}
+h2{color:var(--heading);font-size:1.2rem;margin:26px 0 6px;letter-spacing:-.01em}
+h2:first-child{margin-top:0}
+p,li{max-width:68ch}
+ul{padding-left:1.2em}
+a{color:var(--brand);font-weight:700}
+.nota{font-size:.88rem;color:var(--muted)}
+.tipos{display:grid;gap:12px;margin:12px 0 4px}
+@media (min-width:600px){.tipos{grid-template-columns:1fr 1fr}}
+.tipo{border:1px solid var(--line);border-radius:18px;padding:14px 16px;background:var(--bg)}
+.tipo b{display:block;color:var(--heading);font-size:1.02rem}
+.tipo p{margin:4px 0 0;font-size:.93rem;color:var(--muted)}
+.tipo .e{font-size:1.5rem}
+.acc{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 4px}
+.acc a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:14px;padding:11px 16px;font-weight:800;font-size:.95rem}
+.acc .wa{background:#25D366;color:#0B3D1E}
+.acc .ml{background:var(--bg);color:var(--brand);border:2px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./"><img src="logo.png" alt="Tucupón" style="height:40px;width:auto;display:block" width="656" height="160"></a>
+  <h1>Cómo funciona Tucupón</h1>
+  <p>Qué es el sitio, quién publica los descuentos y cómo sumar o quitar un local.</p>
+</div></header>
+<div class="wrap"><main>
+<h2>Qué es Tucupón</h2>
+<p>Tucupón es una <b>guía y plataforma de beneficios gastronómicos en Tucumán</b>. Reúne en un solo lugar comercios de la provincia y los descuentos que algunos de ellos ofrecen a sus clientes.</p>
+
+<h2>Dos formas de aparecer</h2>
+<div class="tipos">
+  <div class="tipo"><span class="e">🎟️</span><b>Locales adheridos</b><p>Se sumaron a la plataforma y publican sus propios cupones, tarjeta de sellos o Caja Sorpresa desde su panel.</p></div>
+  <div class="tipo"><span class="e">📍</span><b>Directorio informativo</b><p>Comercios sin cupones activos. Figuran solo con datos públicos (nombre, rubro, barrio, dirección y redes) para que la gente los encuentre.</p></div>
+</div>
+<p>Que un comercio figure en el directorio <b>no significa que tenga un acuerdo con Tucupón</b> ni que ofrezca descuentos.</p>
+
+<h2>Quién publica los descuentos</h2>
+<p><b>Ningún cupón se publica sin el comercio.</b> Solo los locales adheridos tienen descuentos, y los carga el propio local desde su panel o el equipo de Tucupón con su autorización expresa. Tucupón no crea promociones en nombre de comercios que no se sumaron.</p>
+<p>Cada local es responsable de respetar los descuentos que publica. Los nombres, logos y marcas pertenecen a sus dueños y se usan solo para identificar a cada comercio.</p>
+
+<h2>¿Tenés un local?</h2>
+<p>Sumarte es gratis durante el lanzamiento. Te damos tu PIN y en el día podés publicar tu primer descuento.</p>
+<div class="acc"><a class="wa" href="https://wa.me/5493816335234?text=Hola%20Tucup%C3%B3n%20%F0%9F%91%8B%20Tengo%20un%20local%20y%20quiero%20sumarme." target="_blank" rel="noopener">Sumate acá</a><a class="ml" href="comercios.html">Conocé Tucupón para comercios</a></div>
+
+<h2>¿Sos el dueño y querés corregir o quitar tu local?</h2>
+<p>Si tu comercio aparece en el directorio y algún dato está mal, o preferís no aparecer, escribinos y lo corregimos o lo quitamos.</p>
+<div class="acc"><a class="ml" href="mailto:clubtucuponapp@gmail.com?subject=Correcci%C3%B3n%20o%20baja%20de%20mi%20local">clubtucuponapp@gmail.com</a><a class="ml" href="https://wa.me/5493816335234?text=Hola%20Tucup%C3%B3n%2C%20soy%20el%20due%C3%B1o%20de%20un%20local%20que%20aparece%20en%20el%20directorio%20y%20quiero%20pedir%20una%20correcci%C3%B3n%20o%20la%20baja." target="_blank" rel="noopener">Escribinos por WhatsApp</a></div>
+
+<h2>Quiénes somos</h2>
+<p>Tucupón es un proyecto de Tucuponapp, con domicilio en San Miguel de Tucumán, Argentina. Para cualquier consulta: <a href="mailto:clubtucuponapp@gmail.com">clubtucuponapp@gmail.com</a>. Más detalles en los <a href="terminos.html">Términos y condiciones</a> y la <a href="privacidad.html">Política de privacidad</a>.</p>
+<p class="nota" style="margin-top:28px"><a href="./">← Volver a Tucupón</a></p>
+</main></div>
+</body>
+</html>
