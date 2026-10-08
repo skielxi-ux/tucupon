@@ -361,6 +361,26 @@ a.btn{text-decoration:none}
 .rs-grid button .em{font-size:2rem;line-height:1}
 .rs-grid button:hover{transform:scale(1.04);border-color:var(--line)}
 .rs-grid button[aria-pressed="true"]{border-color:var(--brand);background:var(--surface)}
+.fc-aviso{display:flex;gap:14px;align-items:flex-start;border-radius:22px;padding:16px;margin-bottom:16px;background:linear-gradient(140deg,#FFF3C4,#FFE1EF);border:1px solid #F4D27A;color:#2B0F63}
+.fc-aviso .e{font-size:2rem;line-height:1;flex:none}
+.fc-aviso .tx{min-width:0;flex:1}
+.fc-aviso .k{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#B0249F}
+.fc-aviso .t{font:900 1.2rem/1.15 var(--font-display);margin-top:2px}
+.fc-aviso p{font-size:.92rem;line-height:1.4}
+.fc-aviso .bs{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:10px}
+.fc-aviso .link{color:#5B22C7}
+.fc-lista{display:grid;gap:8px;margin-top:12px}
+.fc-mes{font:800 .75rem var(--font-body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 2px}
+.fc-it{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px}
+.fc-it.tuyo{border-color:var(--brand);background:var(--surface-2)}
+.fc-d{flex:none;display:grid;place-items:center;width:46px;border-radius:12px;background:var(--surface-2);padding:6px 0;line-height:1.05;text-align:center}
+.fc-it.tuyo .fc-d{background:var(--surface)}
+.fc-d b{font-size:1.2rem;color:var(--heading)}.fc-d small{font-size:.66rem;font-weight:800;text-transform:uppercase;color:var(--muted)}
+.fc-it .tx{min-width:0;flex:1}
+.fc-it .t{font-weight:800;color:var(--heading)}
+.fc-it .muted{font-size:.86rem;margin-top:2px;line-height:1.4}
+.fc-it .q{font-size:.8rem;font-weight:700;color:var(--brand);margin-top:4px}
+.fc-tag{display:inline-block;margin-left:4px;font-size:.62rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:#C4F04A;color:#1E0B45;border-radius:99px;padding:2px 7px;vertical-align:2px}
 </style>
 
 </head>
@@ -442,6 +462,7 @@ a.btn{text-decoration:none}
     <!-- Canjear -->
     <section id="t-canjear" class="panel">
       <div id="resumen" class="resumen" hidden></div>
+      <div id="fecha-aviso" hidden></div>
       <form id="f-codigo" class="card" style="display:grid;gap:12px" novalidate>
         <h2>Canjear un código</h2>
         <p class="muted" style="font-size:.92rem">Pedile al cliente el código de 6 letras y números que ve en su celular.</p>
@@ -576,7 +597,8 @@ a.btn{text-decoration:none}
 
     <!-- Mis cupones -->
     <section id="t-cupones" class="panel" hidden>
-      <div class="row"><h2 class="grow">Mis cupones</h2><button type="button" id="btn-nuevo" class="btn">+ Nuevo cupón</button></div>
+      <div class="row" style="flex-wrap:wrap"><h2 class="grow">Mis cupones</h2><button type="button" class="btn ghost" data-fechas>📅 Fechas clave</button><button type="button" id="btn-nuevo" class="btn">+ Nuevo cupón</button></div>
+      <div id="fecha-aviso-c" hidden></div>
       <div class="card" id="cup-lista"></div>
       <p class="muted" style="font-size:.82rem">Si borrás un cupón que ya tiene códigos pedidos, se pausa en vez de borrarse, así no perdés el historial.</p>
     </section>
@@ -667,6 +689,14 @@ a.btn{text-decoration:none}
 </div>
 
 <!-- Confirmación de borrado -->
+<!-- Hoja: fechas clave -->
+<div id="sheet-fechas" class="sheet-wrap" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="fc-title">
+    <div class="row"><h2 id="fc-title" class="grow">📅 Fechas clave</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <p class="muted" style="font-size:.9rem;margin-top:4px">Fechas en las que la gente sale a comer y regalar. Prepará tu descuento con tiempo: te avisamos una semana antes.</p>
+    <div id="fc-lista" class="fc-lista"></div>
+  </div>
+</div>
 <div id="sheet-del" class="sheet-wrap" aria-hidden="true">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="del-t">
     <h2 id="del-t">¿Borrar este cupón?</h2>
@@ -1220,9 +1250,9 @@ function tab(t){
   if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
   ['canjear', 'hoy', 'kpis', 'cupones', 'caja', 'sellos', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
-  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarCierre(); cargarNegocio(); }
+  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarCierre(); cargarNegocio(); pintarAvisoFecha(); }
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
-  if(t === 'cupones') cargarCupones();
+  if(t === 'cupones'){ cargarCupones(); pintarAvisoFecha(); }
   if(t === 'caja') cargarCaja();
   if(t === 'sellos') cargarSellos();
   if(t === 'kpis'){ cargarKpis(); cargarNegocio(); }
@@ -1765,6 +1795,89 @@ function pintarCupones(){
   $('cup-lista').innerHTML = cupones.length ? cupones.map(c => itemCupon(c)).join('') : '<div class="empty">Todavía no tenés cupones. Creá el primero con “Nuevo cupón”.</div>';
 }
 $('btn-nuevo').addEventListener('click', () => abrirFormCupon(null));
+
+// ---------- Fechas clave ----------
+// t: 'com' (comercial, para todos) o 'gas' (gastronómica, según rubro). r: rubros a los que más les sirve.
+const FECHAS = [
+  {k:'valentin', n:'San Valentín', e:'💘', t:'com', f:a => [a,1,14], idea:'Promo para parejas: 2x1, postre de regalo o combo para dos.', cup:{etiqueta:'2x1', titulo:'Para compartir en San Valentín'}},
+  {k:'pizza', n:'Día Mundial de la Pizza', e:'🍕', t:'gas', r:['pizzas','cervecerias','resto'], f:a => [a,1,9], idea:'Una pizza al 2x1 o una porción de regalo. Es el día en que más se busca pizza.', cup:{etiqueta:'2x1', titulo:'Pizzas por el Día de la Pizza'}},
+  {k:'empanada', n:'Día de la Empanada', e:'🥟', t:'gas', r:['pizzas','rotiserias','resto','arabe'], f:a => [a,3,8], idea:'Docena con descuento o 13 empanadas por el precio de 12.', cup:{etiqueta:'13x12', titulo:'Docena de empanadas con una de regalo'}},
+  {k:'helado', n:'Día Internacional del Helado', e:'🍦', t:'gas', r:['heladerias','pastelerias'], f:a => [a,3,12], idea:'Cucurucho de regalo con el kilo o un 2x1 en cuartos.', cup:{etiqueta:'2x1', titulo:'En cuartos de helado'}},
+  {k:'milanesa', n:'Día de la Milanesa', e:'🍽️', t:'gas', r:['sangucherias','resto','rotiserias','parrillas'], f:a => [a,4,3], idea:'Sándwich o plato de milanesa con descuento o con bebida de regalo.', cup:{etiqueta:'20% OFF', titulo:'Milanesas por el Día de la Milanesa'}},
+  {k:'hamburguesa', n:'Día de la Hamburguesa', e:'🍔', t:'gas', r:['burger','papas','panchos','cervecerias'], f:a => [a,4,28], idea:'2x1 en hamburguesas o papas de regalo con cada combo.', cup:{etiqueta:'2x1', titulo:'Hamburguesas por su día'}},
+  {k:'padre', n:'Día del Padre', e:'👔', t:'com', f:a => nDomingo(a,5,3), idea:'Combo para compartir en familia o una cerveza de regalo para papá.', cup:{etiqueta:'Regalo', titulo:'Cerveza o postre de regalo para papá'}},
+  {k:'amigo', n:'Día del Amigo', e:'🤝', t:'com', f:a => [a,6,20], idea:'Promo para grupos: la cuarta consumición gratis o descuento en mesas de 4 o más.', cup:{etiqueta:'4x3', titulo:'Para venir con amigos'}},
+  {k:'cerveza', n:'Día Internacional de la Cerveza', e:'🍺', t:'gas', r:['cervecerias','burger','pizzas','resto'], f:a => nDia(a,7,5,1), idea:'Happy hour extendido o pinta de regalo con la comida.', cup:{etiqueta:'2x1', titulo:'Pintas por el Día de la Cerveza'}},
+  {k:'nino', n:'Día de las Infancias (del Niño)', e:'🧸', t:'com', f:a => nDomingo(a,7,3), idea:'Menú infantil con descuento, helado o sorpresa de regalo para los chicos.', cup:{etiqueta:'Regalo', titulo:'Sorpresa para los chicos'}},
+  {k:'heladoart', n:'Día del Helado Artesanal', e:'🍨', t:'gas', r:['heladerias'], f:a => [a,7,31], idea:'Probá un gusto nuevo de regalo o descuento en el kilo.', cup:{etiqueta:'15% OFF', titulo:'En kilos de helado artesanal'}},
+  {k:'primavera', n:'Primavera y Día del Estudiante', e:'🌼', t:'com', f:a => [a,8,21], idea:'Descuento para estudiantes o combos para grupos al aire libre.', cup:{etiqueta:'20% OFF', titulo:'Para estudiantes en primavera'}},
+  {k:'cafe', n:'Día Internacional del Café', e:'☕', t:'gas', r:['cafe','pastelerias'], f:a => [a,9,1], idea:'Café de regalo con la medialuna o 2x1 en cafés.', cup:{etiqueta:'2x1', titulo:'Cafés por el Día del Café'}},
+  {k:'ddl', n:'Día del Dulce de Leche', e:'🍮', t:'gas', r:['cafe','pastelerias','heladerias'], f:a => [a,9,11], idea:'Algo con dulce de leche de regalo o con descuento: alfajor, postre o helado.', cup:{etiqueta:'Regalo', titulo:'Algo dulce por el Día del Dulce de Leche'}},
+  {k:'madre', n:'Día de la Madre', e:'💐', t:'com', f:a => nDomingo(a,9,3), idea:'Postre o café de regalo para mamá. Es de los días con más reservas del año.', cup:{etiqueta:'Regalo', titulo:'Postre de regalo para mamá'}},
+  {k:'navidad', n:'Nochebuena y Navidad', e:'🎄', t:'com', f:a => [a,11,24], idea:'Descuento por pedido anticipado: pan dulce, mesas dulces o comida para llevar.', cup:{etiqueta:'15% OFF', titulo:'Pedidos anticipados para Navidad'}},
+  {k:'anonuevo', n:'Año Nuevo', e:'🥂', t:'com', f:a => [a,11,31], idea:'Descuento por pedido anticipado para la noche del 31.', cup:{etiqueta:'15% OFF', titulo:'Pedidos anticipados para Año Nuevo'}},
+];
+// n-ésimo día de la semana del mes (dow 0=domingo)
+function nDia(a, m, dow, n){ const d = new Date(a, m, 1); const off = (dow - d.getDay() + 7) % 7; return [a, m, 1 + off + (n - 1) * 7]; }
+const nDomingo = (a, m, n) => nDia(a, m, 0, n);
+const isoDe = ([a, m, d]) => `${a}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+const diasHasta = iso => Math.round((new Date(iso + 'T00:00:00') - new Date(hoyISO() + 'T00:00:00')) / 864e5);
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const DIAS_FC = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+function fechaFc(iso){ const d = new Date(iso + 'T00:00:00'); return `${DIAS_FC[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; }
+function proximasFechas(){
+  const a = +hoyISO().slice(0, 4), out = [];
+  [a, a + 1].forEach(y => FECHAS.forEach(f => { const iso = isoDe(f.f(y)), dd = diasHasta(iso); if(dd >= 0 && dd <= 366) out.push({...f, iso, dd}); }));
+  return out.sort((x, y) => x.dd - y.dd);
+}
+let rubroLocal = null;
+async function asegurarRubro(){
+  if(rubroLocal || esCaja()) return;
+  try{ const p = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); rubroLocal = p.rubro || ''; }catch(e){ rubroLocal = ''; }
+}
+const paraMi = f => f.t === 'com' || (f.r || []).includes(rubroLocal);
+const cuandoTxt = dd => dd === 0 ? '¡Es hoy!' : dd === 1 ? 'Es mañana' : `Faltan ${dd} días`;
+async function pintarAvisoFecha(){
+  const els = [$('fecha-aviso'), $('fecha-aviso-c')];
+  els.forEach(e => e.hidden = true);
+  if(esCaja()) return;
+  await asegurarRubro();
+  const f = proximasFechas().find(x => x.dd <= 7 && paraMi(x) && !fechaVista(x));
+  if(!f) return;
+  const html = `<div class="fc-aviso"><span class="e">${f.e}</span><div class="tx"><p class="k">${cuandoTxt(f.dd)} · ${esc(fechaFc(f.iso))}</p><p class="t">${esc(f.n)}</p><p>${esc(f.idea)}</p>
+    <div class="bs"><button type="button" class="btn lima sm" data-fc-cupon="${f.k}|${f.iso}">Crear cupón para esta fecha</button><button type="button" class="link" data-fc-ok="${f.k}|${f.iso}">Ahora no</button></div></div></div>`;
+  els.forEach(e => { e.innerHTML = html; e.hidden = false; });
+}
+function fechaVista(f){ try{ return localStorage.getItem(`tucupon.fecha.${yo.id}.${f.k}.${f.iso}`) === '1'; }catch(e){ return false; } }
+async function abrirFechas(){
+  await asegurarRubro();
+  let mes = '';
+  $('fc-lista').innerHTML = proximasFechas().map(f => {
+    const d = new Date(f.iso + 'T00:00:00'), m = MESES[d.getMonth()] + (d.getFullYear() !== +hoyISO().slice(0, 4) ? ' ' + d.getFullYear() : '');
+    const cab = m !== mes ? `<h3 class="fc-mes">${m}</h3>` : ''; mes = m;
+    return `${cab}<div class="fc-it${paraMi(f) && f.t === 'gas' ? ' tuyo' : ''}"><span class="fc-d"><b>${d.getDate()}</b><small>${DIAS_FC[d.getDay()].slice(0, 3)}</small></span>
+      <div class="tx"><p class="t">${f.e} ${esc(f.n)}${paraMi(f) && f.t === 'gas' ? ' <span class="fc-tag">Tu rubro</span>' : ''}</p><p class="muted">${esc(f.idea)}</p>
+      <p class="q">${cuandoTxt(f.dd)}${f.dd <= 45 ? ` · <button type="button" class="link" data-fc-cupon="${f.k}|${f.iso}">Crear cupón</button>` : ''}</p></div></div>`;
+  }).join('');
+  abrirHoja('sheet-fechas');
+}
+function cuponParaFecha(k, iso){
+  const f = FECHAS.find(x => x.k === k); if(!f) return;
+  cerrarHoja('sheet-fechas');
+  abrirFormCupon(null);
+  $('cf-etiqueta').value = f.cup.etiqueta;
+  $('cf-titulo').value = f.cup.titulo;
+  $('cf-descripcion').value = `Por el ${f.n}. Válido hasta el ${fechaFc(iso)}.`;
+  $('cf-vence').value = iso;
+  $('cf-icono').value = f.e; pintarBotonIcono('cf-icono');
+  toast('Te dejamos el cupón armado: ajustalo a tu gusto y guardalo.');
+}
+document.addEventListener('click', e => {
+  if(e.target.closest('[data-fechas]')){ abrirFechas(); return; }
+  const c = e.target.closest('[data-fc-cupon]'); if(c){ const [k, iso] = c.dataset.fcCupon.split('|'); cuponParaFecha(k, iso); return; }
+  const o = e.target.closest('[data-fc-ok]');
+  if(o){ const [k, iso] = o.dataset.fcOk.split('|'); try{ localStorage.setItem(`tucupon.fecha.${yo.id}.${k}.${iso}`, '1'); }catch(_){} pintarAvisoFecha(); }
+});
 $('f-cupon').addEventListener('submit', async e => {
   e.preventDefault();
   avisoCupon('');
