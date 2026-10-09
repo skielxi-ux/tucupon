@@ -639,7 +639,7 @@ a.btn{text-decoration:none}
         </div>
         <div class="grid2">
           <div><label class="label" for="pf-nombre">Nombre del local <span class="req">*</span></label><input id="pf-nombre" class="field" maxlength="60" required></div>
-          <div><label class="label" for="pf-resp">Nombre y Apellido <span class="req">*</span></label><input id="pf-resp" class="field" maxlength="80" autocomplete="name" placeholder="Quién maneja el local" required></div>
+          <div><label class="label" for="pf-resp">Nombre de contacto <span class="muted" style="font-weight:600">(opcional)</span></label><input id="pf-resp" class="field" maxlength="80" autocomplete="name" placeholder="Quién maneja el local"></div>
         </div>
         <div><label class="label" for="pf-prov">Provincia <span class="req">*</span></label><select id="pf-prov" class="field"></select></div>
         <div class="grid2">
@@ -649,7 +649,7 @@ a.btn{text-decoration:none}
         </div>
         <div><label class="label" for="pf-dir">Dirección <span class="req">*</span></label><input id="pf-dir" class="field" maxlength="80" placeholder="Calle y número"><p id="pf-suc-hint" class="hint" hidden>Es la dirección de tu sucursal principal.</p></div>
         <div id="pf-suc" hidden><span class="label">Tus otras sucursales</span><ul id="pf-suc-lista" class="suc-lista"></ul><p class="hint">Tus cupones valen en todas. Para sumar, cambiar o quitar una sucursal, escribile al equipo de Tucupón.</p></div>
-        <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto <span class="req">*</span></label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
+        <div><label class="label" for="pf-tel">Teléfono / WhatsApp de contacto <span class="muted" style="font-weight:600">(opcional)</span></label><input id="pf-tel" class="field" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><p class="hint">No lo ven los clientes. Lo usa el equipo de Tucupón si surge algún inconveniente.</p></div>
         <div class="pf-contacto"><p class="pf-contacto-t">📣 Para que tus clientes te encuentren <span class="muted">(opcional)</span></p>
           <div><label class="label" for="pf-link">Instagram, Facebook o sitio web</label><input id="pf-link" class="field" type="url" inputmode="url" maxlength="300" placeholder="@tulocal · instagram.com/tulocal · www.tulocal.com" autocapitalize="off" spellcheck="false"></div>
           <div><label class="label" for="pf-wa">WhatsApp para clientes</label><div class="row"><input id="pf-wa" class="field grow" type="tel" inputmode="tel" maxlength="30" placeholder="381 555-1234"><button type="button" class="btn ghost sm" id="pf-wa-igual">Mismo número de arriba</button></div><p class="hint">Con código de área, sin el 0 ni el 15. Los dos aparecen como botones en la ficha de tu local.</p></div>
@@ -2209,12 +2209,11 @@ $('f-perfil').addEventListener('submit', async e => {
   $$('#f-perfil .field').forEach(i => i.removeAttribute('aria-invalid'));
   const falta = (m, id) => { avisoPerfil(m); if(id){ $(id).setAttribute('aria-invalid', 'true'); $(id).focus(); } };
   if(!datos.nombre) return falta('Poné el nombre del local.', 'pf-nombre');
-  if(!datos.responsable) return falta('Poné tu nombre y apellido.', 'pf-resp');
   if(!datos.provincia) return falta('Elegí la provincia.', 'pf-prov');
   if(!datos.barrio) return falta($('pf-barrio').value === '__otro' ? 'Escribí el barrio o la zona.' : 'Elegí el barrio.', $('pf-barrio').value === '__otro' ? 'pf-barrio-otro' : 'pf-barrio');
   if(!datos.rubro) return falta('Elegí el rubro.', 'pf-rubro');
   if(!datos.dir) return falta('Poné la dirección.', 'pf-dir');
-  if(datos.telefono.replace(/\D/g, '').length < 8) return falta('Poné un teléfono o WhatsApp con código de área.', 'pf-tel');
+  if(datos.telefono && datos.telefono.replace(/\D/g, '').length < 8) return falta('El teléfono tiene que tener código de área, o dejalo vacío.', 'pf-tel');
   if(logoNuevo !== undefined) datos.logo = logoNuevo;
   await conBoton(e.target.querySelector('.btn.full'), async () => {
     try{
