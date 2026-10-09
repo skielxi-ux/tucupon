@@ -389,6 +389,8 @@ a.btn{text-decoration:none}
 .bn-ubic .ub small{color:var(--muted);font-size:.8rem;line-height:1.35}
 .bn-ubic .ub:has(input:checked){border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
 .bn-ubic .ub:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:2px}
+.k-desde{margin:-4px 0 12px;font-size:.88rem;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:8px 12px}
+.k-desde .link{font-size:.88rem}
 </style>
 
 </head>
@@ -427,7 +429,9 @@ a.btn{text-decoration:none}
     <section id="t-numeros" class="panel">
       <div class="row"><h2 class="grow">Resumen</h2>
         <label class="sr" for="k-dias" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Período</label>
-        <select id="k-dias" class="field" style="width:auto"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option></select></div>
+        <select id="k-dias" class="field" style="width:auto"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option></select>
+        <button type="button" class="btn ghost sm" id="k-reset">🔄 Empezar de cero</button></div>
+      <p id="k-desde" class="k-desde" hidden></p>
       <div class="stats">
         <div class="stat"><b id="k-pedidos">–</b><span>Códigos pedidos</span></div>
         <div class="stat"><b id="k-usados">–</b><span>Canjes confirmados</span></div>
@@ -472,7 +476,7 @@ a.btn{text-decoration:none}
     <!-- Canjes -->
     <!-- Reclamos -->
     <section id="t-reclamos" class="panel" hidden>
-      <div class="row"><h2 class="grow">Reclamos de clientes</h2></div>
+      <div class="row"><h2 class="grow">Reclamos de clientes</h2><button type="button" class="btn ghost sm btn-borrar" data-borrar-todos="rec" hidden>🗑 Borrar todos</button></div>
       <div class="row" role="group" aria-label="Filtrar reclamos" style="gap:6px">
         <button type="button" class="tab" data-rest="nuevo" aria-selected="true">Nuevos</button>
         <button type="button" class="tab" data-rest="en_curso" aria-selected="false">En curso</button>
@@ -501,7 +505,7 @@ a.btn{text-decoration:none}
 
     <!-- Referidos -->
     <section id="t-pedidos" class="panel" hidden>
-      <div class="row"><h2 class="grow">Comercios que pide la gente</h2></div>
+      <div class="row"><h2 class="grow">Comercios que pide la gente</h2><button type="button" class="btn ghost sm btn-borrar" data-borrar-todos="ped" hidden>🗑 Borrar todos</button></div>
       <p class="muted" style="font-size:.9rem;margin-top:-6px">Lo que los usuarios escriben en "¿Qué comercio querés en Tucupón?". Cada persona cuenta una sola vez por comercio. Usalo para mostrarle al comercio que lo están pidiendo.</p>
       <div class="row" role="group" aria-label="Filtrar pedidos" style="gap:6px">
         <button type="button" class="tab" data-pedest="nuevo" aria-selected="true">Nuevos</button>
@@ -514,7 +518,7 @@ a.btn{text-decoration:none}
     </section>
 
     <section id="t-referidos" class="panel" hidden>
-      <div class="row"><h2 class="grow">Locales referidos</h2></div>
+      <div class="row"><h2 class="grow">Locales referidos</h2><button type="button" class="btn ghost sm btn-borrar" data-borrar-todos="ref" hidden>🗑 Borrar todos</button></div>
       <div class="row" role="group" aria-label="Filtrar referidos" style="gap:6px">
         <button type="button" class="tab" data-refest="nuevo" aria-selected="true">Nuevos</button>
         <button type="button" class="tab" data-refest="contactado" aria-selected="false">Contactados</button>
@@ -1387,12 +1391,52 @@ async function cargarKpis(){
     const max = Math.max(1, ...k.por_dia.map(d => Math.max(d.pedidos, d.usados)));
     $('k-bars').innerHTML = k.por_dia.map(d => `<div title="${fechaCorta(d.dia)}: ${d.pedidos} pedidos, ${d.usados} canjeados"><i class="p" style="height:${Math.max(0, d.pedidos - d.usados) / max * 100}%"></i><i class="u" style="height:${d.usados / max * 100}%"></i></div>`).join('');
     $('k-rango').textContent = `${fechaCorta(k.desde)} al ${fechaCorta(hoyISO())} · máx. ${max}`;
+    KPIS_DESDE = k.contar_desde || null;
+    $('k-desde').hidden = !KPIS_DESDE;
+    if(KPIS_DESDE) $('k-desde').innerHTML = `🔄 Contando desde el <b>${esc(fechaCorta(KPIS_DESDE))}</b>. Lo anterior no se borró. <button type="button" class="link" id="k-todo">Ver todo de nuevo</button>`;
+    $('k-reset').textContent = KPIS_DESDE ? '🔄 Empezar de cero hoy' : '🔄 Empezar de cero';
     const tabla = (rows, col) => rows.length ? `<table><thead><tr><th>${col}</th><th style="text-align:right">Pedidos</th><th style="text-align:right">Canjes</th></tr></thead><tbody>${rows.join('')}</tbody></table>` : '<div class="empty">Todavía no hay pedidos en este período.</div>';
     $('k-locales').innerHTML = tabla(k.top_locales.map(r => `<tr><td>${esc(r.icono)} ${esc(r.nombre)}</td><td class="n">${r.pedidos}</td><td class="n">${r.usados}</td></tr>`), 'Local');
     $('k-cupones').innerHTML = tabla(k.top_cupones.map(r => `<tr><td>${esc(r.icono)} <b>${esc(r.etiqueta)}</b> · ${esc(r.titulo)}<br><span class="muted" style="font-size:.8rem">${esc(r.local)}</span></td><td class="n">${r.pedidos}</td><td class="n">${r.usados}</td></tr>`), 'Cupón');
   }catch(err){ manejarError(err); }
 }
 $('k-dias').addEventListener('change', cargarKpis);
+let KPIS_DESDE = null;
+async function reiniciarKpis(si){
+  if(si && !confirm('Los números de esta pestaña van a contar desde hoy (pedidos, canjes, locales y cupones más pedidos).\n\nNo se borra nada: los códigos de los clientes y los números de cada local siguen igual, y podés volver a ver todo cuando quieras.')) return;
+  try{ await rpc('tc_admin_kpis_reiniciar', {p_pin: pin, p_reiniciar: si}); toast(si ? 'Listo: los números cuentan desde hoy' : 'Volviste a ver todo'); cargarKpis(); }
+  catch(err){ manejarError(err); }
+}
+$('k-reset').addEventListener('click', () => reiniciarKpis(true));
+document.addEventListener('click', e => { if(e.target.closest('#k-todo')) reiniciarKpis(false); });
+
+// ---------- Borrar reclamos, pedidos y referidos ----------
+const BORRAR = {
+  rec: {fn: 'tc_admin_borrar_reclamos', id: 'p_id', uno: 'este reclamo', varios: n => `${n} ${n === 1 ? 'reclamo' : 'reclamos'}`, filtro: () => recFiltro, recargar: () => cargarReclamos()},
+  ped: {fn: 'tc_admin_borrar_pedidos', id: 'p_clave', uno: 'este pedido (con todos sus votos)', varios: n => `${n} ${n === 1 ? 'pedido' : 'pedidos'} (con todos sus votos)`, filtro: () => pedFiltro, recargar: () => cargarPedidos()},
+  ref: {fn: 'tc_admin_borrar_referidos', id: 'p_id', uno: 'este referido', varios: n => `${n} ${n === 1 ? 'referido' : 'referidos'}`, filtro: () => refFiltro, recargar: () => cargarReferidos()},
+};
+function botonBorrarTodos(tipo, n){
+  const b = document.querySelector(`[data-borrar-todos="${tipo}"]`); if(!b) return;
+  b.hidden = !n; b.dataset.n = n;
+  b.textContent = BORRAR[tipo].filtro() ? `🗑 Borrar estos (${n})` : `🗑 Borrar todos (${n})`;
+}
+document.addEventListener('click', async e => {
+  const uno = e.target.closest('[data-borrar]'), todos = e.target.closest('[data-borrar-todos]');
+  if(!uno && !todos) return;
+  const tipo = (uno || todos).dataset.borrar || todos.dataset.borrarTodos, cfg = BORRAR[tipo];
+  const args = {p_pin: pin};
+  if(uno){
+    if(!confirm(`¿Borrar ${cfg.uno}? No se puede deshacer.`)) return;
+    args[cfg.id] = tipo === 'ped' ? decodeURIComponent(uno.dataset.id) : +uno.dataset.id;
+  }else{
+    const n = +todos.dataset.n || 0;
+    if(!confirm(`¿Borrar ${cfg.varios(n)} de esta lista? No se puede deshacer.`)) return;
+    args.p_estado = cfg.filtro() || null;
+  }
+  try{ const r = await rpc(cfg.fn, args); toast(r.borrados === 1 ? 'Borrado' : `Se borraron ${r.borrados}`); cfg.recargar(); if(typeof cargarDatos === 'function') cargarDatos(); }
+  catch(err){ manejarError(err); }
+});
 
 // ---------- Locales ----------
 function pintarLocales(){
@@ -1561,7 +1605,7 @@ async function cargarPedidos(){
   $('ped-lista').innerHTML = '<p class="muted">Cargando…</p>';
   try{
     const r = await rpc('tc_admin_pedidos', {p_pin: pin, p_estado: pedFiltro || null});
-    PEDIDOS = r.lista; pintarBadgePed(r.nuevos);
+    PEDIDOS = r.lista; pintarBadgePed(r.nuevos); botonBorrarTodos('ped', PEDIDOS.length);
     $('ped-lista').innerHTML = PEDIDOS.length ? PEDIDOS.map(tarjetaPedido).join('')
       : `<div class="empty">${pedFiltro === 'nuevo' ? 'Todavía no hay pedidos nuevos.' : 'No hay pedidos en esta lista.'}</div>`;
   }catch(err){ manejarError(err); }
@@ -1584,6 +1628,7 @@ function tarjetaPedido(p){
       ${p.estado !== 'sumado' ? `<button type="button" class="btn lima sm" data-ped="${k}" data-est="sumado">Se sumó 🎉</button>` : ''}
       ${p.estado !== 'descartado' ? `<button type="button" class="btn ghost sm" data-ped="${k}" data-est="descartado">Descartar</button>` : `<button type="button" class="btn ghost sm" data-ped="${k}" data-est="nuevo">Volver a nuevos</button>`}
       <button type="button" class="btn ghost sm" data-ped="${k}" data-est="${p.estado}">Guardar nota</button>
+      <button type="button" class="btn ghost sm btn-borrar" data-borrar="ped" data-id="${k}">Borrar</button>
     </div>
   </article>`;
 }
@@ -1616,7 +1661,7 @@ async function cargarReclamos(){
   $('rec-lista').innerHTML = '<p class="muted">Cargando…</p>';
   try{
     const r = await rpc('tc_admin_reclamos', {p_pin: pin, p_estado: recFiltro || null});
-    RECLAMOS = r.lista; pintarBadge(r.nuevos);
+    RECLAMOS = r.lista; pintarBadge(r.nuevos); botonBorrarTodos('rec', RECLAMOS.length);
     $('rec-lista').innerHTML = RECLAMOS.length ? RECLAMOS.map(tarjetaReclamo).join('')
       : `<div class="empty">${recFiltro === 'nuevo' ? '¡Sin reclamos nuevos! 🎉' : 'No hay reclamos en esta lista.'}</div>`;
   }catch(err){ manejarError(err); }
@@ -1641,6 +1686,7 @@ function tarjetaReclamo(r){
       ${r.estado !== 'en_curso' ? `<button type="button" class="btn ghost sm" data-rec="${r.id}" data-est="en_curso">Marcar en curso</button>` : ''}
       ${r.estado !== 'resuelto' ? `<button type="button" class="btn lima sm" data-rec="${r.id}" data-est="resuelto">Marcar resuelto</button>` : `<button type="button" class="btn ghost sm" data-rec="${r.id}" data-est="en_curso">Reabrir</button>`}
       <button type="button" class="btn ghost sm" data-rec="${r.id}" data-est="${r.estado}">Guardar nota</button>
+      <button type="button" class="btn ghost sm btn-borrar" data-borrar="rec" data-id="${r.id}">Borrar</button>
     </div>
   </article>`;
 }
@@ -1726,7 +1772,7 @@ async function cargarReferidos(){
   $('ref-lista').innerHTML = '<p class="muted">Cargando…</p>';
   try{
     const r = await rpc('tc_admin_referidos', {p_pin: pin, p_estado: refFiltro || null});
-    pintarBadgeRef(r.nuevos);
+    pintarBadgeRef(r.nuevos); botonBorrarTodos('ref', r.lista.length);
     $('ref-lista').innerHTML = r.lista.length ? r.lista.map(tarjetaReferido).join('') : '<div class="empty">No hay referidos en esta lista.</div>';
   }catch(err){ manejarError(err); }
 }
@@ -1748,6 +1794,7 @@ function tarjetaReferido(r){
     <div class="acts">
       ${btn('contactado', 'Marcar contactado')}${btn('sumado', 'Se sumó ✓', 'lima')}${btn('no_interesa', 'No le interesó')}
       <button type="button" class="btn ghost sm" data-ref="${r.id}" data-est="${r.estado}">Guardar nota</button>
+      <button type="button" class="btn ghost sm btn-borrar" data-borrar="ref" data-id="${r.id}">Borrar</button>
     </div>
   </article>`;
 }
