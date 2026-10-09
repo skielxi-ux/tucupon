@@ -381,6 +381,14 @@ a.btn{text-decoration:none}
 .fc-it .muted{font-size:.86rem;margin-top:2px;line-height:1.4}
 .fc-it .q{font-size:.8rem;font-weight:700;color:var(--brand);margin-top:4px}
 .fc-tag{display:inline-block;margin-left:4px;font-size:.62rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:#C4F04A;color:#1E0B45;border-radius:99px;padding:2px 7px;vertical-align:2px}
+.bn-ubic{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.bn-ubic .ub{position:relative;display:grid;gap:2px;align-content:start;border:2px solid var(--line);background:var(--surface-2);border-radius:16px;padding:12px;cursor:pointer}
+.bn-ubic .ub input{position:absolute;opacity:0;pointer-events:none}
+.bn-ubic .ub .e{font-size:1.5rem;line-height:1}
+.bn-ubic .ub b{color:var(--heading);margin-top:4px}
+.bn-ubic .ub small{color:var(--muted);font-size:.8rem;line-height:1.35}
+.bn-ubic .ub:has(input:checked){border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.bn-ubic .ub:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:2px}
 </style>
 
 </head>
@@ -613,10 +621,13 @@ a.btn{text-decoration:none}
       <p id="bn-aviso" class="hint warn" hidden></p>
     </div>
     <div><label class="label" for="bn-link">Link (opcional)</label><input id="bn-link" class="field" type="url" inputmode="url" maxlength="500" placeholder="https://… o https://wa.me/549…"><p class="hint">A dónde va la persona al tocar el banner. Sin link, el banner no se puede tocar.</p></div>
-    <div class="grid2">
-      <div><label class="label" for="bn-ubic">Dónde aparece</label><select id="bn-ubic" class="field"><option value="inicio">Inicio (debajo de los rubros)</option><option value="rubro">Arriba de un rubro</option></select></div>
-      <div id="bn-rubro-w" hidden><label class="label" for="bn-rubro">Rubro</label><select id="bn-rubro" class="field"></select></div>
+    <div><span class="label" id="bn-ubic-l">¿Dónde aparece?</span>
+      <div class="bn-ubic" role="radiogroup" aria-labelledby="bn-ubic-l">
+        <label class="ub"><input type="radio" name="bn-ubic" value="inicio"><span class="e">🏠</span><b>Inicio</b><small>Debajo de los rubros. Lo ve todo el que entra.</small></label>
+        <label class="ub"><input type="radio" name="bn-ubic" value="rubro"><span class="e">🏷️</span><b>Dentro de un rubro</b><small>Arriba de la lista de locales de ese rubro.</small></label>
+      </div>
     </div>
+    <div id="bn-rubro-w" hidden><label class="label" for="bn-rubro">¿En qué rubro?</label><select id="bn-rubro" class="field"></select></div>
     <div><label class="label" for="bn-prov">Provincia</label><select id="bn-prov" class="field"></select><p class="hint">Solo lo ven los usuarios que están mirando esa provincia.</p></div>
     <div class="grid2">
       <div><label class="label" for="bn-desde">Desde</label><input id="bn-desde" class="field" type="date"></div>
@@ -1291,8 +1302,10 @@ function abrirBanner(b){
   $('bn-title').textContent = b ? 'Editar banner' : 'Nuevo banner'; $('bn-alert').hidden = true; $('bn-aviso').hidden = true;
   $('bn-anunciante').value = b ? b.anunciante : ''; $('bn-link').value = b ? (b.link || '') : '';
   $('bn-rubro').innerHTML = D.rubros.map(r => `<option value="${esc(r.id)}">${esc(r.icono)} ${esc(r.nombre)}</option>`).join('');
-  $('bn-ubic').value = b ? b.ubicacion : 'inicio'; $('bn-rubro').value = b && b.rubro ? b.rubro : (D.rubros[0]?.id || '');
-  $('bn-rubro-w').hidden = $('bn-ubic').value !== 'rubro';
+  prepararRubro('bn-rubro');
+  $$('[name="bn-ubic"]').forEach(r => r.checked = !!b && r.value === b.ubicacion);
+  $('bn-rubro').value = b && b.rubro ? b.rubro : (D.rubros[0]?.id || ''); pintarRubro('bn-rubro');
+  $('bn-rubro-w').hidden = ubicBanner() !== 'rubro';
   $('bn-prov').innerHTML = provinciaSelectHTML('Todas las provincias'); $('bn-prov').value = b ? (b.provincia || '') : 'Tucumán';
   $('bn-desde').value = b ? b.desde : hoyISO(); $('bn-hasta').value = b && b.hasta ? b.hasta : '';
   $('bn-activo').checked = b ? b.activo : true;
@@ -1300,7 +1313,8 @@ function abrirBanner(b){
   abrirHoja('sheet-banner'); setTimeout(() => $('bn-anunciante').focus(), 250);
 }
 $('btn-nuevo-banner').addEventListener('click', () => abrirBanner(null));
-$('bn-ubic').addEventListener('change', () => $('bn-rubro-w').hidden = $('bn-ubic').value !== 'rubro');
+const ubicBanner = () => (document.querySelector('[name="bn-ubic"]:checked') || {}).value || '';
+$$('[name="bn-ubic"]').forEach(r => r.addEventListener('change', () => $('bn-rubro-w').hidden = ubicBanner() !== 'rubro'));
 $('bn-file').addEventListener('change', async e => {
   const f = e.target.files[0]; e.target.value = ''; if(!f) return;
   const av = $('bn-aviso');
@@ -1310,10 +1324,11 @@ $('bn-file').addEventListener('change', async e => {
 $('f-banner').addEventListener('submit', async e => {
   e.preventDefault();
   const al = $('bn-alert'), err = m => { al.textContent = m; al.hidden = false; al.scrollIntoView({block: 'nearest'}); };
-  const datos = {id: bannerEdit, anunciante: $('bn-anunciante').value.trim(), link: $('bn-link').value.trim(), ubicacion: $('bn-ubic').value,
-    rubro: $('bn-ubic').value === 'rubro' ? $('bn-rubro').value : null, provincia: $('bn-prov').value || null,
+  const datos = {id: bannerEdit, anunciante: $('bn-anunciante').value.trim(), link: $('bn-link').value.trim(), ubicacion: ubicBanner(),
+    rubro: ubicBanner() === 'rubro' ? $('bn-rubro').value : null, provincia: $('bn-prov').value || null,
     desde: $('bn-desde').value, hasta: $('bn-hasta').value || null, activo: $('bn-activo').checked};
   if(!datos.anunciante) return err('Poné el nombre del anunciante.');
+  if(!datos.ubicacion) return err('Elegí dónde aparece el banner: Inicio o dentro de un rubro.');
   if(!bannerEdit && bannerImg === undefined) return err('Subí la imagen del banner.');
   if(datos.link && !/^https?:\/\/\S+$/i.test(datos.link)){
     if(/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(datos.link)){ datos.link = 'https://' + datos.link; $('bn-link').value = datos.link; }

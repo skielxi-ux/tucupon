@@ -381,6 +381,14 @@ a.btn{text-decoration:none}
 .fc-it .muted{font-size:.86rem;margin-top:2px;line-height:1.4}
 .fc-it .q{font-size:.8rem;font-weight:700;color:var(--brand);margin-top:4px}
 .fc-tag{display:inline-block;margin-left:4px;font-size:.62rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:#C4F04A;color:#1E0B45;border-radius:99px;padding:2px 7px;vertical-align:2px}
+.bn-ubic{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+.bn-ubic .ub{position:relative;display:grid;gap:2px;align-content:start;border:2px solid var(--line);background:var(--surface-2);border-radius:16px;padding:12px;cursor:pointer}
+.bn-ubic .ub input{position:absolute;opacity:0;pointer-events:none}
+.bn-ubic .ub .e{font-size:1.5rem;line-height:1}
+.bn-ubic .ub b{color:var(--heading);margin-top:4px}
+.bn-ubic .ub small{color:var(--muted);font-size:.8rem;line-height:1.35}
+.bn-ubic .ub:has(input:checked){border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.bn-ubic .ub:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:2px}
 </style>
 
 </head>
