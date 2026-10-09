@@ -261,6 +261,12 @@ a.banner:active{transform:scale(.99)}
 .link-local{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border-radius:14px;padding:11px 16px;font-weight:800;text-decoration:none;background:var(--surface-2);color:var(--heading);border:1px solid var(--line)}
 .link-local:hover{border-color:var(--brand)}
 .link-local svg{width:16px;height:16px}
+.gal-sec{margin-top:22px}
+.gal-rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;margin:12px -16px 0;padding:0 16px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gal-rail::-webkit-scrollbar{display:none}
+.gal-ph{flex:none;scroll-snap-align:start;height:210px;border-radius:20px;overflow:hidden;background:var(--surface-2);box-shadow:0 12px 26px -16px var(--shadow)}
+.gal-ph img{height:100%;width:auto;max-width:82vw;object-fit:cover;display:block}
+@media (min-width:700px){.gal-ph{height:260px}.gal-ph img{max-width:520px}}
 .links-local{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .links-local .link-local{margin-top:0}
 .link-local.wa{background:#25D366;color:#fff;border-color:#25D366}
@@ -795,6 +801,7 @@ try{ if(/access_token|error_description/.test(location.hash) || /[?&]c=\d/.test(
     <!-- LOCAL -->
     <div id="v-local" hidden>
       <div id="ficha" class="ficha"></div>
+      <div id="gal-arriba"></div>
       <div id="local-extr"></div>
       <div id="local-tarjeta" style="margin-top:18px" hidden></div>
       <div id="local-caja" class="rail solo" style="margin-top:18px" hidden></div>
@@ -806,6 +813,7 @@ try{ if(/access_token|error_description/.test(location.hash) || /[?&]c=\d/.test(
         </div>
         <div id="local-rail" class="rail"></div>
       </section>
+      <div id="gal-abajo"></div>
     </div>
     <footer class="pie">
       <button type="button" class="pie-ayuda" data-reclamo>
@@ -1544,6 +1552,23 @@ function pintarRubro(){
     : vacio(esFavs ? 'Todavía no guardaste favoritos' + (barrio !== 'Todos' ? ' en ' + esc(barrio) : '') + '. Tocá el corazón de cualquier local.'
                    : (barrio !== 'Todos' ? `No hay locales de este rubro en ${esc(barrio)} por ahora. Probá con “Todos los barrios”.` : 'Todavía no hay locales adheridos en este rubro.'));
 }
+// ---------- Galería de fotos del local ----------
+// Con descuentos va abajo de los descuentos; sin descuentos, pegada a la ficha.
+const GAL = {};
+function pintarGaleriaLocal(l, conDescuentos){
+  const arriba = $('gal-arriba'), abajo = $('gal-abajo');
+  arriba.innerHTML = ''; abajo.innerHTML = '';
+  const fotos = GAL[l.id];
+  if(fotos === undefined){
+    GAL[l.id] = null;   // pidiendo
+    rpc('tc_galeria', {p_local_id: l.id}).then(r => { GAL[l.id] = Array.isArray(r) ? r : []; }).catch(() => { GAL[l.id] = []; })
+      .then(() => { if(vista === 'local' && localSel === l.id) pintarGaleriaLocal(l, conDescuentos); });
+    return;
+  }
+  if(!fotos || !fotos.length) return;
+  (conDescuentos ? abajo : arriba).innerHTML = `<section class="sec gal-sec"><div class="sec-h"><h2>Fotos</h2><span class="count">${fotos.length}</span></div>
+    <div class="gal-rail" role="list">${fotos.map((f, i) => `<div class="gal-ph" role="listitem"><img src="${f.foto}" alt="Foto ${i + 1} de ${esc(l.nombre)}" loading="lazy" decoding="async"></div>`).join('')}</div></section>`;
+}
 function pintarLocal(){
   const l = LOCALES.find(x => x.id === localSel); if(!l){ vista = 'home'; return render(true); }
   const r = rubroDe(l.rubro);
@@ -1555,6 +1580,7 @@ function pintarLocal(){
   const cjl = cajaDelLocal(l.id);
   $('local-caja').hidden = !cjl; $('local-caja').innerHTML = cjl ? cajaCard(cjl, true) : '';
   const cs = l.cupones.slice().sort((a, b) => b.pedidos - a.pedidos), vis = filtro === 'ahora' ? cs.filter(enHorario) : cs;
+  pintarGaleriaLocal(l, cs.length > 0);
   $('local-count').textContent = cs.length ? `${cs.length} ${cs.length === 1 ? 'cupón' : 'cupones'}` : '';
   $('local-filtros').hidden = !cs.length;
   if(!cs.length){
