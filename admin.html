@@ -391,6 +391,13 @@ a.btn{text-decoration:none}
 .bn-ubic .ub:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:2px}
 .k-desde{margin:-4px 0 12px;font-size:.88rem;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:8px 12px}
 .k-desde .link{font-size:.88rem}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.gal-it{position:relative;border-radius:14px;overflow:hidden;background:var(--surface-2);aspect-ratio:4/3}
+.gal-it img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-acts{position:absolute;inset:auto 6px 6px 6px;display:flex;gap:6px;justify-content:flex-end}
+.gal-acts button{width:32px;height:32px;border-radius:10px;border:0;background:rgba(20,8,45,.72);color:#fff;font-size:.85rem;cursor:pointer}
+.gal-acts button:disabled{opacity:.35;cursor:default}
+.gal-acts button[data-gal-borrar]{margin-left:auto}
 </style>
 
 </head>

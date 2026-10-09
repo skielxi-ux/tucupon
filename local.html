@@ -391,6 +391,13 @@ a.btn{text-decoration:none}
 .bn-ubic .ub:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:2px}
 .k-desde{margin:-4px 0 12px;font-size:.88rem;color:var(--muted);background:var(--surface-2);border-radius:12px;padding:8px 12px}
 .k-desde .link{font-size:.88rem}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.gal-it{position:relative;border-radius:14px;overflow:hidden;background:var(--surface-2);aspect-ratio:4/3}
+.gal-it img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-acts{position:absolute;inset:auto 6px 6px 6px;display:flex;gap:6px;justify-content:flex-end}
+.gal-acts button{width:32px;height:32px;border-radius:10px;border:0;background:rgba(20,8,45,.72);color:#fff;font-size:.85rem;cursor:pointer}
+.gal-acts button:disabled{opacity:.35;cursor:default}
+.gal-acts button[data-gal-borrar]{margin-left:auto}
 </style>
 
 </head>
@@ -650,6 +657,14 @@ a.btn{text-decoration:none}
         <p class="hint" style="margin-top:-4px"><span class="req">*</span> Campos obligatorios</p>
         <button type="submit" class="btn full">Guardar perfil</button>
       </form>
+      <section class="card" id="gal-card" style="display:grid;gap:12px">
+        <div class="row"><h2 class="grow">📸 Galería de fotos</h2><span id="gal-n" class="chip"></span></div>
+        <p class="muted" style="font-size:.9rem;margin-top:-6px">Hasta 6 fotos de tu local o de tus platos. Aparecen en tu ficha de Tucupón para que den ganas de venir. Usá solo fotos propias.</p>
+        <div id="gal-grid" class="gal-grid"></div>
+        <p id="gal-aviso" class="hint warn" hidden></p>
+        <label class="btn ghost file-btn" id="gal-add">+ Agregar fotos<input id="gal-file" type="file" accept="image/png,image/jpeg,image/webp" multiple></label>
+        <p class="hint" style="margin-top:-4px">Se ven mejor horizontales o cuadradas. Las achicamos solas para que carguen rápido.</p>
+      </section>
     </section>
 
     <!-- Referir -->
@@ -2095,8 +2110,76 @@ function pintarLogoPerfil(){
   $('pf-logo').innerHTML = logoHTML(src, $('pf-nombre').value || perfil.nombre, perfil.color, 'big');
   $('pf-quitar').hidden = !src;
 }
+// ---------- Galería de fotos del local (solo dueño) ----------
+const GAL_MAX = 6;
+let GALERIA = [];
+function prepararGaleria(file){
+  return new Promise((ok, mal) => {
+    if(!file || !/^image\/(png|jpe?g|webp)$/.test(file.type)) return mal(new Error('Elegí una imagen JPG, PNG o WebP.'));
+    if(file.size > 25e6) return mal(new Error('La foto es muy pesada. Probá con una de menos de 25 MB.'));
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const hacer = (L, q) => {
+        const k = Math.min(1, L / Math.max(img.width, img.height)), w = Math.round(img.width * k), h = Math.round(img.height * k);
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        const cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(img, 0, 0, w, h);
+        let d = cv.toDataURL('image/webp', q); if(!d.startsWith('data:image/webp')) d = cv.toDataURL('image/jpeg', q);
+        return d;
+      };
+      let d = hacer(1200, .8);
+      if(d.length > 390000) d = hacer(1200, .66);
+      if(d.length > 390000) d = hacer(900, .66);
+      if(d.length > 390000) d = hacer(720, .6);
+      if(d.length > 390000) return mal(new Error('No pudimos achicar esta foto. Probá con otra.'));
+      ok(d);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No pudimos leer esa imagen. Probá con otra.')); };
+    img.src = url;
+  });
+}
+function pintarGaleria(){
+  const n = GALERIA.length;
+  $('gal-n').textContent = `${n} de ${GAL_MAX}`;
+  $('gal-add').hidden = n >= GAL_MAX;
+  $('gal-grid').innerHTML = n ? GALERIA.map((g, i) => `<div class="gal-it"><img src="${g.foto}" alt="Foto ${i + 1}">
+      <div class="gal-acts"><button type="button" data-gal-mover="${i}" data-d="-1" aria-label="Mover a la izquierda" ${i === 0 ? 'disabled' : ''}>◀</button><button type="button" data-gal-mover="${i}" data-d="1" aria-label="Mover a la derecha" ${i === n - 1 ? 'disabled' : ''}>▶</button><button type="button" data-gal-borrar="${g.id}" aria-label="Borrar foto">🗑</button></div></div>`).join('')
+    : '<div class="empty" style="grid-column:1/-1">Todavía no subiste fotos. ¡Las fichas con fotos se ven mucho mejor!</div>';
+}
+async function cargarGaleria(){
+  if(esCaja()) return;
+  try{ GALERIA = await rpc('tc_local_galeria', {p_local_id: yo.id, p_pin: pin}); pintarGaleria(); }catch(e){ $('gal-aviso').textContent = e.message; $('gal-aviso').hidden = false; }
+}
+$('gal-file').addEventListener('change', async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  const av = $('gal-aviso'); av.hidden = true;
+  const lugar = GAL_MAX - GALERIA.length;
+  if(files.length > lugar){ av.textContent = `Podés subir ${lugar} ${lugar === 1 ? 'foto más' : 'fotos más'}. Subimos las primeras.`; av.hidden = false; }
+  const lbl = $('gal-add'), txt = lbl.firstChild.textContent;
+  for(const [i, f] of files.slice(0, lugar).entries()){
+    lbl.firstChild.textContent = `Subiendo ${i + 1} de ${Math.min(files.length, lugar)}…`;
+    try{ const d = await prepararGaleria(f); GALERIA = await rpc('tc_local_galeria_subir', {p_local_id: yo.id, p_pin: pin, p_foto: d}); pintarGaleria(); }
+    catch(err){ av.textContent = err.message; av.hidden = false; }
+  }
+  lbl.firstChild.textContent = txt;
+});
+$('gal-grid').addEventListener('click', async e => {
+  const m = e.target.closest('[data-gal-mover]'), b = e.target.closest('[data-gal-borrar]');
+  try{
+    if(m){
+      const i = +m.dataset.galMover, j = i + +m.dataset.d, ids = GALERIA.map(g => g.id);
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+      GALERIA = await rpc('tc_local_galeria_orden', {p_local_id: yo.id, p_pin: pin, p_ids: ids}); pintarGaleria();
+    }
+    if(b){
+      if(!confirm('¿Borrar esta foto de tu galería?')) return;
+      GALERIA = await rpc('tc_local_galeria_borrar', {p_local_id: yo.id, p_pin: pin, p_id: +b.dataset.galBorrar}); pintarGaleria(); toast('Foto borrada');
+    }
+  }catch(err){ toast(err.message); }
+});
+
 async function cargarPerfil(){
-  avisoPerfil('');
+  avisoPerfil(''); cargarGaleria();
   try{
     perfil = await rpc('tc_local_perfil', {p_local_id: yo.id, p_pin: pin}); logoNuevo = undefined;
     $('pf-nombre').value = perfil.nombre; $('pf-resp').value = perfil.responsable || '';
