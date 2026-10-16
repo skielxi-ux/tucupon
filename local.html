@@ -430,15 +430,15 @@ a.btn{text-decoration:none}
   <main class="wrap">
     <div id="pausa-aviso" class="alert" style="margin-top:14px" hidden></div>
     <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones">
-      <button type="button" class="tab" role="tab" data-tab="canjear" aria-selected="true">Canjear</button>
-      <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Canjes</button>
-      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">🔑 Encargados y PIN</button>
-      <button type="button" class="tab" role="tab" data-tab="kpis" aria-selected="false">KPIs</button>
-      <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Mis cupones</button>
-      <button type="button" class="tab" role="tab" data-tab="caja" aria-selected="false">🎁 Caja Sorpresa</button>
-      <button type="button" class="tab" role="tab" data-tab="sellos" aria-selected="false">🎟️ Clientes fieles</button>
       <button type="button" class="tab" role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
+      <button type="button" class="tab" role="tab" data-tab="canjear" aria-selected="true">Canjear cupón</button>
+      <button type="button" class="tab" role="tab" data-tab="hoy" aria-selected="false">Cupones canjeados</button>
+      <button type="button" class="tab" role="tab" data-tab="cupones" aria-selected="false">Crear cupón</button>
+      <button type="button" class="tab" role="tab" data-tab="kpis" aria-selected="false">KPIs</button>
+      <button type="button" class="tab" role="tab" data-tab="caja" aria-selected="false">Caja Sorpresa</button>
+      <button type="button" class="tab" role="tab" data-tab="sellos" aria-selected="false">Clientes fieles</button>
       <button type="button" class="tab" role="tab" data-tab="referir" aria-selected="false">Referir</button>
+      <button type="button" class="tab" role="tab" data-tab="ajustes" aria-selected="false">Generar PIN</button>
     </nav>
 
     <!-- KPIs -->
@@ -489,32 +489,6 @@ a.btn{text-decoration:none}
       </form>
       <div id="c-result"></div>
 
-      <div id="contador" class="card contador">
-        <div class="row"><h2 class="grow">👥 Contador de clientes</h2><span id="ct-franja" class="chip"></span></div>
-        <p class="muted" style="font-size:.88rem;margin-top:-4px">Tocá <b>+1</b> cada vez que atendés a un cliente o cobrás un ticket. Al cerrar, el cierre del día ya viene completo.</p>
-        <div class="ct-main">
-          <button type="button" class="ct-menos" id="ct-menos" aria-label="Restar un cliente">−1</button>
-          <div class="ct-num"><b id="ct-total">0</b><span>clientes hoy</span></div>
-          <button type="button" class="ct-mas" id="ct-mas">+1<small>cliente</small></button>
-        </div>
-        <div class="ct-fr" id="ct-fr"></div>
-      </div>
-
-      <form id="f-cierre" class="card cierre" novalidate>
-        <div class="row"><h2 class="grow">🧾 Cierre del día</h2><span id="ci-racha" class="chip" hidden></span></div>
-        <p class="muted" style="font-size:.9rem;margin-top:-4px">¿Cuántos clientes atendieron en cada franja? Con esto ves qué días y horarios son flojos, para no hacer descuentos a ciegas.</p>
-        <div class="ci-dia" role="group" aria-label="Día del cierre"><button type="button" data-ci-dia="hoy" aria-pressed="true">Hoy</button><button type="button" data-ci-dia="ayer" aria-pressed="false">Ayer</button></div>
-        <div class="ci-grid">
-          <label class="ci-f"><span class="ci-l">☀️ Mañana<small>hasta las 12 h</small></span><input id="ci-0" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
-          <label class="ci-f"><span class="ci-l">🍽️ Mediodía<small>12 a 15 h</small></span><input id="ci-1" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
-          <label class="ci-f"><span class="ci-l">🌤️ Tarde<small>15 a 20 h</small></span><input id="ci-2" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
-          <label class="ci-f"><span class="ci-l">🌙 Noche<small>desde las 20 h</small></span><input id="ci-3" class="field" type="number" inputmode="numeric" min="0" max="99999" placeholder="0"></label>
-        </div>
-        <div><label class="label" for="ci-total">💵 Total vendido en el día <span class="muted" style="font-weight:600">(opcional)</span></label><input id="ci-total" class="field" inputmode="numeric" placeholder="$ 0" autocomplete="off"></div>
-        <p id="ci-auto" class="ci-auto" hidden>👥 Lo completamos con el contador. Revisalo, sumá el total si querés y guardá.</p>
-        <div id="ci-alert" class="alert" hidden></div>
-        <button type="submit" class="btn full" id="ci-ok">Guardar cierre</button>
-      </form>
     </section>
 
     <!-- Canjes del día -->
@@ -1275,7 +1249,7 @@ function tab(t){
   if(esCaja() && SOLO_DUENO.includes(t)) t = 'canjear';
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
   ['canjear', 'hoy', 'kpis', 'cupones', 'caja', 'sellos', 'perfil', 'referir', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
-  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarCierre(); cargarNegocio(); pintarAvisoFecha(); }
+  if(t === 'canjear'){ setTimeout(() => $('c-codigo').focus(), 50); cargarNegocio(); pintarAvisoFecha(); }
   if(t === 'hoy'){ if(!$('h-fecha').value) $('h-fecha').value = hoyISO(); cargarCanjes(); }
   if(t === 'cupones'){ cargarCupones(); pintarAvisoFecha(); }
   if(t === 'caja') cargarCaja();
@@ -1418,90 +1392,14 @@ document.addEventListener('click', async e => {
 });
 
 
-// ---------- Cierre del día ----------
+// ---------- Franjas del día (para el mapa y los cupones) ----------
 const FRANJAS = [
   {n: 'Mañana', e: '☀️', r: 'hasta las 12 h', d: '08:00', h: '12:00'},
   {n: 'Mediodía', e: '🍽️', r: '12 a 15 h', d: '12:00', h: '15:00'},
   {n: 'Tarde', e: '🌤️', r: '15 a 20 h', d: '15:00', h: '20:00'},
   {n: 'Noche', e: '🌙', r: 'desde las 20 h', d: '20:00', h: '24:00'},
 ];
-const CLAVES = ['manana', 'mediodia', 'tarde', 'noche'];
-let CI = null, ciDia = 'hoy', ciEditado = false;
 const numAR = n => Number(n || 0).toLocaleString('es-AR');
-function avisoCierre(m, ok){ const a = $('ci-alert'); a.textContent = m || ''; a.hidden = !m; a.className = 'alert' + (ok ? ' ok' : ''); }
-function pintarCierre(){
-  pintarContador();
-  const guardado = CI && CI[ciDia], cont = CI && CI.contador && CI.contador[ciDia], hayCont = cont && cont.some(v => v > 0);
-  const c = guardado || (hayCont ? {manana: cont[0], mediodia: cont[1], tarde: cont[2], noche: cont[3], total: null} : null);
-  $('ci-auto').hidden = !!guardado || !hayCont || ciEditado;
-  const rc0 = $('ci-racha'), r0 = CI ? CI.racha : 0; rc0.hidden = !r0; rc0.textContent = r0 === 1 ? '🔥 1 día' : `🔥 ${r0} días seguidos`;
-  $('ci-ok').textContent = guardado ? 'Actualizar cierre' : 'Guardar cierre';
-  $$('[data-ci-dia]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ciDia === ciDia)));
-  if(ciEditado) return;
-  CLAVES.forEach((k, i) => $('ci-' + i).value = c ? c[k] : '');
-  $('ci-total').value = c && c.total != null ? numAR(Math.round(c.total)) : '';
-}
-async function cargarCierre(){
-  if(!yo) return;
-  try{ const r = await rpc('tc_local_cierre', {p_local_id: yo.id, p_pin: pin}); if(ctPend) return; CI = r; pintarCierre(); }catch(err){ /* sin conexión: queda el formulario vacío */ }
-}
-// ---------- Contador de clientes ----------
-let ctCola = Promise.resolve(), ctPend = 0;
-function pintarContador(){
-  const ct = CI && CI.contador; if(!ct) return;
-  const a = ct.actual || [0, 0, 0, 0], f = ct.franja ?? 0;
-  $('ct-total').textContent = numAR(a.reduce((x, y) => x + y, 0));
-  $('ct-franja').textContent = `${FRANJAS[f].e} Ahora: ${FRANJAS[f].n.toLowerCase()}`;
-  $('ct-fr').innerHTML = FRANJAS.map((fr, i) => `<div class="${i === f ? 'act' : ''}"><span>${fr.e}<br>${fr.n}</span><b>${numAR(a[i])}</b></div>`).join('');
-  $('ct-menos').disabled = !a[f];
-}
-function contar(delta){
-  const ct = CI && CI.contador; if(!ct) return;
-  const f = ct.franja ?? 0;
-  if(delta < 0 && !ct.actual[f]) return;
-  ct.actual[f] += delta;                      // se ve al instante; el servidor confirma después
-  if(ct.dia_comercial === hoyISO()) ct.hoy[f] += delta;
-  pintarContador(); ctPend++;
-  try{ navigator.vibrate && navigator.vibrate(delta > 0 ? 25 : [15, 30, 15]); }catch(_){}
-  const btn = $(delta > 0 ? 'ct-mas' : 'ct-menos'); btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
-  ctCola = ctCola.then(async () => {
-    try{
-      const r = await rpc('tc_local_contar', {p_local_id: yo.id, p_pin: pin, p_delta: delta});
-      ctPend--; if(!ctPend){ CI = r; pintarCierre(); }
-    }catch(err){
-      ctPend--; if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err);
-      toast('No se pudo guardar el último toque. Revisá la conexión.'); cargarCierre();
-    }
-  });
-}
-$('ct-mas').addEventListener('click', () => contar(1));
-$('ct-menos').addEventListener('click', () => contar(-1));
-setInterval(() => { if(yo && !$('t-canjear').hidden && !ctPend && !document.hidden) cargarCierre(); }, 5 * 60000);   // cambia de franja sola
-
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-ci-dia]'); if(!b) return;
-  ciDia = b.dataset.ciDia; ciEditado = false; avisoCierre(''); pintarCierre();
-});
-$('f-cierre').addEventListener('input', () => { ciEditado = true; $('ci-auto').hidden = true; });
-$('ci-total').addEventListener('input', e => { const d = e.target.value.replace(/\D/g, ''); e.target.value = d ? numAR(+d) : ''; });
-$('f-cierre').addEventListener('submit', async e => {
-  e.preventDefault(); avisoCierre('');
-  const v = [0, 1, 2, 3].map(i => $('ci-' + i).value.trim());
-  if(v.some(x => x !== '' && !/^\d{1,5}$/.test(x))) return avisoCierre('Usá solo números enteros para los clientes.');
-  if(v.every(x => !x || +x === 0)) return avisoCierre('Cargá cuántos clientes tuviste en al menos una franja.');
-  const tot = $('ci-total').value.replace(/\D/g, '');
-  const datos = {dia: ciDia, total: tot ? +tot : null}; CLAVES.forEach((k, i) => datos[k] = +v[i] || 0);
-  await conBoton($('ci-ok'), async () => {
-    try{
-      CI = await rpc('tc_local_guardar_cierre', {p_local_id: yo.id, p_pin: pin, p_cierre: datos}); ciEditado = false; pintarCierre();
-      if(!esCaja()){ try{ localStorage.removeItem('tucupon.resumen.' + yo.id); }catch(_){} await cargarNegocio(); if(!$('resumen').hidden) $('resumen').scrollIntoView({behavior: 'smooth', block: 'start'}); }
-      const n = CLAVES.reduce((s, k) => s + datos[k], 0);
-      avisoCierre(`¡Listo! Cierre de ${ciDia} guardado: ${numAR(n)} ${n === 1 ? 'cliente' : 'clientes'}${datos.total ? ' · $ ' + numAR(datos.total) : ''}.`, true);
-      try{ navigator.vibrate && navigator.vibrate(60); }catch(_){}
-    }catch(err){ if(/PIN incorrecto|sesión/i.test(err.message)) return manejarError(err); avisoCierre(err.message); }
-  });
-  $('ci-ok').textContent = CI && CI[ciDia] ? 'Actualizar cierre' : 'Guardar cierre';
-});
 
 // ---------- Cómo se mueve tu negocio (solo dueño) ----------
 const DIAS_N = ['domingos', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábados'];
@@ -1542,10 +1440,10 @@ function pintarNegocio(){
   const n = NG.cierres.length;
   if(n < MIN_DIAS){
     el.innerHTML = `<h2>📊 Cómo se mueve tu negocio</h2>
-      <p class="muted" style="margin-top:6px;font-size:.92rem">Cargá el <b>cierre del día</b> durante ${MIN_DIAS} días (lo puede hacer tu encargado al cerrar caja) y te mostramos tus días y horarios flojos, para que sepas dónde conviene poner un descuento.</p>
+      <p class="muted" style="margin-top:6px;font-size:.92rem">Se arma solo, sin que cargues nada: cada cupón, sello o Caja Sorpresa que validás queda registrado con su día y horario. ${n ? `Cuando tengas ${MIN_DIAS} días de movimiento en Tucupón` : 'Cuando valides tus primeros códigos y pase una semana'}, te mostramos tus días y horarios flojos para que sepas dónde conviene poner un descuento.</p>
       <div class="ng-prog"><i style="width:${Math.round(n / MIN_DIAS * 100)}%"></i></div>
-      <p style="font-weight:800;margin-top:8px">Llevás ${n} de ${MIN_DIAS} días${NG.racha > 1 ? ` · 🔥 ${NG.racha} seguidos` : ''}</p>
-      <button type="button" class="btn full" data-ir-cierre style="margin-top:12px">Cargar el cierre de hoy</button>`;
+      <p style="font-weight:800;margin-top:8px">${n ? `Llevás ${n} de ${MIN_DIAS} días` : 'Todavía no hay canjes validados'}</p>
+      <button type="button" class="btn full" data-ng-nuevo style="margin-top:12px">Crear un cupón para traer clientes</button>`;
     return;
   }
   const A = analizar(), t7 = A.tot(A.u7), tp = A.tot(A.p7);
@@ -1554,30 +1452,30 @@ function pintarNegocio(){
   const nivel = v => v === null ? 'sd' : v === 0 ? 'cer' : 'n' + Math.min(4, Math.max(1, Math.ceil(v / maxV * 4)));
   const reco = A.peor && A.media && A.peor.v < A.media * .85 ? A.peor : null;
   el.innerHTML = `<div class="row" style="align-items:flex-start"><h2 class="grow">📊 Cómo se mueve tu negocio</h2>${NG.racha ? `<span class="chip">🔥 ${NG.racha} ${NG.racha === 1 ? 'día' : 'días seguidos'}</span>` : ''}</div>
-    <p class="muted" style="font-size:.85rem;font-weight:600">Según los cierres del día de las últimas 12 semanas (${n} ${n === 1 ? 'día' : 'días'} cargados)</p>
+    <p class="muted" style="font-size:.85rem;font-weight:600">Según los clientes que vinieron con Tucupón (cupones, sellos y Cajas Sorpresa) en los últimos ${n} ${n === 1 ? 'día' : 'días'}. Se actualiza solo.</p>
     <div class="ng-kpis">
-      <div><span>Clientes últimos 7 días</span><b>${numAR(t7)}</b>${tend === null ? '' : `<em class="${tend >= 0 ? 'up' : 'down'}">${tend >= 0 ? '▲' : '▼'} ${pctTxt(tend)} vs. semana anterior</em>`}</div>
+      <div><span>Clientes con Tucupón · 7 días</span><b>${numAR(t7)}</b>${tend === null ? '' : `<em class="${tend >= 0 ? 'up' : 'down'}">${tend >= 0 ? '▲' : '▼'} ${pctTxt(tend)} vs. semana anterior</em>`}</div>
       ${A.hoyC && A.semPas ? (() => { const h = A.hoyC.c.reduce((a, b) => a + b, 0), s = A.semPas.c.reduce((a, b) => a + b, 0), p = s ? (h - s) / s * 100 : null;
         return `<div><span>Hoy</span><b>${numAR(h)}</b>${p === null ? '' : `<em class="${p >= 0 ? 'up' : 'down'}">${p >= 0 ? '▲' : '▼'} ${pctTxt(p)} vs. el ${DIAS_S[A.hoyC.dow]} pasado</em>`}</div>`; })() : ''}
       ${A.ticket ? `<div><span>Ticket promedio</span><b>$ ${numAR(Math.round(A.ticket))}</b><em>últimas 4 semanas</em></div>` : ''}
     </div>
     ${reco ? `<div class="ng-reco"><p class="t">💡 Tu momento más flojo</p>
-      <p>Los <b>${DIAS_N[reco.d]} a la ${FRANJAS[reco.f].n.toLowerCase()}</b> (${FRANJAS[reco.f].r}) tenés en promedio <b>${numAR(Math.round(reco.v))} clientes</b>, un <b>${Math.round((1 - reco.v / A.media) * 100)}% menos</b> que tu promedio. Ahí un descuento te puede sumar ventas sin regalar en tus horarios llenos.</p>
+      <p>Los <b>${DIAS_N[reco.d]} a la ${FRANJAS[reco.f].n.toLowerCase()}</b> (${FRANJAS[reco.f].r}) vienen en promedio <b>${numAR(Math.round(reco.v))} ${Math.round(reco.v) === 1 ? 'cliente' : 'clientes'} con Tucupón</b>, un <b>${Math.round((1 - reco.v / A.media) * 100)}% menos</b> que tu promedio. Ahí un descuento te puede sumar ventas sin regalar en tus horarios llenos.</p>
       <button type="button" class="btn lima full" data-ng-cupon="${reco.d}-${reco.f}">Crear cupón para los ${DIAS_N[reco.d]} · ${FRANJAS[reco.f].r}</button></div>` : ''}
-    ${A.mejor ? `<p class="ng-mejor">⭐ Tu mejor momento: <b>${DIAS_N[A.mejor.d]} a la ${FRANJAS[A.mejor.f].n.toLowerCase()}</b> (${numAR(Math.round(A.mejor.v))} clientes en promedio). Ahí no hace falta descuento.</p>` : ''}
+    ${A.mejor ? `<p class="ng-mejor">⭐ Tu mejor momento: <b>${DIAS_N[A.mejor.d]} a la ${FRANJAS[A.mejor.f].n.toLowerCase()}</b> (${numAR(Math.round(A.mejor.v))} ${Math.round(A.mejor.v) === 1 ? 'cliente' : 'clientes'} en promedio). Ahí no hace falta descuento.</p>` : ''}
     <div class="scroll" style="margin-top:14px"><div class="ng-mapa">
       <span></span>${ORDEN_D.map(d => `<span class="ng-d">${DIAS_C[d]}</span>`).join('')}
       ${FRANJAS.map((fr, f) => `<span class="ng-f">${fr.e}<small>${fr.n}</small></span>` + ORDEN_D.map(d => { const v = A.prom[d][f];
         return `<button type="button" class="ng-c ${nivel(v)} ${reco && reco.d === d && reco.f === f ? 'flojo' : ''}" data-ng-c="${d}-${f}" aria-label="${DIAS_N[d]} ${fr.n}: ${v === null ? 'sin datos' : Math.round(v) + ' clientes'}">${v === null ? '·' : v === 0 ? '–' : Math.round(v)}</button>`; }).join('')).join('')}
     </div></div>
     <div id="ng-det" class="kp-det">${ngSel ? '' : 'Tocá un cuadro para ver el detalle.'}</div>
-    <div class="kp-ley"><span>Menos</span><i class="g1"></i><i class="g2"></i><i class="g3"></i><i class="g4"></i><span>Más clientes</span><span style="margin-left:auto">– cerrado · sin datos</span></div>`;
+    <div class="kp-ley"><span>Menos</span><i class="g1"></i><i class="g2"></i><i class="g3"></i><i class="g4"></i><span>Más clientes</span><span style="margin-left:auto">– sin clientes de Tucupón · · sin datos</span></div>`;
   if(ngSel) detalleNg(ngSel);
 }
 function detalleNg(k){
   ngSel = k; const [d, f] = k.split('-').map(Number), v = promedios(NG.cierres)[d][f], tr = tendenciaCelda(d, f);
   $$('.ng-c').forEach(b => b.classList.toggle('sel', b.dataset.ngC === k));
-  $('ng-det').innerHTML = v === null ? `Todavía no cargaste ningún ${DIAS_S[d]}.`
+  $('ng-det').innerHTML = v === null ? `Todavía no hubo movimiento ningún ${DIAS_S[d]}.`
     : `<b>${DIAS_N[d][0].toUpperCase() + DIAS_N[d].slice(1)} · ${FRANJAS[f].n}</b> (${FRANJAS[f].r}): ${numAR(Math.round(v))} clientes en promedio${tr === null ? '' : ` · <span class="${tr >= 0 ? 'up' : 'down'}">${pctTxt(tr)}</span> vs. las 4 semanas anteriores`}
        ${v > 0 ? `<br><button type="button" class="btn ghost sm" style="margin-top:8px" data-ng-cupon="${k}">Crear cupón para esta franja</button>` : ''}`;
 }
@@ -1588,7 +1486,7 @@ async function cargarNegocio(){
 document.addEventListener('click', async e => {
   let b;
   if((b = e.target.closest('[data-ng-c]'))){ detalleNg(b.dataset.ngC); return; }
-  if(e.target.closest('[data-ir-cierre]')){ tab('canjear'); setTimeout(() => $('f-cierre').scrollIntoView({behavior: 'smooth', block: 'start'}), 80); return; }
+  if(e.target.closest('[data-ng-nuevo]')){ abrirFormCupon(null); return; }
   if((b = e.target.closest('[data-ng-cupon]'))){
     const [d, f] = b.dataset.ngCupon.split('-').map(Number);
     await abrirFormCupon(null);
@@ -1605,6 +1503,7 @@ const fechaLarga = d => new Date(d + 'T00:00:00').toLocaleDateString('es-AR', {w
 function resumenDia(cierres, dia){
   const c = cierres.find(x => x.dia === dia); if(!c) return null;
   const sumar = a => a.reduce((x, y) => x + y, 0), total = sumar(c.c);
+  if(total < 3) return null;   // con muy poco movimiento no armamos resumen
   const previos = cierres.filter(x => x.dow === c.dow && x.dia < dia).slice(-6);
   const r = {dia, dow: c.dow, total, c: c.c, previos: previos.length, caidas: [], subidas: [], monto: c.total != null ? +c.total : null};
   r.mejor = c.c.indexOf(Math.max(...c.c));
@@ -1632,14 +1531,14 @@ function textoResumen(r){
   const art = f => f === 0 ? 'la mañana' : f === 1 ? 'el mediodía' : f === 2 ? 'la tarde' : 'la noche';
   let titulo, cuerpo = [], cta = null, tono;
   if(r.base === undefined){
-    titulo = `📊 Tu ${dn}: ${numAR(r.total)} clientes`;
+    titulo = `📊 Tu ${dn}: ${numAR(r.total)} clientes con Tucupón`;
     cuerpo.push(`Tu franja más fuerte fue ${art(r.mejor)} (${numAR(r.c[r.mejor])} clientes).`);
-    { const fal = MIN_IGUALES - r.previos; cuerpo.push(`Cuando tengas ${fal === 1 ? 'un ' + dn : fal + ' ' + dnp} más ${fal === 1 ? 'cargado' : 'cargados'}, te vamos a decir si fue un buen día comparado con otros ${dnp} y qué franja conviene reforzar.`); }
+    { const fal = MIN_IGUALES - r.previos; cuerpo.push(`Cuando tengas ${fal === 1 ? 'un ' + dn : fal + ' ' + dnp} más ${fal === 1 ? 'con movimiento' : 'con movimiento'}, te vamos a decir si fue un buen día comparado con otros ${dnp} y qué franja conviene reforzar.`); }
     return {titulo, cuerpo, cta, tono: 'neutro'};
   }
-  if(r.delta >= .10){ tono = 'bien'; titulo = elegir(['🎉 ¡Gran día!', '🚀 ¡Muy buen día!', '👏 ¡Día redondo!'], r.dia); cuerpo.push(`Atendiste <b>${numAR(r.total)} clientes</b>, un <b>${pc(r.delta)} más</b> que un ${dn} normal.`); }
-  else if(r.delta <= -.10){ tono = 'mal'; titulo = elegir(['📉 Un día más tranquilo', '😕 Hoy se movió menos', '📉 Día más flojo de lo habitual'], r.dia); cuerpo.push(`Atendiste <b>${numAR(r.total)} clientes</b>, un <b>${pc(r.delta)} menos</b> que un ${dn} normal (${numAR(Math.round(r.baseTotal))}).`); }
-  else { tono = 'normal'; titulo = r.caidas.length ? '👀 Día normal, con una franja para mirar' : elegir(['✅ Un día dentro de lo normal', '👌 Día estable', '✅ Todo en línea'], r.dia); cuerpo.push(`Atendiste <b>${numAR(r.total)} clientes</b>, parecido a un ${dn} normal (${numAR(Math.round(r.baseTotal))}).`); }
+  if(r.delta >= .10){ tono = 'bien'; titulo = elegir(['🎉 ¡Gran día!', '🚀 ¡Muy buen día!', '👏 ¡Día redondo!'], r.dia); cuerpo.push(`Vinieron <b>${numAR(r.total)} clientes con Tucupón</b>, un <b>${pc(r.delta)} más</b> que un ${dn} normal.`); }
+  else if(r.delta <= -.10){ tono = 'mal'; titulo = elegir(['📉 Un día más tranquilo', '😕 Hoy se movió menos', '📉 Día más flojo de lo habitual'], r.dia); cuerpo.push(`Vinieron <b>${numAR(r.total)} clientes con Tucupón</b>, un <b>${pc(r.delta)} menos</b> que un ${dn} normal (${numAR(Math.round(r.baseTotal))}).`); }
+  else { tono = 'normal'; titulo = r.caidas.length ? '👀 Día normal, con una franja para mirar' : elegir(['✅ Un día dentro de lo normal', '👌 Día estable', '✅ Todo en línea'], r.dia); cuerpo.push(`Vinieron <b>${numAR(r.total)} clientes con Tucupón</b>, parecido a un ${dn} normal (${numAR(Math.round(r.baseTotal))}).`); }
   if(r.deltaMonto != null && Math.abs(r.deltaMonto) >= .05) cuerpo.push(`Vendiste <b>$ ${numAR(Math.round(r.monto))}</b>, un ${pc(r.deltaMonto)} ${r.deltaMonto > 0 ? 'más' : 'menos'} que el promedio de los ${dnp}.`);
   if(r.caidas.length){
     const k = r.caidas[0];
