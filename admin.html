@@ -398,6 +398,39 @@ a.btn{text-decoration:none}
 .gal-acts button{width:32px;height:32px;border-radius:10px;border:0;background:rgba(20,8,45,.72);color:#fff;font-size:.85rem;cursor:pointer}
 .gal-acts button:disabled{opacity:.35;cursor:default}
 .gal-acts button[data-gal-borrar]{margin-left:auto}
+/* ---------- Menú del local (editor) ---------- */
+.me-wrap{display:grid;gap:14px}
+.me-chks{display:flex;flex-wrap:wrap;gap:8px}
+.me-chks label{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:12px;padding:9px 12px;font-weight:700;cursor:pointer;background:var(--surface)}
+.me-chks label:has(input:checked){border-color:var(--brand);background:var(--surface-2)}
+.me-chks input{width:18px;height:18px;accent-color:var(--brand);margin:0}
+.me-cat{display:grid;gap:8px;margin-top:6px}
+.me-cat-h{display:flex;align-items:center;gap:6px;padding:8px 0 2px;border-bottom:2px solid var(--line)}
+.me-cat-h b{font-size:1.02rem;color:var(--heading)}
+.me-mini{width:32px;height:32px;border-radius:10px;border:0;background:var(--surface-2);color:var(--ink);font-size:.85rem;cursor:pointer;flex:none}
+.me-mini:disabled{opacity:.35;cursor:default}
+.me-it{display:flex;align-items:center;gap:10px;padding:8px;border-radius:14px;background:var(--surface-2)}
+.me-it.off{opacity:.6}
+.me-it img,.me-ph{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none;display:grid;place-items:center;background:var(--surface);font-size:1.3rem}
+.me-it .tx{flex:1;min-width:0}
+.me-it .tx b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me-it .tx small{color:var(--muted);font-weight:700}
+.me-it .switch input{width:40px;height:24px}.me-it .switch input::after{width:18px;height:18px}.me-it .switch input:checked::after{transform:translateX(16px)}
+.me-acts{display:flex;gap:4px;flex:none}
+@media (max-width:520px){.me-it{flex-wrap:wrap}.me-it .tx{flex-basis:calc(100% - 62px)}.me-acts{margin-left:auto}}
+.me-foto{display:flex;gap:12px;align-items:flex-start}
+.me-foto-prev{width:110px;height:110px;border-radius:16px;flex:none;background:var(--surface-2) center/cover no-repeat;display:grid;place-items:center;font-size:2rem;color:var(--muted)}
+#sheet-mitem{z-index:46}
+.mp-seg{display:flex;gap:6px;flex-wrap:wrap}
+.mp-ped{display:grid;gap:8px}
+.mp-ped .mp-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.mp-ped .mp-h b{font-size:1.05rem;color:var(--heading)}
+.mp-lineas{display:grid;gap:4px;background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:.92rem}
+.mp-lineas div{display:flex;gap:8px}
+.mp-lineas div span:first-child{flex:1;min-width:0}
+.mp-lineas .nota{color:var(--muted);font-size:.84rem;padding-left:18px}
+.mp-lineas .tot{border-top:1px dashed var(--line);padding-top:6px;margin-top:2px;font-weight:800}
+.mp-datos{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem}
 </style>
 
 </head>
@@ -463,6 +496,11 @@ a.btn{text-decoration:none}
       <div class="grid2">
         <div class="card"><h2>Locales con más pedidos</h2><div class="scroll" id="k-locales" style="margin-top:8px"></div></div>
         <div class="card"><h2>Cupones más pedidos</h2><div class="scroll" id="k-cupones" style="margin-top:8px"></div></div>
+      </div>
+      <div class="card" id="k-menu" style="display:grid;gap:12px" hidden>
+        <h2>🍽️ Pedidos por menú</h2>
+        <div class="stats"><div class="stat"><b id="km-ped">–</b><span>Pedidos</span></div><div class="stat"><b id="km-total">–</b><span>Vendido a los locales</span></div><div class="stat"><b id="km-loc">–</b><span>Locales con menú</span></div></div>
+        <div id="km-lista" style="display:grid;gap:8px"></div>
       </div>
     </section>
 
@@ -715,6 +753,15 @@ a.btn{text-decoration:none}
   </div>
 </div>
 
+<!-- Menú de un local (lo carga el equipo de Tucupón) -->
+<div id="sheet-menu-adm" class="sheet-wrap" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ma-t" style="max-width:46rem;background:var(--bg)">
+    <div class="row"><h2 id="ma-t" class="grow">Menú</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="menu-ed-adm"></div>
+    <div class="card" style="display:grid;gap:10px"><div class="row"><h2 class="grow">Últimos pedidos</h2><span id="ma-n" class="muted" style="font-weight:700"></span></div><div id="ma-pedidos" style="display:grid;gap:10px"></div></div>
+  </div>
+</div>
+
 <!-- Hoja: formulario de cupón (compartido entre panel del local y panel admin) -->
 <div id="sheet-cupon" class="sheet-wrap" aria-hidden="true">
   <form id="f-cupon" class="sheet" role="dialog" aria-modal="true" aria-labelledby="cf-title" novalidate>
@@ -795,6 +842,28 @@ a.btn{text-decoration:none}
     <div class="row"><h2 id="rs-title" class="grow">Elegí el rubro</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
     <div id="rs-grid" class="rs-grid"></div>
   </div>
+</div>
+<!-- Hoja: producto del menú (compartida entre panel del local y admin) -->
+<div id="sheet-mitem" class="sheet-wrap" aria-hidden="true">
+  <form id="f-mitem" class="sheet" role="dialog" aria-modal="true" aria-labelledby="mi-title" novalidate>
+    <div class="row"><h2 id="mi-title" class="grow">Nuevo producto</h2><button type="button" class="btn ghost sm" data-close>Cerrar</button></div>
+    <div id="mi-alert" class="alert" hidden></div>
+    <div><label class="label" for="mi-cat">Categoría</label><input id="mi-cat" class="field" maxlength="40" list="mi-cats" placeholder="Ej.: Pizzas, Bebidas, Postres" autocomplete="off"><datalist id="mi-cats"></datalist><p class="hint">Los productos se agrupan por categoría en el menú.</p></div>
+    <div><label class="label" for="mi-nombre">Producto</label><input id="mi-nombre" class="field" maxlength="80" placeholder="Ej.: Muzzarella grande"></div>
+    <div><label class="label" for="mi-desc">Descripción (opcional)</label><textarea id="mi-desc" class="field" maxlength="300" placeholder="Qué trae, tamaño, para cuántas personas…"></textarea></div>
+    <div class="grid2">
+      <div><label class="label" for="mi-precio">Precio</label><input id="mi-precio" class="field" inputmode="decimal" placeholder="Ej.: 12500" autocomplete="off"></div>
+      <div style="align-self:end;padding-bottom:10px"><label class="switch"><input id="mi-disp" type="checkbox" checked>Disponible</label></div>
+    </div>
+    <div><span class="label">Foto (opcional)</span>
+      <div class="me-foto"><div id="mi-foto-prev" class="me-foto-prev"></div>
+        <div style="display:grid;gap:8px;align-content:start;min-width:0">
+          <label class="btn ghost sm file-btn">Subir foto<input id="mi-foto-file" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <button type="button" id="mi-foto-quitar" class="btn ghost sm">Quitar foto</button>
+          <p class="hint" style="margin:0">Cuadrada queda mejor. La achicamos sola.</p>
+        </div></div></div>
+    <button type="submit" class="btn full">Guardar producto</button>
+  </form>
 </div>
 <div id="toast" hidden></div>
 
@@ -1151,6 +1220,159 @@ document.addEventListener('click', e => {
   if(r && rubroDestino){ const s = $(rubroDestino); s.value = r.dataset.rs; s.dispatchEvent(new Event('change', {bubbles: true})); pintarRubro(rubroDestino); cerrarHoja('sheet-rubros'); }
 });
 
+// ---------- Menú del local (editor compartido: panel del local y admin) ----------
+// api: {cargar(), item(p), borrar(id), orden(ids), conf(c), sinWa: 'texto si no hay WhatsApp'}
+const PAGOS = {efectivo: '💵 Efectivo', transferencia: '🏦 Transferencia', tarjeta: '💳 Tarjeta', mercadopago: '📱 Mercado Pago'};
+const plata = n => '$' + Math.round(+n || 0).toLocaleString('es-AR');
+const leerPesos = v => { v = String(v || '').replace(/[$\s]/g, ''); if(!v) return null; if(/,\d{1,2}$/.test(v)) v = v.replace(/\./g, '').replace(',', '.'); else v = v.replace(/[.,]/g, ''); const n = Number(v); return isFinite(n) && n >= 0 ? n : NaN; };
+let ME = null;
+async function editorMenu(rootId, api){
+  ME = {root: $(rootId), api, data: null, editando: null, foto: undefined};
+  ME.root.innerHTML = '<p class="muted">Cargando menú…</p>';
+  try{ ME.data = await api.cargar(); pintarMenuEd(); }
+  catch(err){ ME.root.innerHTML = `<div class="alert">${esc(err.message)}</div>`; }
+}
+const catsMenu = items => [...new Set(items.map(i => i.categoria))];
+function pintarMenuEd(){
+  const {conf, items} = ME.data, cats = catsMenu(items);
+  const chk = (id, on, txt) => `<label><input type="checkbox" id="${id}" ${on ? 'checked' : ''}>${txt}</label>`;
+  ME.root.innerHTML = `<div class="me-wrap">
+    <div class="card" style="display:grid;gap:14px">
+      <div class="row"><h2 class="grow">Pedidos por WhatsApp</h2><label class="switch"><input id="me-pedidos" type="checkbox" ${conf.pedidos ? 'checked' : ''}>Recibir pedidos</label></div>
+      ${conf.whatsapp ? `<p class="hint" style="margin:0">El cliente arma su pedido en el menú y te llega al WhatsApp <b>${esc(fmtWa(conf.whatsapp))}</b>, con todo el detalle.</p>` : `<div class="alert">${ME.api.sinWa}</div>`}
+      <div><span class="label">Entrega</span><div class="me-chks">${chk('me-retiro', conf.retiro, '🏃 Retiro en el local')}${chk('me-envio', conf.envio, '🛵 Envío a domicilio')}</div></div>
+      <div id="me-envio-w" class="grid2" ${conf.envio ? '' : 'hidden'}>
+        <div><label class="label" for="me-envio-costo">Costo de envío</label><input id="me-envio-costo" class="field" inputmode="decimal" placeholder="Vacío = a confirmar" value="${conf.envio_costo != null ? Math.round(conf.envio_costo) : ''}"></div>
+        <div><label class="label" for="me-envio-nota">Zona o aclaración</label><input id="me-envio-nota" class="field" maxlength="120" placeholder="Ej.: Solo Yerba Buena" value="${esc(conf.envio_nota)}"></div>
+      </div>
+      <div><span class="label">Formas de pago que aceptás</span><div class="me-chks">${Object.entries(PAGOS).map(([k, t]) => `<label><input type="checkbox" name="me-pago" value="${k}" ${conf.pagos.includes(k) ? 'checked' : ''}>${t}</label>`).join('')}</div></div>
+      <div><label class="label" for="me-minimo">Pedido mínimo (opcional)</label><input id="me-minimo" class="field" inputmode="decimal" placeholder="Sin mínimo" style="max-width:14rem" value="${conf.minimo != null ? Math.round(conf.minimo) : ''}"></div>
+      <div id="me-conf-alert" class="alert" hidden></div>
+      <div><button type="button" class="btn" id="me-conf-ok">Guardar</button></div>
+    </div>
+    <div class="card" style="display:grid;gap:10px">
+      <div class="row"><h2 class="grow">Productos <span class="muted" style="font-size:.95rem;font-weight:700">${items.length}</span></h2><button type="button" class="btn sm" data-me-nuevo="">+ Agregar producto</button></div>
+      ${items.length ? cats.map((c, ci) => { const del = items.filter(i => i.categoria === c);
+        return `<div class="me-cat"><div class="me-cat-h"><b class="grow">${esc(c)}</b>
+          <button type="button" class="me-mini" data-me-cat="${ci}" data-d="-1" aria-label="Subir categoría" ${ci === 0 ? 'disabled' : ''}>▲</button><button type="button" class="me-mini" data-me-cat="${ci}" data-d="1" aria-label="Bajar categoría" ${ci === cats.length - 1 ? 'disabled' : ''}>▼</button>
+          <button type="button" class="btn ghost sm" data-me-nuevo="${esc(c)}">+ Agregar</button></div>
+          ${del.map((it, ii) => `<div class="me-it ${it.disponible ? '' : 'off'}">${it.foto ? `<img src="${it.foto}" alt="">` : '<span class="me-ph" aria-hidden="true">🍽️</span>'}
+            <div class="tx"><b>${esc(it.nombre)}</b><small>${plata(it.precio)}${it.disponible ? '' : ' · No disponible'}</small></div>
+            <label class="switch" title="Disponible"><input type="checkbox" data-me-disp="${it.id}" ${it.disponible ? 'checked' : ''} aria-label="Disponible: ${esc(it.nombre)}"></label>
+            <div class="me-acts"><button type="button" class="me-mini" data-me-mover="${it.id}" data-d="-1" aria-label="Subir" ${ii === 0 ? 'disabled' : ''}>▲</button><button type="button" class="me-mini" data-me-mover="${it.id}" data-d="1" aria-label="Bajar" ${ii === del.length - 1 ? 'disabled' : ''}>▼</button><button type="button" class="me-mini" data-me-editar="${it.id}" aria-label="Editar">✏️</button><button type="button" class="me-mini" data-me-borrar="${it.id}" aria-label="Borrar">🗑</button></div>
+          </div>`).join('')}</div>`; }).join('')
+        : '<div class="empty">Todavía no hay productos. Empezá por los más pedidos: con 10 o 15 ya se puede pedir.</div>'}
+    </div></div>`;
+  $('me-envio').addEventListener('change', e => $('me-envio-w').hidden = !e.target.checked);
+}
+function ordenMenu(items){ const cats = catsMenu(items); return cats.flatMap(c => items.filter(i => i.categoria === c)); }
+async function accionMenu(fn, ok){
+  try{ ME.data = await fn(); pintarMenuEd(); if(ok) toast(ok); }catch(err){ toast(err.message); }
+}
+function abrirItemMenu(it, cat){
+  ME.editando = it || null; ME.foto = undefined;
+  $('mi-title').textContent = it ? 'Editar producto' : 'Nuevo producto';
+  $('mi-alert').hidden = true;
+  $('mi-cats').innerHTML = catsMenu(ME.data.items).map(c => `<option value="${esc(c)}">`).join('');
+  $('mi-cat').value = it ? it.categoria : (cat || '');
+  $('mi-nombre').value = it ? it.nombre : ''; $('mi-desc').value = it ? it.descripcion : '';
+  $('mi-precio').value = it ? Math.round(it.precio * 100) / 100 : ''; $('mi-disp').checked = it ? it.disponible : true;
+  pintarFotoItem(); abrirHoja('sheet-mitem'); setTimeout(() => $(it || cat ? 'mi-nombre' : 'mi-cat').focus(), 80);
+}
+function pintarFotoItem(){
+  const src = ME.foto === undefined ? (ME.editando && ME.editando.foto) : ME.foto;
+  $('mi-foto-prev').style.backgroundImage = src ? `url("${src}")` : ''; $('mi-foto-prev').textContent = src ? '' : '🍽️';
+  $('mi-foto-quitar').hidden = !src;
+}
+function achicarFotoMenu(file){
+  return new Promise((ok, mal) => {
+    if(!file || !/^image\/(png|jpe?g|webp)$/.test(file.type)) return mal(new Error('Elegí una imagen JPG, PNG o WebP.'));
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => { URL.revokeObjectURL(url);
+      const hacer = (L, q) => { const k = Math.min(1, L / Math.max(img.width, img.height)), w = Math.round(img.width * k), h = Math.round(img.height * k);
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(img, 0, 0, w, h);
+        let d = cv.toDataURL('image/webp', q); if(!d.startsWith('data:image/webp')) d = cv.toDataURL('image/jpeg', q); return d; };
+      let d = hacer(720, .8); if(d.length > 240000) d = hacer(600, .7); if(d.length > 240000) d = hacer(480, .62);
+      if(d.length > 240000) return mal(new Error('No pudimos achicar esta foto. Probá con otra.')); ok(d); };
+    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No pudimos leer esa imagen. Probá con otra.')); };
+    img.src = url;
+  });
+}
+$('mi-foto-file').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if(!f) return;
+  try{ ME.foto = await achicarFotoMenu(f); pintarFotoItem(); }catch(err){ $('mi-alert').textContent = err.message; $('mi-alert').hidden = false; }
+});
+$('mi-foto-quitar').addEventListener('click', () => { ME.foto = null; pintarFotoItem(); });
+$('f-mitem').addEventListener('submit', async e => {
+  e.preventDefault();
+  const al = $('mi-alert'), err = m => { al.textContent = m; al.hidden = false; al.scrollIntoView({block: 'nearest'}); };
+  const precio = leerPesos($('mi-precio').value), nombre = $('mi-nombre').value.trim();
+  if(nombre.length < 2) return err('Poné el nombre del producto.');
+  if(precio === null || isNaN(precio)) return err('Poné el precio (solo números, por ejemplo 12500).');
+  const p = {categoria: $('mi-cat').value.trim(), nombre, descripcion: $('mi-desc').value.trim(), precio, disponible: $('mi-disp').checked};
+  if(ME.editando) p.id = ME.editando.id;
+  if(ME.foto !== undefined) p.foto = ME.foto;
+  al.hidden = true;
+  await conBoton(e.target.querySelector('[type=submit]'), async () => {
+    try{ ME.data = await ME.api.item(p); pintarMenuEd(); cerrarHoja('sheet-mitem'); toast(ME.editando ? 'Producto guardado' : 'Producto agregado ✓'); }
+    catch(x){ err(x.message); }
+  });
+});
+document.addEventListener('change', e => {
+  const d = e.target.closest('[data-me-disp]'); if(!d || !ME) return;
+  const it = ME.data.items.find(i => i.id === +d.dataset.meDisp); if(!it) return;
+  const {foto, ...resto} = it;
+  accionMenu(() => ME.api.item({...resto, disponible: d.checked}), d.checked ? 'Disponible de nuevo' : 'Marcado como no disponible');
+});
+document.addEventListener('click', async e => {
+  if(!ME || !ME.root || !ME.root.contains(e.target)) return;
+  const t = s => e.target.closest(s); let b;
+  if((b = t('[data-me-nuevo]'))){ abrirItemMenu(null, b.dataset.meNuevo); return; }
+  if((b = t('[data-me-editar]'))){ abrirItemMenu(ME.data.items.find(i => i.id === +b.dataset.meEditar)); return; }
+  if((b = t('[data-me-borrar]'))){
+    const it = ME.data.items.find(i => i.id === +b.dataset.meBorrar);
+    if(it && confirm(`¿Borrar "${it.nombre}" del menú?`)) accionMenu(() => ME.api.borrar(it.id), 'Producto borrado');
+    return;
+  }
+  if((b = t('[data-me-mover]'))){
+    const ls = ordenMenu(ME.data.items), i = ls.findIndex(x => x.id === +b.dataset.meMover), j = i + +b.dataset.d;
+    if(j < 0 || j >= ls.length || ls[j].categoria !== ls[i].categoria) return;
+    [ls[i], ls[j]] = [ls[j], ls[i]]; accionMenu(() => ME.api.orden(ls.map(x => x.id)));
+    return;
+  }
+  if((b = t('[data-me-cat]'))){
+    const cats = catsMenu(ME.data.items), i = +b.dataset.meCat, j = i + +b.dataset.d;
+    if(j < 0 || j >= cats.length) return;
+    [cats[i], cats[j]] = [cats[j], cats[i]];
+    accionMenu(() => ME.api.orden(cats.flatMap(c => ME.data.items.filter(x => x.categoria === c)).map(x => x.id)));
+    return;
+  }
+  if((b = t('#me-conf-ok'))){
+    const al = $('me-conf-alert'), pagos = $$('[name=me-pago]:checked').map(x => x.value);
+    const costo = leerPesos($('me-envio-costo').value), minimo = leerPesos($('me-minimo').value);
+    const err = m => { al.textContent = m; al.hidden = false; };
+    if(!$('me-retiro').checked && !$('me-envio').checked) return err('Elegí al menos una forma de entrega.');
+    if(!pagos.length) return err('Elegí al menos una forma de pago.');
+    if(isNaN(costo) || isNaN(minimo)) return err('Revisá los montos: solo números.');
+    al.hidden = true;
+    await conBoton(b, () => accionMenu(() => ME.api.conf({pedidos: $('me-pedidos').checked, retiro: $('me-retiro').checked, envio: $('me-envio').checked,
+      envio_costo: costo, envio_nota: $('me-envio-nota').value.trim(), pagos, minimo}), 'Guardado ✓'));
+  }
+});
+// Tarjeta de un pedido recibido (panel y admin)
+const ENTREGA = {retiro: '🏃 Retira en el local', envio: '🛵 Envío'};
+function pedidoMenuHTML(p){
+  return `<article class="card mp-ped">
+    <div class="mp-h"><b>Pedido #${p.id}</b><span class="muted" style="font-size:.85rem">${esc(fecha(p.creado))}</span><span class="grow"></span><b>${plata(p.total)}</b></div>
+    <div class="mp-datos"><span>👤 <b>${esc(p.nombre)}</b></span><span>${ENTREGA[p.entrega] || ''}${p.direccion ? ': ' + esc(p.direccion) : ''}</span><span>🕐 ${esc(p.horario)}</span>
+      <span>${esc(PAGOS[p.pago] || p.pago)}${p.paga_con ? ` (paga con ${plata(p.paga_con)})` : ''}</span>${p.cupon ? `<span>🎟️ ${esc(p.cupon)}</span>` : ''}</div>
+    <div class="mp-lineas">${(p.items || []).map(i => `<div><span>${i.cant} × ${esc(i.nombre)}</span><span>${plata(i.sub)}</span></div>${i.nota ? `<div class="nota">↳ ${esc(i.nota)}</div>` : ''}`).join('')}
+      ${p.envio != null ? `<div><span>Envío</span><span>${plata(p.envio)}</span></div>` : ''}
+      <div class="tot"><span>Total</span><span>${plata(p.total)}${p.entrega === 'envio' && p.envio == null ? ' + envío' : ''}</span></div></div>
+    ${p.nota ? `<p style="font-size:.9rem">📝 ${esc(p.nota)}</p>` : ''}
+  </article>`;
+}
+
 
 let pin = '', D = {rubros: [], locales: [], cupones: []}, tabActual = 'numeros';
 try{ pin = sessionStorage.getItem('tucupon.admin') || ''; }catch(e){}
@@ -1399,7 +1621,7 @@ async function cargarUsuarios(){
   }catch(err){ manejarError(err); }
 }
 async function cargarKpis(){
-  cargarUsuarios();
+  cargarUsuarios(); cargarResumenMenu();
   try{
     const k = await rpc('tc_admin_kpis', {p_pin: pin, p_dias: +$('k-dias').value});
     $('k-pedidos').textContent = k.pedidos; $('k-usados').textContent = k.usados; $('k-clientes').textContent = k.clientes;
@@ -1455,6 +1677,37 @@ document.addEventListener('click', async e => {
   catch(err){ manejarError(err); }
 });
 
+// ---------- Menú de un local + resumen de pedidos ----------
+async function abrirMenuAdmin(id){
+  const l = D.locales.find(x => x.id === id); if(!l) return;
+  $('ma-t').textContent = `🍽️ Menú de ${l.nombre}`; $('ma-pedidos').innerHTML = ''; $('ma-n').textContent = '';
+  abrirHoja('sheet-menu-adm');
+  editorMenu('menu-ed-adm', {
+    cargar: () => rpc('tc_admin_menu', {p_pin: pin, p_local_id: id}),
+    item: p => rpc('tc_admin_menu_item', {p_pin: pin, p_local_id: id, p_item: p}),
+    borrar: x => rpc('tc_admin_menu_borrar', {p_pin: pin, p_local_id: id, p_id: x}),
+    orden: ids => rpc('tc_admin_menu_orden', {p_pin: pin, p_local_id: id, p_ids: ids}),
+    conf: c => rpc('tc_admin_menu_conf', {p_pin: pin, p_local_id: id, p_conf: c}),
+    sinWa: 'Este local no tiene WhatsApp cargado. Cargalo en <b>Editar</b> para que pueda recibir pedidos.',
+  });
+  try{
+    const r = await rpc('tc_admin_menu_pedidos', {p_pin: pin, p_local_id: id, p_dias: 30});
+    $('ma-n').textContent = `${r.n} en 30 días · ${plata(r.total)}`;
+    $('ma-pedidos').innerHTML = r.lista.length ? r.lista.slice(0, 20).map(pedidoMenuHTML).join('') : '<p class="muted">Todavía no recibió pedidos por el menú.</p>';
+  }catch(err){ $('ma-pedidos').innerHTML = `<p class="muted">${esc(err.message)}</p>`; }
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-lmenu]'); if(b) abrirMenuAdmin(+b.dataset.lmenu); });
+async function cargarResumenMenu(){
+  const box = $('k-menu'); if(!box) return;
+  try{
+    const r = await rpc('tc_admin_menu_resumen', {p_pin: pin, p_dias: +$('k-dias').value});
+    box.hidden = false;
+    $('km-ped').textContent = r.pedidos; $('km-total').textContent = plata(r.total); $('km-loc').textContent = r.locales_con_menu;
+    $('km-lista').innerHTML = r.por_local.length ? r.por_local.map(x => `<div class="row" style="font-size:.92rem"><span class="grow"><b>${esc(x.nombre)}</b> <span class="muted">· ${x.productos} productos</span></span><span>${x.pedidos} ${x.pedidos === 1 ? 'pedido' : 'pedidos'} · <b>${plata(x.total)}</b></span> <button type="button" class="btn ghost sm" data-lmenu="${x.local_id}">Ver</button></div>`).join('')
+      : '<p class="muted">Todavía ningún local cargó su menú. Entrá a Locales → 🍽️ Menú para cargarlo por ellos.</p>';
+  }catch(err){ box.hidden = true; }
+}
+
 // ---------- Locales ----------
 function pintarLocales(){
   const r = $('lf-rubro').value, pv = $('lf-prov').value, ls = D.locales.filter(l => (!r || l.rubro === r) && (!pv || (l.provincia || 'Tucumán') === pv));
@@ -1469,6 +1722,7 @@ function pintarLocales(){
       <div class="acts">
         <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
         <button type="button" class="btn ghost sm" data-lpin="${l.id}">${l.tiene_pin ? 'Nuevo PIN' : 'Crear PIN'}</button>
+        <button type="button" class="btn ghost sm" data-lmenu="${l.id}">🍽️ Menú</button>
         <button type="button" class="btn ghost sm" data-llink="${l.id}" title="Abre el panel con este local ya elegido">🔗 Link del panel</button>
         <button type="button" class="btn sm ${l.activo ? 'danger' : 'lima'}" data-lpausa="${l.id}">${l.activo ? 'Pausar' : 'Reactivar'}</button>
         <button type="button" class="btn ghost sm btn-borrar" data-lborrar="${l.id}" aria-label="Eliminar ${esc(l.nombre)}">Eliminar</button>
