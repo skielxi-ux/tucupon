@@ -425,6 +425,7 @@ a.btn{text-decoration:none}
       <button type="button" class="tab" role="tab" data-tab="rubros" aria-selected="false">Rubros</button>
       <button type="button" class="tab" role="tab" data-tab="altas" aria-selected="false">Alta <span id="alta-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="reclamos" aria-selected="false">Reclamos <span id="rec-badge" class="badge-n" hidden></span></button>
+      <button type="button" class="tab" role="tab" data-tab="resenas" aria-selected="false">Reseñas</button>
       <button type="button" class="tab" role="tab" data-tab="referidos" aria-selected="false">Referidos <span id="ref-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="pedidos" aria-selected="false">Pedidos <span id="ped-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="publicidad" aria-selected="false">Publicidad</button>
@@ -491,6 +492,13 @@ a.btn{text-decoration:none}
         <button type="button" class="tab" data-rest="" aria-selected="false">Todos</button>
       </div>
       <div id="rec-lista" style="display:grid;gap:12px"></div>
+    </section>
+
+    <!-- Reseñas -->
+    <section id="t-resenas" class="panel" hidden>
+      <div><h2>Reseñas de clientes</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Lo que opinan los clientes de cada local. Si alguna es ofensiva o falsa, borrala.</p></div>
+      <input id="rs-buscar" class="field" type="search" placeholder="Buscar por local, nombre o email" autocomplete="off">
+      <div id="rs-lista" style="display:grid;gap:12px"></div>
     </section>
 
     <!-- Alta -->
@@ -1182,7 +1190,7 @@ async function recargar(){
 function tab(t){
   tabActual = t;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['numeros', 'locales', 'altas', 'reclamos', 'referidos', 'pedidos', 'rubros', 'publicidad', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['numeros', 'locales', 'altas', 'reclamos', 'resenas', 'referidos', 'pedidos', 'rubros', 'publicidad', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   pintarTab();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -1192,6 +1200,7 @@ function pintarTab(){
   if(tabActual === 'rubros') pintarRubros();
   if(tabActual === 'altas') cargarAltas();
   if(tabActual === 'reclamos') cargarReclamos();
+  if(tabActual === 'resenas') cargarResenas();
   if(tabActual === 'referidos') cargarReferidos();
   if(tabActual === 'pedidos') cargarPedidos();
   if(tabActual === 'publicidad') cargarBanners();
@@ -1421,6 +1430,7 @@ document.addEventListener('click', e => { if(e.target.closest('#k-todo')) reinic
 const BORRAR = {
   rec: {fn: 'tc_admin_borrar_reclamos', id: 'p_id', uno: 'este reclamo', varios: n => `${n} ${n === 1 ? 'reclamo' : 'reclamos'}`, filtro: () => recFiltro, recargar: () => cargarReclamos()},
   ped: {fn: 'tc_admin_borrar_pedidos', id: 'p_clave', uno: 'este pedido (con todos sus votos)', varios: n => `${n} ${n === 1 ? 'pedido' : 'pedidos'} (con todos sus votos)`, filtro: () => pedFiltro, recargar: () => cargarPedidos()},
+  res: {fn: 'tc_admin_borrar_resenas', id: 'p_id', uno: 'esta reseña', varios: n => `${n} reseñas`, filtro: () => '', recargar: () => cargarResenas()},
   ref: {fn: 'tc_admin_borrar_referidos', id: 'p_id', uno: 'este referido', varios: n => `${n} ${n === 1 ? 'referido' : 'referidos'}`, filtro: () => refFiltro, recargar: () => cargarReferidos()},
 };
 function botonBorrarTodos(tipo, n){
@@ -1658,6 +1668,28 @@ document.addEventListener('click', async e => {
     });
   }
 });
+
+// ---------- Reseñas ----------
+let RESENAS = [];
+const RS_CAT = [['precio', 'Precio/calidad'], ['atencion', 'Atención'], ['comida', 'Comida'], ['ambiente', 'Ambiente']];
+const puntosAdm = v => '●'.repeat(v) + '○'.repeat(5 - v);
+async function cargarResenas(){
+  $('rs-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{ RESENAS = await rpc('tc_admin_resenas', {p_pin: pin}) || []; pintarResenasAdm(); }
+  catch(err){ manejarError(err); }
+}
+function pintarResenasAdm(){
+  const q = ($('rs-buscar').value || '').trim().toLowerCase();
+  const ls = RESENAS.filter(r => !q || [r.local, r.nombre, r.email].some(x => String(x || '').toLowerCase().includes(q)));
+  $('rs-lista').innerHTML = ls.length ? ls.map(r => `<article class="card" style="display:grid;gap:8px">
+      <div class="row"><b class="grow" style="color:var(--heading)">${esc(r.local)}</b><span class="muted" style="font-size:.82rem">${esc(fecha(r.fecha))} · #${r.id}</span></div>
+      <p style="font-size:.88rem"><b>${esc(r.nombre)}</b> · <span class="mono" style="font-size:.8rem;overflow-wrap:anywhere">${esc(r.email || '')}</span></p>
+      <div style="display:grid;grid-template-columns:auto auto;justify-content:start;column-gap:12px;font-size:.85rem">${RS_CAT.map(([k, t]) => `<span class="muted">${t}</span><span style="color:var(--brand);letter-spacing:2px">${puntosAdm(r[k])}</span>`).join('')}</div>
+      <p style="white-space:pre-wrap;background:var(--surface-2);border-radius:12px;padding:10px 12px">${esc(r.comentario)}</p>
+      <div class="acts"><button type="button" class="btn ghost sm btn-borrar" data-borrar="res" data-id="${r.id}">Borrar</button></div>
+    </article>`).join('') : `<div class="empty">${q ? 'No hay reseñas que coincidan.' : 'Todavía no hay reseñas.'}</div>`;
+}
+$('rs-buscar').addEventListener('input', pintarResenasAdm);
 
 // ---------- Reclamos ----------
 let recFiltro = 'nuevo', RECLAMOS = [];
