@@ -431,6 +431,7 @@ a.btn{text-decoration:none}
 .mp-lineas .nota{color:var(--muted);font-size:.84rem;padding-left:18px}
 .mp-lineas .tot{border-top:1px dashed var(--line);padding-top:6px;margin-top:2px;font-weight:800}
 .mp-datos{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem}
+#t-menus .stat b{font-size:clamp(1.15rem,5vw,1.9rem);overflow-wrap:anywhere}
 </style>
 
 </head>
@@ -455,6 +456,7 @@ a.btn{text-decoration:none}
     <nav class="tabs" role="tablist" aria-label="Secciones">
       <button type="button" class="tab" role="tab" data-tab="numeros" aria-selected="true">Números</button>
       <button type="button" class="tab" role="tab" data-tab="locales" aria-selected="false">Locales</button>
+      <button type="button" class="tab" role="tab" data-tab="menus" aria-selected="false">🍽️ Menús</button>
       <button type="button" class="tab" role="tab" data-tab="rubros" aria-selected="false">Rubros</button>
       <button type="button" class="tab" role="tab" data-tab="altas" aria-selected="false">Alta <span id="alta-badge" class="badge-n" hidden></span></button>
       <button type="button" class="tab" role="tab" data-tab="reclamos" aria-selected="false">Reclamos <span id="rec-badge" class="badge-n" hidden></span></button>
@@ -530,6 +532,18 @@ a.btn{text-decoration:none}
         <button type="button" class="tab" data-rest="" aria-selected="false">Todos</button>
       </div>
       <div id="rec-lista" style="display:grid;gap:12px"></div>
+    </section>
+
+    <!-- Menús -->
+    <section id="t-menus" class="panel" hidden>
+      <div class="row"><h2 class="grow">Menús y pedidos</h2>
+        <select id="mn-dias" class="field" style="width:auto" aria-label="Período"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option></select></div>
+      <div class="stats" style="font-size:.85em"><div class="stat"><b id="mn-ped">–</b><span>Pedidos</span></div><div class="stat"><b id="mn-total">–</b><span>Vendido a los locales</span></div><div class="stat"><b id="mn-loc">–</b><span>Locales con menú</span></div></div>
+      <div class="row" style="flex-wrap:wrap;gap:8px">
+        <input id="mn-buscar" class="field grow" type="search" placeholder="Buscar local para cargar su menú" autocomplete="off" style="min-width:12rem">
+        <select id="mn-filtro" class="field" style="width:auto" aria-label="Mostrar"><option value="con">Con menú</option><option value="sin">Sin menú</option><option value="">Todos</option></select>
+      </div>
+      <div class="card" id="mn-lista"></div>
     </section>
 
     <!-- Reseñas -->
@@ -1412,7 +1426,7 @@ async function recargar(){
 function tab(t){
   tabActual = t;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-  ['numeros', 'locales', 'altas', 'reclamos', 'resenas', 'referidos', 'pedidos', 'rubros', 'publicidad', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
+  ['numeros', 'locales', 'menus', 'altas', 'reclamos', 'resenas', 'referidos', 'pedidos', 'rubros', 'publicidad', 'canjes', 'ajustes'].forEach(x => $('t-' + x).hidden = x !== t);
   pintarTab();
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
@@ -1423,6 +1437,7 @@ function pintarTab(){
   if(tabActual === 'altas') cargarAltas();
   if(tabActual === 'reclamos') cargarReclamos();
   if(tabActual === 'resenas') cargarResenas();
+  if(tabActual === 'menus') cargarMenusAdm();
   if(tabActual === 'referidos') cargarReferidos();
   if(tabActual === 'pedidos') cargarPedidos();
   if(tabActual === 'publicidad') cargarBanners();
@@ -1707,6 +1722,38 @@ async function cargarResumenMenu(){
       : '<p class="muted">Todavía ningún local cargó su menú. Entrá a Locales → 🍽️ Menú para cargarlo por ellos.</p>';
   }catch(err){ box.hidden = true; }
 }
+
+// ---------- Pestaña Menús ----------
+let MNR = null;
+async function cargarMenusAdm(){
+  $('mn-lista').innerHTML = '<p class="muted">Cargando…</p>';
+  try{
+    MNR = await rpc('tc_admin_menu_resumen', {p_pin: pin, p_dias: +$('mn-dias').value});
+    $('mn-ped').textContent = MNR.pedidos; $('mn-total').textContent = plata(MNR.total); $('mn-loc').textContent = MNR.locales_con_menu;
+    if(!MNR.locales_con_menu && $('mn-filtro').value === 'con') $('mn-filtro').value = 'sin';
+    pintarMenusAdm();
+  }catch(err){ $('mn-lista').innerHTML = `<div class="alert">${esc(/tc_admin_menu_resumen|function|schema cache/i.test(err.message) ? 'Falta correr el SQL del menú (tucupon-menu-pedidos.sql) en Supabase.' : err.message)}</div>`; }
+}
+function pintarMenusAdm(){
+  if(!MNR) return;
+  const por = {}; (MNR.por_local || []).forEach(x => por[x.local_id] = x);
+  const q = $('mn-buscar').value.trim().toLowerCase(), f = $('mn-filtro').value;
+  const ls = D.locales.filter(l => (!q || l.nombre.toLowerCase().includes(q)) && (!f || (f === 'con') === !!por[l.id]))
+    .sort((a, b) => ((por[b.id] || {}).pedidos || 0) - ((por[a.id] || {}).pedidos || 0) || a.nombre.localeCompare(b.nombre, 'es'));
+  $('mn-lista').innerHTML = ls.length ? ls.slice(0, 80).map(l => { const x = por[l.id];
+    return `<div class="item">${logoHTML(LOGOS[l.id], l.nombre, l.color)}
+      <div class="grow"><p class="t">${esc(l.nombre)}</p>
+        <p class="s">${x ? `${x.productos} productos · ${x.pedidos} ${x.pedidos === 1 ? 'pedido' : 'pedidos'} · <b>${plata(x.total)}</b>` : 'Sin menú cargado'}${l.whatsapp ? '' : ' · <span style="color:var(--warn)">sin WhatsApp</span>'}</p></div>
+      <div class="acts"><button type="button" class="btn ${x ? 'ghost' : ''} sm" data-lmenu="${l.id}">${x ? 'Ver / editar menú' : '+ Cargar menú'}</button></div></div>`; }).join('')
+    + (ls.length > 80 ? `<p class="muted" style="padding:10px">Mostrando 80 de ${ls.length}. Buscá por nombre para encontrar otro.</p>` : '')
+    : `<div class="empty">${f === 'con' ? 'Todavía ningún local tiene menú. Elegí “Sin menú” para cargarle uno.' : 'No hay locales con esa búsqueda.'}</div>`;
+}
+$('mn-buscar').addEventListener('input', pintarMenusAdm);
+$('mn-filtro').addEventListener('change', pintarMenusAdm);
+$('mn-dias').addEventListener('change', cargarMenusAdm);
+// Al cerrar el editor, refresca la lista
+new MutationObserver(() => { if($('sheet-menu-adm').getAttribute('aria-hidden') === 'true' && tabActual === 'menus') cargarMenusAdm(); })
+  .observe($('sheet-menu-adm'), {attributes: true, attributeFilter: ['aria-hidden']});
 
 // ---------- Locales ----------
 function pintarLocales(){
