@@ -1723,6 +1723,20 @@ async function cargarResumenMenu(){
   }catch(err){ box.hidden = true; }
 }
 
+// ---------- Local fundador ----------
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-lfund]'); if(!b) return;
+  const id = +b.dataset.lfund, si = b.dataset.si === '1', l = D.locales.find(x => x.id === id);
+  const n = D.locales.filter(x => x.fundador).length;
+  if(si && n >= 10 && !confirm(`Ya hay ${n} locales fundadores. ¿Sumar a ${l ? l.nombre : 'este local'} igual?`)) return;
+  if(!si && !confirm(`¿Quitarle a ${l ? l.nombre : 'este local'} la insignia de Local fundador?`)) return;
+  try{
+    const r = await rpc('tc_admin_fundador', {p_pin: pin, p_local_id: id, p_si: si});
+    if(l) l.fundador = r.fundador;
+    toast(si ? `⭐ ${l ? l.nombre : 'Local'} es Local fundador (${r.total} de 10)` : 'Insignia quitada'); pintarLocales();
+  }catch(err){ manejarError(err); }
+});
+
 // ---------- Pestaña Menús ----------
 let MNR = null;
 async function cargarMenusAdm(){
@@ -1762,13 +1776,14 @@ function pintarLocales(){
     const n = l.cupones;
     return `<div class="item">
       ${logoHTML(LOGOS[l.id], l.nombre, l.color)}
-      <div class="grow"><p class="t">${esc(l.nombre)}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)}, ${esc(l.provincia || 'Tucumán')} · ${esc(l.dir)}${(l.sucursales || []).length ? ` · <b>🏬 ${l.sucursales.length + 1} sucursales</b>` : ''}</p>
+      <div class="grow"><p class="t">${esc(l.nombre)}${l.fundador ? ' <span class="chip" style="background:#FFF1C2;color:#7A5200">⭐ Fundador</span>' : ''}</p><p class="s">${esc(rubroNombre(l.rubro))} · ${esc(l.barrio)}, ${esc(l.provincia || 'Tucumán')} · ${esc(l.dir)}${(l.sucursales || []).length ? ` · <b>🏬 ${l.sucursales.length + 1} sucursales</b>` : ''}</p>
         <p class="s"><span class="chip ${l.activo ? 'ok' : 'off'}">${l.activo ? 'Activo' : 'Pausado'}</span> ${l.tiene_pin ? '' : '<span class="chip off">Sin PIN</span>'} ${n} ${n === 1 ? 'cupón activo' : 'cupones activos'} · ${l.pedidos} pedidos · ${l.usados} canjes${l.reclamos ? ` · <b style="color:var(--hot)">${l.reclamos} ${l.reclamos === 1 ? 'reclamo' : 'reclamos'}</b>` : ''}</p>
         <p class="s">${l.responsable ? '👤 ' + esc(l.responsable) + ' · ' : ''}${l.telefono ? '📞 ' + esc(l.telefono) : '<span style="color:var(--warn)">Sin teléfono cargado</span>'}</p>
         ${!l.activo && l.motivo_pausa ? `<p class="s" style="color:var(--hot)"><b>Motivo:</b> ${esc(l.motivo_pausa)}</p>` : ''}</div>
       <div class="acts">
         <button type="button" class="btn ghost sm" data-ledit="${l.id}">Editar</button>
         <button type="button" class="btn ghost sm" data-lpin="${l.id}">${l.tiene_pin ? 'Nuevo PIN' : 'Crear PIN'}</button>
+        <button type="button" class="btn ghost sm" data-lfund="${l.id}" data-si="${l.fundador ? 0 : 1}">${l.fundador ? '⭐ Quitar fundador' : '⭐ Hacer fundador'}</button>
         <button type="button" class="btn ghost sm" data-lmenu="${l.id}">🍽️ Menú</button>
         <button type="button" class="btn ghost sm" data-llink="${l.id}" title="Abre el panel con este local ya elegido">🔗 Link del panel</button>
         <button type="button" class="btn sm ${l.activo ? 'danger' : 'lima'}" data-lpausa="${l.id}">${l.activo ? 'Pausar' : 'Reactivar'}</button>

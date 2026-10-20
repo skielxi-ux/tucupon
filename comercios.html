@@ -219,6 +219,22 @@ section{padding-block:64px}
 .precio .box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:24px;text-align:center}
 .precio .box p{margin:8px 0 0;opacity:.85}
 
+/* Local fundador */
+.fund{border-radius:32px;padding:34px 24px;background:linear-gradient(160deg,#FFF8DF,#FFF1C2);border:1px solid #F3DD8E;color:#3A2A00}
+@media (min-width:900px){.fund{padding:44px 48px}}
+.fund .kicker{color:#9A6A00}
+.fund h2{color:#2B0F63}
+.fund .lead{margin:10px 0 0;color:#5C4A12;max-width:44rem;font-size:1.05rem}
+.fund-g{display:grid;gap:12px;margin-top:24px}
+@media (min-width:800px){.fund-g{grid-template-columns:repeat(3,1fr)}}
+.fund-g div{background:#fff;border-radius:22px;padding:20px;border:1px solid #F3DD8E}
+.fund-g .e{font-size:1.7rem}
+.fund-g b{display:block;margin-top:8px;color:#2B0F63;font-size:1.08rem}
+.fund-g span{display:block;margin-top:4px;color:#5C5372;font-size:.95rem}
+.fund-badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 10px;background:#FFF1C2;color:#7A5200;font-weight:800;font-size:.85rem;border:1px solid #F3DD8E}
+.fund .ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:24px}
+.fund .nota{font-size:.86rem;color:#6B5A22;margin:0}
+
 /* Clientes */
 .clientes{border-radius:28px;padding:26px;background:var(--surface);border:1px solid var(--line);display:flex;flex-wrap:wrap;gap:18px;align-items:center}
 .clientes .e{font-size:2.4rem}
@@ -356,11 +372,29 @@ footer .legal a{color:var(--lima)}
   </div>
 </div></section>
 
+<section id="fundador" style="padding-top:0"><div class="wrap">
+  <div class="fund reveal">
+    <span class="kicker">Primeros 10 locales</span>
+    <h2>Sé uno de los Locales fundadores</h2>
+    <p class="lead">Buscamos los primeros 10 locales que se sumen a Tucupón. Por confiar desde el comienzo, tienen beneficios que nadie más va a tener.</p>
+    <div class="fund-g">
+      <div><span class="e">⭐</span><b>Insignia de Local fundador</b><span>Tu ficha y tu lugar en la lista llevan la insignia <span class="fund-badge" style="display:inline-flex;margin-top:4px">⭐ Fundador</span></span></div>
+      <div><span class="e">📍</span><b>Lugar destacado</b><span>Aparecés primero en tu rubro y en el bloque “Locales fundadores” del inicio de la app.</span></div>
+      <div><span class="e">🔒</span><b>Precio congelado de por vida</b><span>Si en el futuro hay planes pagos, vos pagás siempre el precio más bajo, para siempre.</span></div>
+    </div>
+    <div class="ctas">
+      <a class="btn wa" href="https://wa.me/5493816335234?text=Hola%20Tucup%C3%B3n%20%F0%9F%91%8B%20Quiero%20ser%20Local%20fundador.%20%C2%BFQu%C3%A9%20necesitan%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Quiero ser Local fundador</a>
+      <p class="nota">Los lugares se asignan por orden de llegada.</p>
+    </div>
+  </div>
+</div></section>
+
 <section id="faq" style="padding-top:0"><div class="wrap">
   <span class="kicker">Preguntas frecuentes</span>
   <h2>Lo que suelen preguntarnos</h2>
   <div class="faq">
-    <details><summary>¿Cuánto cuesta?</summary><p>Durante el lanzamiento es gratis para los locales, con todas las funciones incluidas. Si en el futuro hay planes pagos, te vamos a avisar con anticipación y vas a poder decidir si seguís.</p></details>
+    <details><summary>¿Cuánto cuesta?</summary><p>Durante el lanzamiento es gratis para los locales, con todas las funciones incluidas. Si en el futuro hay planes pagos, te vamos a avisar con anticipación y vas a poder decidir si seguís. Los Locales fundadores tienen el precio congelado de por vida.</p></details>
+    <details><summary>¿Qué es un Local fundador?</summary><p>Es uno de los primeros 10 locales que se suman a Tucupón. Lleva una insignia en su ficha, aparece primero en su rubro y en el bloque “Locales fundadores” del inicio, y si en el futuro hay planes pagos, paga siempre el precio más bajo.</p></details>
     <details><summary>¿Tengo que instalar algo?</summary><p>No. Tanto los clientes como tu equipo usan Tucupón desde el navegador del celular o la computadora. Para el panel del local solo necesitás tu PIN.</p></details>
     <details><summary>¿Cómo evito que usen un cupón dos veces?</summary><p>Cada cliente recibe un código único para cada cupón y se puede validar una sola vez. Si alguien lo intenta de nuevo, el panel avisa que ya fue usado y cuándo. Y si el cupón vale en un horario, fuera de esa franja no se puede canjear.</p></details>
     <details><summary>¿Mis empleados pueden ver mis números?</summary><p>No. El encargado entra con su propio PIN y solo ve la pantalla para validar códigos. Las estadísticas, los cupones y la configuración quedan solo para el dueño.</p></details>
