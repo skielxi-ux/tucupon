@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /local.html
+Disallow: /admin
+Disallow: /local
 
 Sitemap: https://tucuponapp.com/sitemap.xml

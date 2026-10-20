@@ -15,8 +15,8 @@
 <meta property="og:site_name" content="Tucupón">
 <meta property="og:locale" content="es_AR">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[
-{"@type":"WebSite","name":"Tucupón","alternateName":["Tucupon","Tucupón Tucumán","tucuponapp"],"url":"https://tucuponapp.com/","inLanguage":"es-AR","description":"Guía y plataforma de beneficios gastronómicos en Tucumán."},
-{"@type":"Organization","name":"Tucupón","alternateName":"Tucuponapp","url":"https://tucuponapp.com/","logo":"https://tucuponapp.com/icono.png","email":"clubtucuponapp@gmail.com","areaServed":{"@type":"State","name":"Tucumán, Argentina"},"address":{"@type":"PostalAddress","addressLocality":"San Miguel de Tucumán","addressRegion":"Tucumán","addressCountry":"AR"}}]}</script>
+{"@type":"WebSite","@id":"https://tucuponapp.com/#web","publisher":{"@id":"https://tucuponapp.com/#org"},"name":"Tucupón","alternateName":["Tucupon","Tucupón Tucumán","tucuponapp"],"url":"https://tucuponapp.com/","inLanguage":"es-AR","description":"Guía y plataforma de beneficios gastronómicos en Tucumán."},
+{"@type":"Organization","@id":"https://tucuponapp.com/#org","name":"Tucupón","alternateName":"Tucuponapp","url":"https://tucuponapp.com/","logo":"https://tucuponapp.com/icono.png","description":"Guía y plataforma de beneficios gastronómicos en Tucumán.","email":"clubtucuponapp@gmail.com","sameAs":["https://www.instagram.com/clubtucuponapp/"],"contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"clubtucuponapp@gmail.com","telephone":"+54 9 381 633-5234","availableLanguage":"es","areaServed":"AR"}],"areaServed":[{"@type":"State","name":"Tucumán"},{"@type":"State","name":"Salta"},{"@type":"State","name":"Jujuy"},{"@type":"State","name":"Santiago del Estero"}],"address":{"@type":"PostalAddress","addressLocality":"San Miguel de Tucumán","addressRegion":"Tucumán","addressCountry":"AR"}}]}</script>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="icono.png">
 
@@ -676,24 +676,25 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 .loading{display:grid;place-items:center;min-height:14rem;color:var(--muted);font-weight:700}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="/medicion.js" defer></script>
 </head>
 <body>
 
 <!-- ================= ACCESO ================= -->
 <section id="landing">
-  <a class="ld-barra" href="comercios.html">¿Tenés un local o un negocio? Buscamos los <b>primeros 10 adheridos</b> de Tucumán.<span class="go">Sumalo gratis →</span></a>
+  <a class="ld-barra" href="/comercios">¿Tenés un local o un negocio? Buscamos los <b>primeros 10 adheridos</b> de Tucumán.<span class="go">Sumalo gratis →</span></a>
   <header class="ld-hero">
     <div class="ld-w">
       <nav class="ld-nav">
         <picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture>
-        <div class="r"><a class="lnk como" href="#ld-como">Cómo funciona</a><a class="lnk" href="comercios.html">Para comercios</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
+        <div class="r"><a class="lnk como" href="#ld-como">Cómo funciona</a><a class="lnk" href="/comercios">Para comercios</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
       </nav>
       <div class="ld-grid">
         <div>
           <span class="ld-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Tucumán y el Norte · Guía de descuentos</span>
           <h1>Los mejores descuentos <mark>de Tucumán y el Norte</mark></h1>
           <p class="sub"><b>Todo en un lugar:</b> gastronomía, comercios, servicios y mucho más. Mirá los descuentos sin registrarte.</p>
-          <div class="ld-cta"><button type="button" class="ld-btn brand" data-ir-app>Ver descuentos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="ld-sumar" href="comercios.html">¿Tenés un local? Sumalo gratis</a></div>
+          <div class="ld-cta"><button type="button" class="ld-btn brand" data-ir-app>Ver descuentos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="ld-sumar" href="/comercios">¿Tenés un local? Sumalo gratis</a></div>
           <div class="ld-chips"><span>Gratis</span><span>Sin instalar nada</span><span>Sin registrarte para mirar</span></div>
         </div>
         <div>
@@ -744,13 +745,13 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   </div></section>
 
   <section class="ld-sec" style="padding-top:0"><div class="ld-w">
-    <a class="ld-local" href="comercios.html"><span class="em" aria-hidden="true">🏪</span><p><b>¿Tenés un local?</b> Sumalo gratis a Tucupón y conseguí más clientes.</p><span class="go"><span class="t">Conocé más </span>→</span></a>
+    <a class="ld-local" href="/comercios"><span class="em" aria-hidden="true">🏪</span><p><b>¿Tenés un local?</b> Sumalo gratis a Tucupón y conseguí más clientes.</p><span class="go"><span class="t">Conocé más </span>→</span></a>
   </div></section>
 
   <footer class="ld-pie"><div class="ld-w">
-    <p class="ld-legal">Tucupón es una guía y plataforma de beneficios gastronómicos en Tucumán. Los comercios sin cupones activos figuran solo como directorio informativo: ningún descuento se publica a menos que el local se adhiera y lo cargue. ¿Querés sumar tu local? <a href="comercios.html">Sumate acá</a>.</p>
+    <p class="ld-legal">Tucupón es una guía y plataforma de beneficios gastronómicos en Tucumán. Los comercios sin cupones activos figuran solo como directorio informativo: ningún descuento se publica a menos que el local se adhiera y lo cargue. ¿Querés sumar tu local? <a href="/comercios">Sumate acá</a>.</p>
     <span>© Tucupón · Hecho en Tucumán</span>
-    <nav><a class="ig-pie" href="https://www.instagram.com/clubtucuponapp/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@clubtucuponapp</a><a href="como-funciona.html">Cómo funciona Tucupón</a><a href="comercios.html">Para comercios</a><a href="otros-servicios.html">Otros servicios</a><a href="local.html">Panel del local</a><a href="terminos.html">Términos</a><a href="privacidad.html">Privacidad</a></nav>
+    <nav><a class="ig-pie" href="https://www.instagram.com/clubtucuponapp/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@clubtucuponapp</a><a href="/como-funciona">Cómo funciona Tucupón</a><a href="/comercios">Para comercios</a><a href="/otros-servicios">Otros servicios</a><a href="/local">Panel del local</a><a href="/terminos">Términos</a><a href="/privacidad">Privacidad</a></nav>
   </div></footer>
 </section>
 <script>/* Si ya hay sesión guardada (o vuelve de un link de email), no mostramos la portada mientras carga */
@@ -796,7 +797,7 @@ try{ if(/access_token|error_description/.test(location.hash) || /[?&]c=\d/.test(
         <div class="field-w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
         <input id="su-pass2" class="field" type="password" autocomplete="new-password" placeholder="La misma contraseña"></div></div>
       <button class="btn" type="submit">Crear cuenta</button>
-      <p class="muted" style="font-size:.8rem;text-align:center">Al crear tu cuenta aceptás los <a class="link" href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a> y la <a class="link" href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.</p>
+      <p class="muted" style="font-size:.8rem;text-align:center">Al crear tu cuenta aceptás los <a class="link" href="/terminos" target="_blank" rel="noopener">Términos y condiciones</a> y la <a class="link" href="/privacidad" target="_blank" rel="noopener">Política de privacidad</a>.</p>
     </form>
 
     <form id="v-forgot" class="form" novalidate hidden>
@@ -824,7 +825,7 @@ try{ if(/access_token|error_description/.test(location.hash) || /[?&]c=\d/.test(
       <button class="btn" type="submit">Guardar contraseña</button>
     </form>
     <p class="demo-note">Usamos tu email solo para tu cuenta y tus cupones.</p>
-    <a class="link" href="comercios.html" style="display:block;text-align:center;margin-top:12px;font-size:.85rem">¿Tenés un local? Conocé Tucupón para comercios</a>
+    <a class="link" href="/comercios" style="display:block;text-align:center;margin-top:12px;font-size:.85rem">¿Tenés un local? Conocé Tucupón para comercios</a>
   </div>
 </section>
 
@@ -966,10 +967,10 @@ try{ if(/access_token|error_description/.test(location.hash) || /[?&]c=\d/.test(
         <span><b>¿Tuviste algún inconveniente con un descuento?</b><small>Contanos qué pasó y lo resolvemos con el local.</small></span>
       </button>
       <nav class="pie-links" aria-label="Información legal">
-        <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>
-        <a href="privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>
-        <a href="comercios.html">Tengo un local</a>
-        <a href="local.html">Soy un local adherido</a>
+        <a href="/terminos" target="_blank" rel="noopener">Términos y condiciones</a>
+        <a href="/privacidad" target="_blank" rel="noopener">Política de privacidad</a>
+        <a href="/comercios">Tengo un local</a>
+        <a href="/local">Soy un local adherido</a>
         <a class="ig-pie" href="https://www.instagram.com/clubtucuponapp/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram</a>
       </nav>
       <p class="fine" style="margin-top:10px">© Tucupón · Hecho en Tucumán</p>
@@ -2394,6 +2395,7 @@ $('v-signup').addEventListener('submit', e => {
     if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
       aviso('Ya existe una cuenta con ese email. Ingresá o recuperá tu contraseña.'); return;
     }
+    if(window.tcMedir) tcMedir('registro', {metodo: 'email'});
     if(!data.session){
       $('sent-t').textContent = `Te mandamos un link a ${em} para confirmar tu cuenta. Tocalo y vas a entrar directo a Tucupón.`;
       vistaAuth('sent');

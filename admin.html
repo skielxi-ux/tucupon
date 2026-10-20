@@ -630,7 +630,7 @@ a.btn{text-decoration:none}
         <div><label class="label" for="p-nuevo2">Repetí el PIN</label><input id="p-nuevo2" class="field mono" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="8 números"></div>
         <button type="submit" class="btn">Guardar PIN</button>
       </form>
-      <div class="card"><h2>Links</h2><p class="muted" style="margin-top:6px;font-size:.92rem">Panel para los locales: <b>local.html</b> en tu mismo sitio. Cada local entra con el PIN que le generás desde “Locales”.</p></div>
+      <div class="card"><h2>Links</h2><p class="muted" style="margin-top:6px;font-size:.92rem">Panel para los locales: <b>tucuponapp.com/local</b>. Cada local entra con el PIN que le generás desde “Locales”.</p></div>
     </section>
   </main>
 </div>
@@ -1909,7 +1909,7 @@ $('loc-lista').addEventListener('click', e => {
   if(bo) abrirBorrar(D.locales.find(l => l.id === +bo.dataset.lborrar));
   const lk = e.target.closest('[data-llink]');
   if(lk){
-    const l = D.locales.find(x => x.id === +lk.dataset.llink), url = `${location.origin}${location.pathname.replace(/admin\.html$/, '')}local.html?l=${l.id}`;
+    const l = D.locales.find(x => x.id === +lk.dataset.llink), url = `${location.origin}${location.pathname.replace(/admin(\.html)?$/, '')}local?l=${l.id}`;
     const txt = `Panel de ${l.nombre} en Tucupón 👉 ${url}\nEntrá con tu PIN (el de dueño o el de encargado).`;
     (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Link copiado: pegalo en WhatsApp para el dueño o el encargado.')).catch(() => prompt('Copiá el link:', url));
     return;
