@@ -96,16 +96,45 @@ p{margin:0}
 @media (max-width:520px){.ld-cta .ld-btn{width:100%}}
 .ld-chips{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;font-weight:700;font-size:.86rem;color:var(--muted)}
 .ld-chips span::before{content:"✓ ";color:var(--brand)}
-.ld-cards{position:relative;display:grid;gap:12px;max-width:360px;width:100%;margin-inline:auto}
-.ld-cup{position:relative;border-radius:24px;padding:16px 18px;color:#fff;box-shadow:0 22px 44px -22px rgba(43,15,99,.6);overflow:hidden}
-.ld-cup .ic{position:absolute;right:14px;top:12px;font-size:1.9rem}
-.ld-cup .lc{font-size:.78rem;font-weight:700;opacity:.88}
-.ld-cup .big{font-size:2.1rem;font-weight:900;color:var(--accent);line-height:1;margin-top:6px}
-.ld-cup .tt{font-weight:800;margin-top:2px}
-.ld-cup.c1{background:linear-gradient(140deg,#4F1BB5,#7B3FF0);transform:rotate(-2deg)}
-.ld-cup.c2{background:linear-gradient(140deg,#B0249F,#5B1FD1);transform:rotate(1.5deg);margin-left:22px}
-.ld-cup.c3{background:linear-gradient(140deg,#0F8A62,#0B5E46);transform:rotate(-1deg)}
-@media (max-width:520px){.ld-cup.c3{display:none}.ld-cards{max-width:330px}}
+.ld-barra{display:block;background:#2B0F63;color:#fff;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;line-height:1.4;padding:11px 16px}
+.ld-barra b{color:var(--accent,#C4F04A);font-weight:800}
+.ld-barra .go{color:var(--accent,#C4F04A);font-weight:800;white-space:nowrap;margin-left:6px}
+.ld-barra:hover .go{text-decoration:underline}
+.ld-pill svg{width:16px;height:16px;color:var(--brand)}
+.ld-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px}
+.ld-sumar{color:var(--brand);font-weight:800;font-size:1.02rem;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.ld-sumar:hover{color:var(--heading)}
+@media (max-width:520px){.ld-cta{justify-content:center}.ld-sumar{font-size:.95rem}}
+.ld-tel-w{position:relative;width:min(300px,78vw);margin-inline:auto;padding:0 0 26px}
+.ld-tel{position:relative;border-radius:46px;background:#1E0B45;padding:12px;box-shadow:0 40px 70px -34px rgba(43,15,99,.7)}
+.ld-tel-in{border-radius:36px;background:#fff;padding:18px 14px 16px;display:grid;gap:14px;color:#1E0B45}
+.ld-tel-top{display:flex;align-items:center;justify-content:space-between}
+.ld-tel-top img{height:22px;width:auto}
+.ld-tel-top span{font-size:.72rem;font-weight:700;color:#6E6585}
+.ld-tel-cup{border-radius:20px;overflow:hidden;border:1px solid #ECE6F7;background:#fff}
+.ld-tel-foto{position:relative;aspect-ratio:4/3;background:linear-gradient(140deg,#F6B73C,#C2410C);display:grid;place-items:center;font-size:4.2rem}
+.ld-tel-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ld-tel-foto .tag{position:absolute;left:12px;top:12px;background:var(--accent,#C4F04A);color:#1E0B45;font-weight:900;font-size:.82rem;padding:3px 10px;border-radius:99px;z-index:1}
+.ld-tel-tx{padding:12px 14px 14px}
+.ld-tel-tx small{display:block;font-size:.72rem;font-weight:700;color:#6E6585}
+.ld-tel-tx b{display:block;font-family:var(--font-display);font-size:1.22rem;line-height:1.15;font-weight:900;color:#2B0F63;margin-top:4px}
+.ld-tel-tx span{display:block;font-size:.76rem;color:#6E6585;margin-top:4px;font-weight:600}
+.ld-tel-cod{border:2px dashed #CDBDF5;border-radius:18px;text-align:center;padding:10px 8px 12px}
+.ld-tel-cod small{font-size:.7rem;font-weight:700;color:#6E6585}
+.ld-tel-cod b{display:block;font-family:var(--font-mono);font-size:1.75rem;letter-spacing:.06em;font-weight:800;color:#1E0B45;margin:2px 0}
+.ld-tel-cod span{font-size:.74rem;color:#4B4166;font-weight:600}
+.ld-tel-btn{border-radius:14px;background:var(--brand,#7B3FF0);color:#fff;text-align:center;font-weight:800;font-size:.9rem;padding:11px}
+.ld-glob{position:absolute;display:flex;align-items:center;gap:10px;background:#fff;color:#1E0B45;border-radius:16px;padding:10px 14px;box-shadow:0 18px 36px -16px rgba(43,15,99,.45);white-space:nowrap}
+.ld-glob b{display:block;font-size:.84rem;font-weight:800}
+.ld-glob small{display:block;font-size:.7rem;color:#6E6585;font-weight:600}
+.ld-glob .ok{width:30px;height:30px;border-radius:50%;background:var(--accent,#C4F04A);display:grid;place-items:center;flex:none}
+.ld-glob .ok svg{width:16px;height:16px}
+.ld-glob.g1{left:-58px;top:30%}
+.ld-glob.g2{right:-104px;bottom:24%}
+@media (max-width:1100px){.ld-glob.g2{right:-40px;bottom:6%}}
+@media (max-width:520px){.ld-glob.g1{left:-14px;top:28%}.ld-glob.g2{right:-12px;bottom:4px}.ld-glob{padding:8px 11px}}
+@media (max-width:560px){.ld-nav .lnk.como{display:none}}
+.ld-tel-nota{text-align:center;font-size:.76rem;color:var(--muted);font-weight:600;margin-top:10px}
 .ld-sec{padding-block:44px}
 @media (min-width:900px){.ld-sec{padding-block:64px}}
 .ld-k{display:inline-block;font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
@@ -648,24 +677,36 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 
 <!-- ================= ACCESO ================= -->
 <section id="landing">
+  <a class="ld-barra" href="comercios.html">¿Tenés un local o un negocio? Buscamos los <b>primeros 10 adheridos</b> de Tucumán.<span class="go">Sumalo gratis →</span></a>
   <header class="ld-hero">
     <div class="ld-w">
       <nav class="ld-nav">
         <picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture>
-        <div class="r"><a class="lnk" href="local.html">Panel del local</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
+        <div class="r"><a class="lnk como" href="#ld-como">Cómo funciona</a><a class="lnk" href="comercios.html">Para comercios</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
       </nav>
       <div class="ld-grid">
         <div>
-          <span class="ld-pill"><span class="em">📍</span> Tucumán<span id="ld-cuantos"></span></span>
-          <h1>Guía de gastronomía y descuentos <mark>en Tucumán</mark></h1>
-          <p class="sub"><b>Todos en un lugar:</b> pizzerías, hamburgueserías, cafés, heladerías, cervecerías y mucho más. Mirá todos los descuentos sin registrarte.</p>
-          <div class="ld-cta"><button type="button" class="ld-btn brand" data-ir-app>Ver descuentos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+          <span class="ld-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Tucumán y el Norte · Guía de descuentos</span>
+          <h1>Los mejores descuentos <mark>de Tucumán y el Norte</mark></h1>
+          <p class="sub"><b>Todo en un lugar:</b> gastronomía, comercios, servicios y mucho más. Mirá los descuentos sin registrarte.</p>
+          <div class="ld-cta"><button type="button" class="ld-btn brand" data-ir-app>Ver descuentos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="ld-sumar" href="comercios.html">¿Tenés un local? Sumalo gratis</a></div>
           <div class="ld-chips"><span>Gratis</span><span>Sin instalar nada</span><span>Sin registrarte para mirar</span></div>
         </div>
-        <div class="ld-cards" aria-hidden="true">
-          <div class="ld-cup c1"><span class="ic em">🍔</span><p class="lc">Hamburguesería · Centro</p><div class="big">2x1</div><div class="tt">En hamburguesas dobles</div></div>
-          <div class="ld-cup c2"><span class="ic em">☕</span><p class="lc">Cafetería · Yerba Buena</p><div class="big">20% OFF</div><div class="tt">En tu desayuno completo</div></div>
-          <div class="ld-cup c3"><span class="ic em">🍕</span><p class="lc">Pizzería · Barrio Norte</p><div class="big">3x2</div><div class="tt">En docenas de empanadas</div></div>
+        <div>
+          <div class="ld-tel-w" aria-hidden="true">
+            <div class="ld-tel"><div class="ld-tel-in">
+              <div class="ld-tel-top"><img src="logo-oscuro.png" alt="" width="656" height="160"><span>Yerba Buena</span></div>
+              <div class="ld-tel-cup">
+                <div class="ld-tel-foto" id="ld-tel-foto"><span class="tag">2x1</span>🍺</div>
+                <div class="ld-tel-tx"><small>Cervecería · Yerba Buena</small><b>2x1 en cerveza artesanal</b><span>Lun a Jue · 18 a 20 h</span></div>
+              </div>
+              <div class="ld-tel-cod"><small>Tu código</small><b>TC-4821</b><span>Mostralo al pagar</span></div>
+              <div class="ld-tel-btn">Ver cómo llegar</div>
+            </div></div>
+            <div class="ld-glob g1"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#1E0B45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Código validado</b><small>hace 2 minutos</small></span></div>
+            <div class="ld-glob g2"><span><b>Ahorraste $4.500</b><small>en tu última salida</small></span></div>
+          </div>
+          <p class="ld-tel-nota">Ejemplo de la app</p>
         </div>
       </div>
     </div>
@@ -678,7 +719,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
     <div class="ld-rubros" id="ld-rubros"><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span></div>
   </div></section>
 
-  <section class="ld-sec"><div class="ld-w">
+  <section class="ld-sec" id="ld-como" style="scroll-margin-top:10px"><div class="ld-w">
     <span class="ld-k">Cómo funciona</span>
     <h2>Ahorrar es así de fácil</h2>
     <div class="ld-steps">
@@ -2407,7 +2448,6 @@ async function cargarPortada(){
     const rs = RUBROS.filter(r => n(r.id) > 0);
     if(!rs.length){ $('ld-sec-rubros').hidden = true; return; }
     $('ld-rubros').innerHTML = rs.map(r => `<button type="button" class="ld-ru" data-ir-app="${esc(r.id)}" style="--rc:${esc(r.color || '#7B3FF0')}"><span class="ic em" aria-hidden="true">${esc(r.icono)}</span><span style="min-width:0"><b>${esc(r.nombre)}</b><small>${n(r.id)} ${n(r.id) === 1 ? 'local' : 'locales'}</small></span></button>`).join('');
-    if(ls.length >= 5) $('ld-cuantos').textContent = ` · ${ls.length} locales`;
     portadaLista = true;
   }catch(e){ $('ld-sec-rubros').hidden = true; }
 }
