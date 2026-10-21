@@ -73,16 +73,23 @@ p{margin:0}
 /* ---------- Portada (sin sesión) ---------- */
 #landing{background:var(--bg);color:var(--ink)}
 .ld-w{max-width:68rem;margin-inline:auto;padding-inline:16px}
-.ld-hero{position:relative;overflow:hidden;background:radial-gradient(420px 300px at 100% 62%,rgba(196,240,74,.30),transparent 70%),radial-gradient(560px 360px at 0% 100%,rgba(255,111,177,.14),transparent 70%),linear-gradient(180deg,var(--surface-2),var(--bg) 60%);padding:16px 0 44px}
-.ld-nav{position:relative;display:flex;align-items:center;gap:6px}
+.ld-hero{position:relative;overflow:hidden;background:radial-gradient(420px 300px at 100% 62%,rgba(196,240,74,.30),transparent 70%),radial-gradient(560px 360px at 0% 100%,rgba(255,111,177,.14),transparent 70%),linear-gradient(180deg,var(--surface-2),var(--bg) 60%);padding:28px 0 44px}
+.ld-top{position:sticky;top:0;z-index:30;background:#F4F3F7;border-bottom:1px solid #E4E1EC;box-shadow:0 6px 18px -16px rgba(43,15,99,.5)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ld-top{background:#1A1230;border-bottom-color:var(--line)}}
+:root[data-theme="dark"] .ld-top{background:#1A1230;border-bottom-color:var(--line)}
+.ld-nav{position:relative;display:flex;align-items:center;gap:6px;min-height:64px}
 .ld-nav img{height:32px;width:auto;display:block}
-.ld-nav .r{margin-left:auto;display:flex;align-items:center;gap:4px}
-.ld-nav .lnk{color:var(--heading);text-decoration:none;font-weight:700;font-size:.86rem;padding:9px 8px;border-radius:10px;white-space:nowrap}
-@media (max-width:400px){.ld-nav img{height:27px}.ld-nav .lnk{font-size:.8rem;padding:8px 6px}.ld-nav .ing{padding:7px 11px;font-size:.84rem}}
-.ld-nav .lnk:hover{background:var(--surface-2)}
-.ld-nav .ing{white-space:nowrap;color:var(--brand);font-weight:800;font-size:.9rem;padding:8px 14px;border-radius:12px;border:2px solid var(--brand);background:var(--surface)}
-.ld-grid{position:relative;display:grid;gap:34px;align-items:center;margin-top:30px}
-@media (min-width:900px){.ld-grid{grid-template-columns:1.15fr .85fr;margin-top:52px}.ld-hero{padding-bottom:72px}}
+.ld-nav .r{margin-left:auto;display:flex;align-items:center;gap:6px}
+.ld-nav .lnk{position:relative;color:var(--heading);text-decoration:none;font-weight:700;font-size:.9rem;padding:9px 10px;border-radius:10px;white-space:nowrap;transition:color .2s}
+.ld-nav .lnk::after{content:"";position:absolute;left:10px;right:10px;bottom:4px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,var(--brand),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.ld-nav .lnk:hover{color:var(--brand)}
+.ld-nav .lnk:hover::after,.ld-nav .lnk:focus-visible::after{transform:scaleX(1)}
+.ld-nav .ing{white-space:nowrap;color:var(--brand);font-weight:800;font-size:.9rem;padding:8px 16px;border-radius:12px;border:2px solid var(--brand);background:var(--surface);transition:background .2s,color .2s,transform .2s,box-shadow .2s}
+.ld-nav .ing:hover{background:var(--brand);color:#fff;transform:translateY(-2px);box-shadow:0 10px 20px -10px rgba(123,63,240,.8)}
+@media (prefers-reduced-motion:reduce){.ld-nav .lnk::after,.ld-nav .ing{transition:none}.ld-nav .ing:hover{transform:none}}
+@media (max-width:400px){.ld-nav img{height:27px}.ld-nav .lnk{font-size:.8rem;padding:8px 6px}.ld-nav .lnk::after{left:6px;right:6px}.ld-nav .ing{padding:7px 11px;font-size:.84rem}}
+.ld-grid{position:relative;display:grid;gap:34px;align-items:center;margin-top:8px}
+@media (min-width:900px){.ld-grid{grid-template-columns:1.15fr .85fr;margin-top:28px}.ld-hero{padding-bottom:72px}}
 .ld-pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);color:var(--heading);font-weight:800;font-size:.84rem;padding:6px 12px;border-radius:99px}
 .ld-hero h1{font-size:clamp(2.2rem,7.4vw,3.7rem);font-weight:900;line-height:1.04;letter-spacing:-.02em;margin-top:14px;color:var(--heading)}
 .ld-hero h1 mark{background:var(--accent);color:var(--on-accent);padding:0 .14em;border-radius:.2em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
@@ -683,12 +690,14 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 <!-- ================= ACCESO ================= -->
 <section id="landing">
   <a class="ld-barra" href="/comercios">¿Tenés un local o un negocio? Buscamos los <b>primeros 10 adheridos</b> de Tucumán.<span class="go">Sumalo gratis →</span></a>
-  <header class="ld-hero">
+  <header class="ld-top"><div class="ld-w">
+    <nav class="ld-nav">
+      <picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture>
+      <div class="r"><a class="lnk como" href="#ld-como">Cómo funciona</a><a class="lnk" href="/comercios">Para comercios</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
+    </nav>
+  </div></header>
+  <div class="ld-hero">
     <div class="ld-w">
-      <nav class="ld-nav">
-        <picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture>
-        <div class="r"><a class="lnk como" href="#ld-como">Cómo funciona</a><a class="lnk" href="/comercios">Para comercios</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
-      </nav>
       <div class="ld-grid">
         <div>
           <span class="ld-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Tucumán y el Norte · Guía de descuentos</span>
@@ -715,7 +724,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         </div>
       </div>
     </div>
-  </header>
+  </div>
 
   <section class="ld-sec" id="ld-sec-rubros" style="padding-bottom:0"><div class="ld-w">
     <span class="ld-k">Explorá</span>
@@ -2557,6 +2566,7 @@ sb.auth.onAuthStateChange((evento, s) => {
   vistaAuth('login');
   let eraInvitado = false; try{ eraInvitado = sessionStorage.getItem('tucupon.invitado') === '1'; }catch(e){}
   if(h.get('error_description')) verAuth();
+  else if(h.has('ingresar')){ if(history.replaceState) history.replaceState(null, '', location.pathname); verAuth('login'); }
   else if(compartido || eraInvitado) entrarInvitado();
   else verLanding();
   if(h.get('error_description')){

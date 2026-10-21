@@ -30,12 +30,32 @@ p,li{max-width:68ch}
 ul{padding-left:1.2em}
 a{color:var(--brand);font-weight:700}
 .nota{font-size:.88rem;color:var(--muted)}
+
+/* Barra de navegación (igual que la landing) */
+.tc-top{position:sticky;top:0;z-index:30;background:#F4F3F7;border-bottom:1px solid #E4E1EC;box-shadow:0 6px 18px -16px rgba(43,15,99,.5)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tc-top{background:#1A1230;border-bottom-color:var(--line)}}
+:root[data-theme="dark"] .tc-top{background:#1A1230;border-bottom-color:var(--line)}
+.tc-nav{max-width:68rem;margin-inline:auto;padding-inline:16px;display:flex;align-items:center;gap:6px;min-height:64px}
+.tc-nav .logo{display:block;line-height:0}
+.tc-nav .logo img{height:32px;width:auto}
+.tc-nav .logo .noche{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tc-nav .logo .dia{display:none}:root:not([data-theme="light"]) .tc-nav .logo .noche{display:block}}
+.tc-nav .r{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tc-nav .lnk{position:relative;color:var(--heading);text-decoration:none;font-weight:700;font-size:.9rem;padding:9px 10px;border-radius:10px;white-space:nowrap;transition:color .2s}
+.tc-nav .lnk::after{content:"";position:absolute;left:10px;right:10px;bottom:4px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,var(--brand),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.tc-nav .lnk:hover{color:var(--brand)}
+.tc-nav .lnk:hover::after,.tc-nav .lnk:focus-visible::after,.tc-nav .lnk[aria-current="page"]::after{transform:scaleX(1)}
+.tc-nav .ing{white-space:nowrap;color:var(--brand);text-decoration:none;font-weight:800;font-size:.9rem;padding:8px 16px;border-radius:12px;border:2px solid var(--brand);background:var(--surface);transition:background .2s,color .2s,transform .2s,box-shadow .2s}
+.tc-nav .ing:hover{background:var(--brand);color:#fff;transform:translateY(-2px);box-shadow:0 10px 20px -10px rgba(123,63,240,.8)}
+@media (prefers-reduced-motion:reduce){.tc-nav .lnk::after,.tc-nav .ing{transition:none}.tc-nav .ing:hover{transform:none}}
+@media (max-width:560px){.tc-nav .como{display:none}}
+@media (max-width:400px){.tc-nav .logo img{height:27px}.tc-nav .lnk{font-size:.8rem;padding:8px 6px}.tc-nav .lnk::after{left:6px;right:6px}.tc-nav .ing{padding:7px 11px;font-size:.84rem}}
 </style>
 <script src="/medicion.js" defer></script>
 </head>
 <body>
+<header class="tc-top"><nav class="tc-nav" aria-label="Principal"><a class="logo" href="/" aria-label="Tucupón, ir al inicio"><img class="dia" src="logo-oscuro.png" alt="Tucupón" width="656" height="160"><img class="noche" src="logo.png" alt="" width="656" height="160"></a><div class="r"><a class="lnk como" href="/como-funciona">Cómo funciona</a><a class="lnk" href="/comercios">Para comercios</a><a class="ing" href="/#ingresar">Ingresar</a></div></nav></header>
 <header class="top"><div class="wrap">
-  <a class="brand" href="/"><img src="logo.png" alt="Tucupón" style="height:40px;width:auto;display:block" width="656" height="160"></a>
   <h1>Términos y condiciones</h1>
   <p>Última actualización: 7 de octubre de 2026</p>
 </div></header>
