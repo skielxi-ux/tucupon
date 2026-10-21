@@ -4,7 +4,7 @@
      GA4:  Analytics > Administrar > Flujos de datos > tu sitio > "ID de medición" (empieza con G-)
      Meta: Administrador de eventos > Orígenes de datos > tu píxel > "Identificador" (solo números)  */
 const TC_GA4 = '';          // ej.: 'G-ABC123XYZ9'
-const TC_META_PIXEL = '786715830142183';   // Píxel de Meta (cuenta de Exequiel Fernandez)
+const TC_META_PIXEL = '1649164420244756';   // Píxel "Tucupon Web" del porfolio tucupon
 
 (function(){
   const ga = /^G-[A-Z0-9]{4,}$/.test(TC_GA4) ? TC_GA4 : '';
