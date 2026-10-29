@@ -176,7 +176,10 @@ h1,h2,h3,p{margin:0}
 @media (prefers-reduced-motion:reduce){.ld-cbtn:hover,.ld-pbtn:hover,.ld-ru:hover{transform:none}}
 
 @media (max-width:640px){.ld-slides{min-height:740px}.ld-slide .in{padding-block:40px 104px}.ld-slide .bg img{object-position:50% 30%}.ld-slide .bg::after{background:linear-gradient(0deg,rgba(22,8,58,.97) 0%,rgba(22,8,58,.9) 52%,rgba(22,8,58,.4) 80%,rgba(22,8,58,.25) 100%)}}
-.ld-slide.s2 .bg img{object-position:62% 12%}
+.ld-slide.s1 .bg img{object-position:45% 60%}
+.ld-slide.s2 .bg img{object-position:55% 40%}
+.cm .ld-slide.s2 .bg::after{display:block;background:linear-gradient(90deg,rgba(22,8,58,.96) 0%,rgba(30,10,75,.86) 38%,rgba(43,15,99,.45) 62%,rgba(43,15,99,.15) 85%),linear-gradient(0deg,rgba(22,8,58,.75) 0%,rgba(22,8,58,0) 35%)}
+@media (max-width:640px){.cm .ld-slide.s2 .bg::after{background:linear-gradient(0deg,rgba(22,8,58,.97) 0%,rgba(22,8,58,.9) 48%,rgba(30,10,75,.5) 72%,rgba(30,10,75,.3) 100%)}}
 /* Botones de contacto */
 .ld-cbtn.wa{background:var(--wa);color:#073B1D;box-shadow:0 14px 30px -14px rgba(37,211,102,.8)}
 .ld-cbtn.wa:hover{transform:translateY(-2px)}
@@ -265,7 +268,7 @@ h1,h2,h3,p{margin:0}
   <div class="ld-hero" id="ld-hero">
     <div class="ld-slides">
       <article class="ld-slide s1 on" aria-roledescription="diapositiva" aria-label="1 de 2: Sumá tu local">
-        <div class="bg"><picture><source media="(max-width:640px)" srcset="hero-comercios-m.webp"><img src="hero-comercios.webp" alt="Interior de un bar con barra y mesas" width="1920" height="1280" fetchpriority="high" decoding="async"></picture></div>
+        <div class="bg"><picture><source media="(max-width:640px)" srcset="com-salon-m.webp"><img src="com-salon.webp" alt="Salón de un restaurante con mesas listas" width="1920" height="1280" fetchpriority="high" decoding="async"></picture></div>
         <div class="ld-w in"><div class="ld-copy">
           <span class="ld-chip"><span class="dot"></span><span id="cuantos">Gratis para locales durante el lanzamiento</span></span>
           <h1>Más clientes, <em>en los horarios que vos elegís</em></h1>
@@ -275,12 +278,11 @@ h1,h2,h3,p{margin:0}
         </div></div>
       </article>
       <article class="ld-slide s2" aria-roledescription="diapositiva" aria-label="2 de 2: Local fundador">
-        <div class="bg"><picture><source media="(max-width:640px)" srcset="band-sellos-m.webp"><img src="band-sellos.webp" alt="Cliente pagando en la barra de un bar" width="1600" height="1066" loading="lazy" decoding="async"></picture></div>
+        <div class="bg"><picture><source media="(max-width:640px)" srcset="com-fundador-m.webp"><img src="com-fundador.webp" alt="Dos personas mirando un celular" width="1920" height="1280" loading="lazy" decoding="async"></picture></div>
         <div class="ld-w in"><div class="ld-copy">
           <span class="ld-chip"><span class="dot"></span>Primeros 10 locales</span>
           <h2>Sé <em>Local fundador</em> de Tucupón</h2>
           <p class="sub">Insignia en tu ficha, lugar destacado en tu rubro y precio congelado de por vida, por sumarte desde el comienzo.</p>
-          <div class="ld-acts"><a class="ld-cbtn wa" href="https://wa.me/5493816335234?text=Hola%20Tucup%C3%B3n%20%F0%9F%91%8B%20Quiero%20ser%20Local%20fundador.%20%C2%BFQu%C3%A9%20necesitan%3F" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.9 2.3 1 2.5c.1.2 1.7 2.6 4.1 3.6 1.5.7 2.1.7 2.9.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3Z"/></svg>Quiero ser Local fundador</a><a class="ld-cbtn ghost" href="#fundador">Ver beneficios</a></div>
         </div></div>
       </article>
     </div>
