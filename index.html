@@ -23,7 +23,7 @@
 <meta name="theme-color" content="#2B0F63">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: app de una columna, pensada para el celular; encabezado de marca con tarjeta que lo pisa.
    MARCA: para cambiar los colores y fuentes, tocá solo este bloque y los dos de modo oscuro. */
@@ -70,127 +70,186 @@ p{margin:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 
-/* ---------- Portada (sin sesión) ---------- */
-#landing{background:var(--bg);color:var(--ink)}
-.ld-w{max-width:68rem;margin-inline:auto;padding-inline:16px}
-.ld-hero{position:relative;overflow:hidden;background:radial-gradient(420px 300px at 100% 62%,rgba(196,240,74,.30),transparent 70%),radial-gradient(560px 360px at 0% 100%,rgba(255,111,177,.14),transparent 70%),linear-gradient(180deg,var(--surface-2),var(--bg) 60%);padding:28px 0 44px}
-.ld-top{position:sticky;top:0;z-index:30;background:#F4F3F7;border-bottom:1px solid #E4E1EC;box-shadow:0 6px 18px -16px rgba(43,15,99,.5)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ld-top{background:#1A1230;border-bottom-color:var(--line)}}
-:root[data-theme="dark"] .ld-top{background:#1A1230;border-bottom-color:var(--line)}
-.ld-nav{position:relative;display:flex;align-items:center;gap:6px;min-height:64px}
-.ld-nav img{height:32px;width:auto;display:block}
-.ld-nav .r{margin-left:auto;display:flex;align-items:center;gap:6px}
-.ld-nav .lnk{position:relative;color:var(--heading);text-decoration:none;font-weight:700;font-size:.9rem;padding:9px 10px;border-radius:10px;white-space:nowrap;transition:color .2s}
-.ld-nav .lnk::after{content:"";position:absolute;left:10px;right:10px;bottom:4px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,var(--brand),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
-.ld-nav .lnk:hover{color:var(--brand)}
-.ld-nav .lnk:hover::after,.ld-nav .lnk:focus-visible::after{transform:scaleX(1)}
-.ld-nav .ing{white-space:nowrap;color:var(--brand);font-weight:800;font-size:.9rem;padding:8px 16px;border-radius:12px;border:2px solid var(--brand);background:var(--surface);transition:background .2s,color .2s,transform .2s,box-shadow .2s}
-.ld-nav .ing:hover{background:var(--brand);color:#fff;transform:translateY(-2px);box-shadow:0 10px 20px -10px rgba(123,63,240,.8)}
-@media (prefers-reduced-motion:reduce){.ld-nav .lnk::after,.ld-nav .ing{transition:none}.ld-nav .ing:hover{transform:none}}
-@media (max-width:400px){.ld-nav img{height:27px}.ld-nav .lnk{font-size:.8rem;padding:8px 6px}.ld-nav .lnk::after{left:6px;right:6px}.ld-nav .ing{padding:7px 11px;font-size:.84rem}}
-.ld-grid{position:relative;display:grid;gap:34px;align-items:center;margin-top:8px}
-@media (min-width:900px){.ld-grid{grid-template-columns:1.15fr .85fr;margin-top:28px}.ld-hero{padding-bottom:72px}}
-.ld-pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);color:var(--heading);font-weight:800;font-size:.84rem;padding:6px 12px;border-radius:99px}
-.ld-hero h1{font-size:clamp(2.2rem,7.4vw,3.7rem);font-weight:900;line-height:1.04;letter-spacing:-.02em;margin-top:14px;color:var(--heading)}
-.ld-hero h1 mark{background:var(--accent);color:var(--on-accent);padding:0 .14em;border-radius:.2em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.ld-hero .sub{font-size:1.08rem;color:var(--muted);max-width:33rem;margin-top:14px;line-height:1.55;font-weight:500}
-.ld-hero .sub b{color:var(--ink)}
-.ld-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:18px;padding:16px 26px;font-weight:800;font-size:1.05rem;text-decoration:none;transition:transform .15s}
-.ld-btn:hover{transform:translateY(-2px)}
-.ld-btn.brand{background:var(--brand);color:#fff;box-shadow:0 16px 30px -14px rgba(123,63,240,.75)}
-.ld-btn svg{width:20px;height:20px}
-.ld-cta{margin-top:24px}
-@media (max-width:520px){.ld-cta .ld-btn{width:100%}}
-.ld-chips{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:16px;font-weight:700;font-size:.86rem;color:var(--muted)}
-.ld-chips span::before{content:"✓ ";color:var(--brand)}
-.ld-barra{display:block;background:#2B0F63;color:#fff;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;line-height:1.4;padding:11px 16px}
-.ld-barra b{color:var(--accent,#C4F04A);font-weight:800}
-.ld-barra .go{color:var(--accent,#C4F04A);font-weight:800;white-space:nowrap;margin-left:6px}
+/* ---------- Portada (sin sesión) · estilo profesional ---------- */
+#landing{--ld-f:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--ld-d:"Bricolage Grotesque","Figtree",ui-sans-serif,system-ui,sans-serif;
+  --ld-ink:#16113A;--ld-soft:#4A4668;--ld-mute:#6B6785;--ld-line:#E6E3F0;--ld-bg:#F7F6FB;--ld-card:#FFFFFF;--ld-noche:#1A0B42;
+  background:var(--ld-bg);color:var(--ld-ink);font-family:var(--ld-f)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #landing{--ld-ink:#F1EDFA;--ld-soft:#CFC8E6;--ld-mute:#A9A0C2;--ld-line:#2F2550;--ld-bg:#120A24;--ld-card:#1C1233;--ld-noche:#0C0620}}
+:root[data-theme="dark"] #landing{--ld-ink:#F1EDFA;--ld-soft:#CFC8E6;--ld-mute:#A9A0C2;--ld-line:#2F2550;--ld-bg:#120A24;--ld-card:#1C1233;--ld-noche:#0C0620}
+#landing h1,#landing h2,#landing h3{font-family:var(--ld-d);letter-spacing:-.025em}
+.ld-w{max-width:72rem;margin-inline:auto;padding-inline:20px}
+@media (min-width:900px){.ld-w{padding-inline:32px}}
+
+/* Barra de anuncio */
+.ld-barra{display:block;background:var(--ld-noche);color:#fff;text-align:center;text-decoration:none;font-weight:500;font-size:.88rem;line-height:1.4;padding:10px 16px}
+.ld-barra b{color:var(--accent,#C4F04A);font-weight:700}
+.ld-barra .go{color:var(--accent,#C4F04A);font-weight:700;white-space:nowrap;margin-left:6px}
 .ld-barra:hover .go{text-decoration:underline}
-.ld-pill svg{width:16px;height:16px;color:var(--brand)}
-.ld-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px}
-.ld-sumar{color:var(--brand);font-weight:800;font-size:1.02rem;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
-.ld-sumar:hover{color:var(--heading)}
-@media (max-width:520px){.ld-cta{justify-content:center}.ld-sumar{font-size:.95rem}}
-.ld-tel-w{position:relative;width:min(300px,78vw);margin-inline:auto;padding:0 0 26px}
-.ld-tel{position:relative;border-radius:46px;background:#1E0B45;padding:12px;box-shadow:0 40px 70px -34px rgba(43,15,99,.7)}
-.ld-tel-in{border-radius:36px;background:#fff;padding:18px 14px 16px;display:grid;gap:14px;color:#1E0B45}
-.ld-tel-top{display:flex;align-items:center;justify-content:space-between}
-.ld-tel-top img{height:22px;width:auto}
-.ld-tel-top span{font-size:.72rem;font-weight:700;color:#6E6585}
-.ld-tel-cup{border-radius:20px;overflow:hidden;border:1px solid #ECE6F7;background:#fff}
-.ld-tel-foto{position:relative;aspect-ratio:4/3;background:linear-gradient(140deg,#F6B73C,#C2410C);display:grid;place-items:center;font-size:4.2rem}
-.ld-tel-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.ld-tel-foto .tag{position:absolute;left:12px;top:12px;background:var(--accent,#C4F04A);color:#1E0B45;font-weight:900;font-size:.82rem;padding:3px 10px;border-radius:99px;z-index:1}
-.ld-tel-tx{padding:12px 14px 14px}
-.ld-tel-tx small{display:block;font-size:.72rem;font-weight:700;color:#6E6585}
-.ld-tel-tx b{display:block;font-family:var(--font-display);font-size:1.22rem;line-height:1.15;font-weight:900;color:#2B0F63;margin-top:4px}
-.ld-tel-tx span{display:block;font-size:.76rem;color:#6E6585;margin-top:4px;font-weight:600}
-.ld-tel-cod{border:2px dashed #CDBDF5;border-radius:18px;text-align:center;padding:10px 8px 12px}
-.ld-tel-cod small{font-size:.7rem;font-weight:700;color:#6E6585}
-.ld-tel-cod b{display:block;font-family:var(--font-mono);font-size:1.75rem;letter-spacing:.06em;font-weight:800;color:#1E0B45;margin:2px 0}
-.ld-tel-cod span{font-size:.74rem;color:#4B4166;font-weight:600}
-.ld-tel-btn{border-radius:14px;background:var(--brand,#7B3FF0);color:#fff;text-align:center;font-weight:800;font-size:.9rem;padding:11px}
-.ld-glob{position:absolute;display:flex;align-items:center;gap:10px;background:#fff;color:#1E0B45;border-radius:16px;padding:10px 14px;box-shadow:0 18px 36px -16px rgba(43,15,99,.45);white-space:nowrap}
-.ld-glob b{display:block;font-size:.84rem;font-weight:800}
-.ld-glob small{display:block;font-size:.7rem;color:#6E6585;font-weight:600}
-.ld-glob .ok{width:30px;height:30px;border-radius:50%;background:var(--accent,#C4F04A);display:grid;place-items:center;flex:none}
-.ld-glob .ok svg{width:16px;height:16px}
-.ld-glob.g1{left:-58px;top:30%}
-.ld-glob.g2{right:-104px;bottom:24%}
-@media (max-width:1100px){.ld-glob.g2{right:-40px;bottom:6%}}
-@media (max-width:520px){.ld-glob.g1{left:-14px;top:28%}.ld-glob.g2{right:-12px;bottom:4px}.ld-glob{padding:8px 11px}}
-@media (max-width:560px){.ld-nav .lnk.como{display:none}}
-.ld-tel-nota{text-align:center;font-size:.76rem;color:var(--muted);font-weight:600;margin-top:10px}
-.ld-sec{padding-block:44px}
-@media (min-width:900px){.ld-sec{padding-block:64px}}
-.ld-k{display:inline-block;font-weight:800;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
-.ld-sec h2{font-size:clamp(1.6rem,4.4vw,2.3rem);font-weight:900;color:var(--heading);line-height:1.1;margin-top:4px}
-.ld-lead{color:var(--muted);font-size:1rem;max-width:40rem;margin-top:8px;line-height:1.5}
-/* Rubros reales: se tocan y abren la app en ese rubro */
-.ld-rubros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+
+/* Navegación */
+.ld-top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--ld-card) 92%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--ld-line)}
+.ld-nav{display:flex;align-items:center;gap:8px;min-height:64px}
+.ld-nav .ld-logo{display:block;line-height:0;flex:none;background:none;border:0;box-shadow:none;width:auto;height:auto}
+.ld-nav img{height:30px;width:auto;display:block}
+.ld-menu{display:flex;gap:4px;margin-left:28px}
+.ld-menu a{color:var(--ld-soft);text-decoration:none;font-weight:600;font-size:.92rem;padding:8px 14px;border-radius:99px;transition:background .2s,color .2s}
+.ld-menu a:hover{background:var(--surface-2);color:var(--ld-ink)}
+.ld-menu a[aria-current="page"]{background:#EEE8FF;color:#4F1BB5}
+.ld-nav .r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.ld-pbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font-family:var(--ld-f);font-weight:700;font-size:.9rem;padding:9px 18px;border-radius:99px;text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,color .2s,border-color .2s}
+.ld-pbtn.brand{background:var(--brand);color:#fff;box-shadow:0 10px 22px -12px rgba(123,63,240,.9)}
+.ld-pbtn.brand:hover{transform:translateY(-1px);box-shadow:0 14px 26px -12px rgba(123,63,240,1)}
+.ld-pbtn.line{background:var(--ld-card);color:var(--ld-ink);border:1.5px solid var(--ld-line)}
+.ld-pbtn.line:hover{border-color:var(--brand);color:var(--brand)}
+@media (max-width:860px){.ld-menu{display:none}}
+@media (max-width:420px){.ld-nav img{height:26px}.ld-pbtn{padding:8px 13px;font-size:.84rem}.ld-nav .r .solo-ancho{display:none}}
+
+/* Hero con diapositivas */
+.ld-hero{position:relative;background:var(--ld-noche);color:#fff;overflow:hidden}
+.ld-slides{position:relative;min-height:clamp(560px,84vh,760px)}
+.ld-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .8s ease,visibility .8s}
+.ld-slide.on{opacity:1;visibility:visible}
+.ld-slide .bg{position:absolute;inset:0;overflow:hidden}
+.ld-slide .bg img{width:100%;height:100%;object-fit:cover;object-position:70% 42%;transform:scale(1.06);transition:transform 8s ease-out}
+.ld-slide.on .bg img{transform:scale(1)}
+.ld-slide .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,8,58,.94) 0%,rgba(22,8,58,.78) 38%,rgba(22,8,58,.25) 72%,rgba(22,8,58,.1) 100%),linear-gradient(0deg,rgba(22,8,58,.75) 0%,rgba(22,8,58,0) 40%)}
+@media (min-width:900px){
+  .ld-slide.s1 .bg{background:linear-gradient(135deg,#16083A,#2B0F63)}
+  .ld-slide.s1 .bg img{position:absolute;right:0;top:0;width:58%;height:100%;object-position:50% 35%}
+  .ld-slide.s1 .bg::after{background:linear-gradient(90deg,#1A0A45 0%,#1A0A45 42%,rgba(26,10,69,.55) 56%,rgba(26,10,69,0) 75%),linear-gradient(0deg,rgba(22,8,58,.6) 0%,rgba(22,8,58,0) 30%)}
+}
+@media (max-width:640px){.ld-slides{min-height:730px}.ld-slide .in{padding-block:40px 104px}}
+.ld-slide.s2 .bg{background:radial-gradient(700px 500px at 85% 30%,#7B3FF0 0%,transparent 60%),radial-gradient(600px 420px at 70% 100%,rgba(196,240,74,.28) 0%,transparent 60%),linear-gradient(135deg,#1A0B42,#3A158F 70%,#5B22C7)}
+.ld-slide.s2 .bg::after{display:none}
+.ld-slide .in{position:relative;height:100%;display:flex;align-items:center;padding-block:56px 120px}
+.ld-copy{max-width:36rem}
+.ld-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;font-weight:600;font-size:.84rem;padding:6px 13px;border-radius:99px}
+.ld-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--accent,#C4F04A);box-shadow:0 0 0 4px rgba(196,240,74,.25)}
+.ld-slide h1,.ld-slide h2{font-size:clamp(2.4rem,6.4vw,4.4rem);font-weight:800;line-height:1.02;margin-top:18px;color:#fff;text-wrap:balance}
+.ld-slide h1 em,.ld-slide h2 em{font-style:normal;color:var(--accent,#C4F04A)}
+.ld-slide p.sub{font-size:clamp(1.02rem,1.6vw,1.15rem);line-height:1.55;color:rgba(255,255,255,.82);margin-top:16px;max-width:31rem}
+.ld-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.ld-cbtn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--ld-f);font-weight:700;font-size:1rem;padding:14px 24px;border-radius:99px;text-decoration:none;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s}
+.ld-cbtn svg{width:18px;height:18px;transition:transform .2s}
+.ld-cbtn.white{background:#fff;color:#1A0B42;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.ld-cbtn.white:hover{transform:translateY(-2px)}
+.ld-cbtn.white:hover svg{transform:translateX(3px)}
+.ld-cbtn.ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.ld-cbtn.ghost:hover{background:rgba(255,255,255,.16)}
+.ld-cbtn.brand{background:var(--brand);color:#fff;box-shadow:0 14px 30px -14px rgba(123,63,240,.9)}
+.ld-cbtn.brand:hover{transform:translateY(-2px)}
+.ld-chk{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:22px;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.75)}
+.ld-chk span{display:inline-flex;align-items:center;gap:6px}
+.ld-chk svg{width:15px;height:15px;color:var(--accent,#C4F04A)}
+@media (max-width:560px){.ld-acts .ld-cbtn{width:100%}.ld-slide .in{align-items:flex-end}}
+/* Panel de ejemplo (diapositiva comercios) */
+.ld-demo{display:none}
+@media (min-width:980px){.ld-demo{display:block;position:absolute;right:32px;top:50%;transform:translateY(-58%);width:340px}}
+.ld-dcard{background:#fff;color:#16113A;border-radius:22px;padding:18px;box-shadow:0 30px 60px -24px rgba(0,0,0,.55)}
+.ld-dcard small{display:block;font-size:.72rem;font-weight:700;color:#6B6785;text-transform:uppercase;letter-spacing:.06em}
+.ld-dcard .cod{display:flex;align-items:center;gap:10px;margin-top:10px;border:2px dashed #CDBDF5;border-radius:14px;padding:10px 12px}
+.ld-dcard .cod b{font-family:var(--font-mono);font-size:1.3rem;letter-spacing:.05em;flex:1}
+.ld-dcard .ok{display:inline-flex;align-items:center;gap:5px;background:#E3F7EC;color:#0B7A54;font-weight:800;font-size:.8rem;padding:4px 10px;border-radius:99px}
+.ld-dcard .ok svg{width:14px;height:14px}
+.ld-dcard .cup{display:flex;gap:10px;align-items:center;margin-top:12px;font-weight:700;font-size:.92rem}
+.ld-dcard .cup span{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#EEE8FF;font-size:1.2rem}
+.ld-dkpi{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ld-dkpi>div{background:#fff;color:#16113A;border-radius:18px;padding:14px;box-shadow:0 24px 50px -24px rgba(0,0,0,.55)}
+.ld-dkpi>div>b{display:block;font-family:var(--ld-d);font-size:1.8rem;line-height:1;color:#4F1BB5}
+.ld-dkpi span{display:block;font-size:.78rem;color:#6B6785;font-weight:600;margin-top:4px}
+.ld-dbar{display:flex;align-items:flex-end;gap:5px;height:44px;margin-top:8px}
+.ld-dbar i{flex:1;border-radius:4px 4px 2px 2px;background:#E4DAFF}
+.ld-dbar i.h{background:var(--brand)}
+/* Indicadores de diapositiva */
+.ld-tabs{position:absolute;left:0;right:0;bottom:0;z-index:3}
+.ld-tabs .ld-w{display:flex;gap:18px;padding-bottom:26px}
+.ld-tab{flex:0 1 220px;text-align:left;color:rgba(255,255,255,.62);font-family:var(--ld-f);font-weight:600;font-size:.86rem;padding:12px 0 0;position:relative;cursor:pointer;transition:color .2s}
+.ld-tab::before,.ld-tab::after{content:"";position:absolute;left:0;top:0;height:3px;border-radius:3px}
+.ld-tab::before{right:0;background:rgba(255,255,255,.25)}
+.ld-tab::after{width:0;background:#fff}
+.ld-tab.on{color:#fff}
+.ld-tab.on::after{animation:ldprog var(--dur,7s) linear forwards}
+.ld-hero.pausa .ld-tab.on::after{animation-play-state:paused}
+@keyframes ldprog{to{width:100%}}
+@media (prefers-reduced-motion:reduce){.ld-slide,.ld-slide .bg img{transition:none}.ld-tab.on::after{animation:none;width:100%}}
+
+/* Secciones */
+.ld-sec{padding-block:64px}
+@media (min-width:900px){.ld-sec{padding-block:96px}}
+.ld-k{display:inline-block;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brand)}
+.ld-sec h2{font-size:clamp(1.9rem,4.4vw,3rem);font-weight:800;color:var(--ld-ink);line-height:1.06;margin-top:10px;max-width:40rem;text-wrap:balance}
+.ld-lead{color:var(--ld-mute);font-size:1.06rem;max-width:36rem;margin-top:12px;line-height:1.6}
+.ld-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 32px;justify-content:space-between}
+.ld-head .ld-pbtn{flex:none}
+
+/* Rubros */
+.ld-rubros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:32px}
 @media (min-width:640px){.ld-rubros{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (min-width:960px){.ld-rubros{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.ld-ru{display:flex;align-items:center;gap:10px;min-width:0;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;transition:transform .12s,border-color .12s}
-.ld-ru:hover{transform:translateY(-2px);border-color:var(--brand)}
-.ld-ru .ic{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;font-size:1.5rem;background:color-mix(in srgb,var(--rc,#7B3FF0) 16%,transparent)}
-.ld-ru b{display:block;color:var(--heading);font-size:.92rem;line-height:1.2;overflow-wrap:break-word;hyphens:auto}
-@media (max-width:639px){.ld-ru{flex-direction:column;align-items:flex-start;gap:8px;padding:14px}.ld-ru .ic{width:42px;height:42px}}
-.ld-ru small{display:block;color:var(--muted);font-size:.78rem;font-weight:600;margin-top:2px}
-.ld-ru.sk{height:112px;background:var(--surface-2);border-color:transparent;animation:ldsk 1.2s ease-in-out infinite alternate}
-@keyframes ldsk{from{opacity:.55}to{opacity:1}}
-/* Cómo funciona: 3 pasos compactos */
-.ld-steps{display:grid;gap:10px;margin-top:20px;counter-reset:paso}
-@media (min-width:800px){.ld-steps{grid-template-columns:repeat(3,1fr);gap:14px}}
-.ld-step{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
-.ld-step .n{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--brand);color:#fff;font-weight:900}
-.ld-step h3{font-size:1.05rem;color:var(--heading)}
-.ld-step p{color:var(--muted);margin-top:3px;line-height:1.45;font-size:.93rem}
-/* Más formas de ahorrar */
-.ld-feats{display:grid;gap:12px;margin-top:20px}
-@media (min-width:800px){.ld-feats{grid-template-columns:repeat(3,1fr)}}
-.ld-feat{border-radius:22px;padding:20px;color:#fff;position:relative;overflow:hidden}
-.ld-feat .ld-e{font-size:2rem;display:block}
-.ld-feat b{display:block;font-size:1.15rem;margin-top:10px}
-.ld-feat span.t{display:block;opacity:.9;font-size:.93rem;line-height:1.45;margin-top:4px}
-.ld-feat.f1{background:linear-gradient(140deg,#F2A007,#E5484D)}
-.ld-feat.f2{background:linear-gradient(140deg,#5B22C7,#8C4BFF)}
-.ld-feat.f3{background:linear-gradient(140deg,#0F8A62,#14B37E)}
-/* Comercios: una línea discreta */
-.ld-local{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 18px;text-decoration:none;color:var(--ink)}
-.ld-local .em{font-size:1.8rem;flex:none}
-.ld-local p{flex:1;min-width:0;line-height:1.4;font-size:.95rem}
-.ld-local p b{color:var(--heading)}
-.ld-local .go{flex:none;color:var(--brand);font-weight:800;white-space:nowrap}
-@media (max-width:520px){.ld-local .go .t{display:none}.ld-local .go{font-size:1.3rem}}
-.ld-local:hover{border-color:var(--brand)}
-.ld-pie{border-top:1px solid var(--line);padding-block:22px;font-size:.9rem;color:var(--muted)}
-.ld-pie .ld-w{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
-.ld-pie nav{display:flex;flex-wrap:wrap;gap:8px 18px;margin-left:auto}
-.ld-pie a{color:var(--heading);font-weight:700;text-decoration:none}
-.ld-pie a:hover{text-decoration:underline}
-.ld-pie .ld-legal{flex-basis:100%;margin:0 0 6px;font-size:.84rem;line-height:1.5;max-width:52rem}
+@media (min-width:960px){.ld-rubros{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}}
+.ld-ru{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0;text-align:left;background:var(--ld-card);border:1px solid var(--ld-line);border-radius:20px;padding:18px;cursor:pointer;font-family:var(--ld-f);color:var(--ld-ink);box-shadow:0 1px 0 rgba(20,18,58,.03),0 12px 28px -22px rgba(20,18,58,.35);transition:transform .2s,box-shadow .2s,border-color .2s}
+.ld-ru:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--rc,#7B3FF0) 45%,var(--ld-line));box-shadow:0 22px 40px -24px rgba(43,15,99,.45)}
+.ld-ru .ic{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;font-size:1.6rem;background:color-mix(in srgb,var(--rc,#7B3FF0) 14%,var(--ld-card))}
+.ld-ru b{display:block;font-size:1rem;font-weight:700;line-height:1.25;overflow-wrap:anywhere;hyphens:auto}
+.ld-ru small{display:block;margin-top:3px;font-size:.84rem;color:var(--ld-mute);font-weight:500}
+.ld-ru .flecha{position:absolute;right:16px;top:18px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--ld-mute);background:var(--bg);transition:background .2s,color .2s}
+.ld-ru:hover .flecha{background:var(--brand);color:#fff}
+.ld-ru .flecha svg{width:15px;height:15px}
+.ld-ru.sk{height:150px;cursor:default;background:linear-gradient(90deg,var(--ld-card),var(--surface-2),var(--ld-card));background-size:200% 100%;animation:ldsk 1.4s infinite}
+@keyframes ldsk{to{background-position:-200% 0}}
+
+/* Cómo funciona */
+.ld-como{background:var(--ld-card);border-block:1px solid var(--ld-line)}
+.ld-steps{display:grid;gap:14px;margin-top:36px}
+@media (min-width:800px){.ld-steps{grid-template-columns:repeat(3,1fr);gap:18px}}
+.ld-step{position:relative;border-radius:22px;padding:24px;background:var(--ld-bg);border:1px solid var(--ld-line)}
+.ld-step .n{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--brand);color:#fff;font-family:var(--ld-d);font-weight:800;font-size:1.1rem}
+.ld-step h3{font-size:1.25rem;font-weight:700;margin-top:16px;color:var(--ld-ink)}
+.ld-step p{color:var(--ld-mute);margin-top:6px;line-height:1.55}
+.ld-step .ico{position:absolute;right:22px;top:22px;width:26px;height:26px;color:#C9B8FF}
+
+/* Bandas a todo el ancho */
+.ld-band{position:relative;overflow:hidden;color:#fff;padding-block:72px}
+@media (min-width:900px){.ld-band{padding-block:104px}}
+.ld-band .ld-w{position:relative;display:grid;gap:28px;align-items:center}
+@media (min-width:900px){.ld-band .ld-w{grid-template-columns:1.1fr .9fr}}
+.ld-band h2{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:800;line-height:1.02;margin-top:16px;color:#fff;max-width:32rem;text-wrap:balance}
+.ld-band p.sub{font-size:1.08rem;line-height:1.6;color:rgba(255,255,255,.8);margin-top:14px;max-width:30rem}
+.ld-band .ld-acts{margin-top:26px}
+.ld-band.b1{background:linear-gradient(100deg,#1A0B42 0%,#2B0F63 45%,#6A2BE0 100%)}
+.ld-band.b2{background:linear-gradient(100deg,#1A0B42 0%,#3A1A2E 40%,#B9721F 100%)}
+.ld-band.b3{background:linear-gradient(100deg,#0F2A2E 0%,#0F4C47 45%,#14946A 100%)}
+.ld-band.b4{background:linear-gradient(100deg,#1A0B42 0%,#2B1A6E 45%,#2F56D9 100%)}
+.ld-vis{display:none}
+@media (min-width:900px){.ld-vis{display:grid;justify-items:center}}
+.ld-orb{position:relative;width:260px;height:260px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22),rgba(255,255,255,.04) 60%);border:1px solid rgba(255,255,255,.18);font-size:6.5rem;box-shadow:inset 0 0 60px rgba(255,255,255,.06)}
+.ld-orb .tag{position:absolute;right:-6px;top:30px;background:#fff;color:#1A0B42;font-family:var(--ld-d);font-weight:800;font-size:1.05rem;padding:8px 14px;border-radius:14px;box-shadow:0 18px 36px -18px rgba(0,0,0,.6)}
+.ld-orb .tag.l{right:auto;left:-14px;top:auto;bottom:34px;background:var(--accent,#C4F04A)}
+
+/* Bloque comercios */
+.ld-com{background:var(--ld-noche);color:#fff;padding-block:80px}
+@media (min-width:900px){.ld-com{padding-block:112px}}
+.ld-com .ld-w{display:grid;gap:32px;align-items:center}
+@media (min-width:900px){.ld-com .ld-w{grid-template-columns:1.1fr .9fr}}
+.ld-com h2{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:800;line-height:1.03;margin-top:16px;color:#fff;text-wrap:balance}
+.ld-com p.sub{font-size:1.08rem;line-height:1.6;color:rgba(255,255,255,.78);margin-top:14px;max-width:32rem}
+.ld-ben{display:grid;gap:12px}
+.ld-ben div{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px 18px}
+.ld-ben svg{width:24px;height:24px;flex:none;color:var(--accent,#C4F04A);margin-top:2px}
+.ld-ben b{display:block;font-weight:700;font-size:1.02rem}
+.ld-ben span{display:block;color:rgba(255,255,255,.72);font-size:.93rem;margin-top:2px;line-height:1.5}
+
+/* Pie */
+.ld-pie{background:var(--ld-card);border-top:1px solid var(--ld-line);padding-block:40px 28px;font-size:.9rem;color:var(--ld-mute)}
+.ld-pie .ld-w{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center}
+.ld-pie .marca{display:flex;align-items:center;gap:14px;flex-basis:100%}
+.ld-pie .marca img{height:28px;width:auto}
+.ld-pie nav{display:flex;flex-wrap:wrap;gap:8px 20px;margin-left:auto}
+.ld-pie a{color:var(--ld-ink);font-weight:600;text-decoration:none}
+.ld-pie a:hover{color:var(--brand)}
+.ld-pie .ld-legal{flex-basis:100%;margin:0 0 6px;font-size:.84rem;line-height:1.55;max-width:56rem}
 .ld-pie .ld-legal a{color:var(--brand)}
+.ig-pie{display:inline-flex;align-items:center;gap:6px}.ig-pie svg{width:16px;height:16px;flex:none}
+@media (prefers-reduced-motion:reduce){.ld-cbtn:hover,.ld-pbtn:hover,.ld-ru:hover{transform:none}}
 .auth-volver{position:absolute;left:12px;top:12px;z-index:2;color:#fff;font-weight:800;font-size:.9rem;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.12)}
 @media (prefers-reduced-motion:reduce){.ld-btn:hover{transform:none}}
 
@@ -691,75 +750,109 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
 <section id="landing">
   <a class="ld-barra" href="/comercios">¿Tenés un local o un negocio? Buscamos los <b>primeros 10 adheridos</b> de Tucumán.<span class="go">Sumalo gratis →</span></a>
   <header class="ld-top"><div class="ld-w">
-    <nav class="ld-nav">
-      <picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture>
-      <div class="r"><a class="lnk como" href="#ld-como">Cómo funciona</a><a class="lnk" href="/comercios">Para comercios</a><button type="button" class="ing" data-ir-auth="login">Ingresar</button></div>
+    <nav class="ld-nav" aria-label="Principal">
+      <a class="ld-logo" href="/" aria-label="Tucupón, inicio"><picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture></a>
+      <div class="ld-menu"><a href="/" aria-current="page">Inicio</a><a href="#ld-como">Cómo funciona</a><a href="/comercios">Para comercios</a></div>
+      <div class="r"><button type="button" class="ld-pbtn brand solo-ancho" data-ir-app>Ver descuentos</button><button type="button" class="ld-pbtn line" data-ir-auth="login">Ingresar</button></div>
     </nav>
   </div></header>
-  <div class="ld-hero">
-    <div class="ld-w">
-      <div class="ld-grid">
-        <div>
-          <span class="ld-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Tucumán y el Norte · Guía de descuentos</span>
-          <h1>Los mejores descuentos <mark>de Tucumán y el Norte</mark></h1>
-          <p class="sub"><b>Todo en un lugar:</b> gastronomía, comercios, servicios y mucho más. Mirá los descuentos sin registrarte.</p>
-          <div class="ld-cta"><button type="button" class="ld-btn brand" data-ir-app>Ver descuentos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="ld-sumar" href="/comercios">¿Tenés un local? Sumalo gratis</a></div>
-          <div class="ld-chips"><span>Gratis</span><span>Sin instalar nada</span><span>Sin registrarte para mirar</span></div>
-        </div>
-        <div>
-          <div class="ld-tel-w" aria-hidden="true">
-            <div class="ld-tel"><div class="ld-tel-in">
-              <div class="ld-tel-top"><img src="logo-oscuro.png" alt="" width="656" height="160"><span>Yerba Buena</span></div>
-              <div class="ld-tel-cup">
-                <div class="ld-tel-foto" id="ld-tel-foto"><img src="hero-cerveza.webp" alt="" width="720" height="540" decoding="async" fetchpriority="high"><span class="tag">2x1</span></div>
-                <div class="ld-tel-tx"><small>Cervecería · Yerba Buena</small><b>2x1 en cerveza artesanal</b><span>Lun a Jue · 18 a 20 h</span></div>
-              </div>
-              <div class="ld-tel-cod"><small>Tu código</small><b>TC-4821</b><span>Mostralo al pagar</span></div>
-              <div class="ld-tel-btn">Ver cómo llegar</div>
-            </div></div>
-            <div class="ld-glob g1"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#1E0B45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span><b>Código validado</b><small>hace 2 minutos</small></span></div>
-            <div class="ld-glob g2"><span><b>Ahorraste $4.500</b><small>en tu última salida</small></span></div>
+
+  <div class="ld-hero" id="ld-hero">
+    <div class="ld-slides">
+      <article class="ld-slide s1 on" aria-roledescription="diapositiva" aria-label="1 de 2: Descuentos">
+        <div class="bg"><picture><source media="(max-width:640px)" srcset="hero-descuentos-m.webp"><img src="hero-descuentos.webp" alt="" width="1080" height="1234" fetchpriority="high" decoding="async"></picture></div>
+        <div class="ld-w in"><div class="ld-copy">
+          <span class="ld-chip"><span class="dot"></span><span id="ld-cuantos">Tucumán y el Norte · Guía de descuentos</span></span>
+          <h1>Los mejores descuentos de <em>Tucumán y el Norte</em></h1>
+          <p class="sub">Gastronomía, comercios y servicios en un solo lugar. Elegí un descuento, pedí tu código y mostralo al pagar.</p>
+          <div class="ld-acts">
+            <button type="button" class="ld-cbtn white" data-ir-app>Ver descuentos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            <a class="ld-cbtn ghost" href="#ld-como">Cómo funciona</a>
           </div>
-          <p class="ld-tel-nota">Ejemplo de la app</p>
+          <div class="ld-chk"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Gratis</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Sin instalar nada</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Sin registrarte para mirar</span></div>
+        </div></div>
+      </article>
+      <article class="ld-slide s2" aria-roledescription="diapositiva" aria-label="2 de 2: Para comercios">
+        <div class="bg"></div>
+        <div class="ld-w in"><div class="ld-copy">
+          <span class="ld-chip"><span class="dot"></span>Para comercios · Gratis en el lanzamiento</span>
+          <h2>Llená tus <em>horarios flojos</em></h2>
+          <p class="sub">Publicá descuentos en minutos, validá cada código desde el celular y mirá cuántos clientes te trajo Tucupón.</p>
+          <div class="ld-acts">
+            <a class="ld-cbtn white" href="/comercios">Sumar mi local <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="ld-cbtn ghost" href="/comercios#fundador">Quiero ser Local fundador</a>
+          </div>
         </div>
-      </div>
+        <div class="ld-demo" aria-hidden="true">
+          <div class="ld-dcard"><small>Validar código</small>
+            <div class="cod"><b>TC-4821</b><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Canjeado</span></div>
+            <div class="cup"><span>🍺</span>2x1 en cerveza artesanal</div>
+          </div>
+          <div class="ld-dkpi">
+            <div><b>+38</b><span>clientes este mes</span></div>
+            <div><span style="margin:0">Martes flojos</span><div class="ld-dbar"><i style="height:40%"></i><i style="height:55%"></i><i class="h" style="height:95%"></i><i style="height:60%"></i><i style="height:75%"></i></div></div>
+          </div>
+        </div></div>
+      </article>
     </div>
+    <div class="ld-tabs"><div class="ld-w" role="tablist" aria-label="Diapositivas">
+      <button type="button" class="ld-tab on" role="tab" aria-selected="true" data-slide="0">Descuentos</button>
+      <button type="button" class="ld-tab" role="tab" aria-selected="false" data-slide="1">Para comercios</button>
+    </div></div>
   </div>
 
-  <section class="ld-sec" id="ld-sec-rubros" style="padding-bottom:0"><div class="ld-w">
-    <span class="ld-k">Explorá</span>
-    <h2>¿Qué tenés ganas de comer?</h2>
-    <p class="ld-lead">Tocá un rubro y mirá los locales y sus descuentos.</p>
-    <div class="ld-rubros" id="ld-rubros"><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span></div>
+  <section class="ld-sec" id="ld-sec-rubros"><div class="ld-w">
+    <div class="ld-head"><div><span class="ld-k">Explorá</span><h2>¿Qué tenés ganas de comer?</h2><p class="ld-lead">Tocá un rubro y mirá los locales y sus descuentos, sin registrarte.</p></div>
+      <button type="button" class="ld-pbtn line" data-ir-app>Ver todos los locales</button></div>
+    <div class="ld-rubros" id="ld-rubros"><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span><span class="ld-ru sk"></span></div>
   </div></section>
 
-  <section class="ld-sec" id="ld-como" style="scroll-margin-top:10px"><div class="ld-w">
+  <section class="ld-sec ld-como" id="ld-como" style="scroll-margin-top:64px"><div class="ld-w">
     <span class="ld-k">Cómo funciona</span>
     <h2>Ahorrar es así de fácil</h2>
     <div class="ld-steps">
-      <div class="ld-step"><span class="n">1</span><div><h3>Elegí un descuento</h3><p>Mirá locales y descuentos por rubro o barrio, sin registrarte.</p></div></div>
-      <div class="ld-step"><span class="n">2</span><div><h3>Pedí tu código</h3><p>Creás tu cuenta gratis en un minuto y obtenés un código único.</p></div></div>
-      <div class="ld-step"><span class="n">3</span><div><h3>Mostralo al pagar</h3><p>El local lo valida y se aplica el descuento. Así de simple.</p></div></div>
+      <div class="ld-step"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="n">1</span><h3>Elegí un descuento</h3><p>Mirá locales y descuentos por rubro o barrio, sin registrarte.</p></div>
+      <div class="ld-step"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v3a3 3 0 0 0 0 6v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3a3 3 0 0 0 0-6Z"/><path d="M14 5v14" stroke-dasharray="2 2.5"/></svg><span class="n">2</span><h3>Pedí tu código</h3><p>Creás tu cuenta gratis en un minuto y obtenés un código único.</p></div>
+      <div class="ld-step"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><span class="n">3</span><h3>Mostralo al pagar</h3><p>El local lo valida y se aplica el descuento. Así de simple.</p></div>
     </div>
   </div></section>
 
-  <section class="ld-sec" style="padding-top:0"><div class="ld-w">
-    <span class="ld-k">Además</span>
-    <h2>Más formas de ahorrar</h2>
-    <div class="ld-feats">
-      <div class="ld-feat f1"><span class="ld-e em">⚡</span><b>Cupones relámpago</b><span class="t">Descuentos fuertes por pocas horas y con pocos códigos. El que llega primero, gana.</span></div>
-      <div class="ld-feat f2"><span class="ld-e em">🎟️</span><b>Tarjeta de sellos</b><span class="t">Cada visita suma un sello. Completá la tarjeta y llevate un premio.</span></div>
-      <div class="ld-feat f3"><span class="ld-e em">🎁</span><b>Caja Sorpresa</b><span class="t">Lo que los locales no vendieron en el día, a un precio bajísimo.</span></div>
-    </div>
+  <section class="ld-band b1"><div class="ld-w">
+    <div><span class="ld-chip">⚡ Cupones relámpago</span><h2>Descuentos fuertes, por pocas horas</h2><p class="sub">Pocos códigos y tiempo limitado: el que llega primero, gana. Mirá los que están activos ahora.</p>
+      <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver descuentos</button></div></div>
+    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">⚡<span class="tag">-40%</span><span class="tag l">Quedan 6</span></div></div>
+  </div></section>
+  <section class="ld-band b2"><div class="ld-w">
+    <div><span class="ld-chip">🎁 Caja Sorpresa</span><h2>Lo que sobró del día, a precio bajísimo</h2><p class="sub">Reservá una caja, pasá a retirarla en el horario y pagala en el local. Ahorrás vos y no se tira comida.</p>
+      <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver Cajas Sorpresa</button></div></div>
+    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">🎁<span class="tag">Hoy 19 h</span></div></div>
+  </div></section>
+  <section class="ld-band b3"><div class="ld-w">
+    <div><span class="ld-chip">🎟️ Tarjeta de sellos</span><h2>Cada visita suma</h2><p class="sub">Completá la tarjeta digital de tu local favorito y llevate el premio. Sin cartoncitos que se pierden.</p>
+      <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver locales</button></div></div>
+    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">🎟️<span class="tag">4 de 5</span></div></div>
+  </div></section>
+  <section class="ld-band b4"><div class="ld-w">
+    <div><span class="ld-chip">🍽️ Menú y pedidos</span><h2>Pedí desde el menú del local</h2><p class="sub">Elegí lo que querés, sumá aclaraciones y te llega todo armado al WhatsApp del local. Retiro o envío.</p>
+      <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver menús</button></div></div>
+    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">🛒<span class="tag">2 × Muzza</span></div></div>
   </div></section>
 
-  <section class="ld-sec" style="padding-top:0"><div class="ld-w">
-    <a class="ld-local" href="/comercios"><span class="em" aria-hidden="true">🏪</span><p><b>¿Tenés un local?</b> Sumalo gratis a Tucupón y conseguí más clientes.</p><span class="go"><span class="t">Conocé más </span>→</span></a>
+  <section class="ld-com"><div class="ld-w">
+    <div><span class="ld-chip"><span class="dot"></span>Para comercios</span><h2>Más clientes, en los horarios que vos elegís</h2>
+      <p class="sub">Publicá descuentos en la guía de Tucumán, hacé que tus clientes vuelvan y medí cada canje. Gratis durante el lanzamiento.</p>
+      <div class="ld-acts"><a class="ld-cbtn white" href="/comercios">Sumar mi local <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="ld-cbtn ghost" href="/local">Ingresar al panel</a></div></div>
+    <div class="ld-ben">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7Z"/></svg><span><b>Local fundador</b><span>Los primeros 10 llevan insignia, lugar destacado y precio congelado de por vida.</span></span></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg><span><b>Tus números, claros</b><span>Canjes, horarios flojos y clientes fieles en tu panel.</span></span></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><b>Códigos que no se repiten</b><span>Cada código es único y se valida una sola vez.</span></span></div>
+    </div>
   </div></section>
 
   <footer class="ld-pie"><div class="ld-w">
+    <div class="marca"><picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture><span>Hecho en Tucumán</span></div>
     <p class="ld-legal">Tucupón es una guía y plataforma de beneficios gastronómicos en Tucumán. Los comercios sin cupones activos figuran solo como directorio informativo: ningún descuento se publica a menos que el local se adhiera y lo cargue. ¿Querés sumar tu local? <a href="/comercios">Sumate acá</a>.</p>
-    <span>© Tucupón · Hecho en Tucumán</span>
+    <span>© Tucupón</span>
     <nav><a class="ig-pie" href="https://www.instagram.com/clubtucuponapp/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@clubtucuponapp</a><a href="/como-funciona">Cómo funciona Tucupón</a><a href="/comercios">Para comercios</a><a href="/otros-servicios">Otros servicios</a><a href="/local">Panel del local</a><a href="/terminos">Términos</a><a href="/privacidad">Privacidad</a></nav>
   </div></footer>
 </section>
@@ -2465,6 +2558,30 @@ document.addEventListener('click', e => {
   if(a){ entrarInvitado(a.dataset.irApp || null); }
 });
 
+// ---------- Portada: diapositivas del hero ----------
+(function(){
+  const hero = $('ld-hero'); if(!hero) return;
+  const slides = [...hero.querySelectorAll('.ld-slide')], tabs = [...hero.querySelectorAll('.ld-tab')], DUR = 7000;
+  let i = 0, t = null, restante = DUR, inicio = 0;
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function ir(n){
+    i = (n + slides.length) % slides.length;
+    slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.inert = k !== i; });
+    tabs.forEach((b, k) => { b.classList.remove('on'); b.setAttribute('aria-selected', String(k === i)); });
+    void hero.offsetWidth; tabs[i].classList.add('on'); tabs[i].style.setProperty('--dur', DUR + 'ms');
+    restante = DUR; programar();
+  }
+  function programar(){ clearTimeout(t); if(quieto) return; inicio = Date.now(); t = setTimeout(() => ir(i + 1), restante); }
+  tabs.forEach((b, k) => b.addEventListener('click', () => ir(k)));
+  hero.addEventListener('mouseenter', () => { if(quieto) return; hero.classList.add('pausa'); clearTimeout(t); restante -= Date.now() - inicio; });
+  hero.addEventListener('mouseleave', () => { if(quieto) return; hero.classList.remove('pausa'); programar(); });
+  let x0 = null;
+  hero.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
+  hero.addEventListener('touchend', e => { if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if(Math.abs(dx) > 50) ir(i + (dx < 0 ? 1 : -1)); x0 = null; });
+  document.addEventListener('visibilitychange', () => { if(document.hidden) clearTimeout(t); else programar(); });
+  ir(0);
+})();
+
 // ---------- Portada: rubros reales desde el catálogo ----------
 let portadaLista = false;
 async function cargarPortada(){
@@ -2474,7 +2591,9 @@ async function cargarPortada(){
     const ls = LOCALES.filter(enProv), n = id => ls.filter(l => l.rubro === id).length;
     const rs = RUBROS.filter(r => n(r.id) > 0);
     if(!rs.length){ $('ld-sec-rubros').hidden = true; return; }
-    $('ld-rubros').innerHTML = rs.map(r => `<button type="button" class="ld-ru" data-ir-app="${esc(r.id)}" style="--rc:${esc(r.color || '#7B3FF0')}"><span class="ic em" aria-hidden="true">${esc(r.icono)}</span><span style="min-width:0"><b>${esc(r.nombre)}</b><small>${n(r.id)} ${n(r.id) === 1 ? 'local' : 'locales'}</small></span></button>`).join('');
+    const dsc = id => CUPONES.filter(c => ls.some(l => l.id === c.local && l.rubro === id)).length;
+    $('ld-rubros').innerHTML = rs.map(r => `<button type="button" class="ld-ru" data-ir-app="${esc(r.id)}" style="--rc:${esc(r.color || '#7B3FF0')}"><span class="ic em" aria-hidden="true">${esc(r.icono)}</span><span class="flecha" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span style="min-width:0"><b>${esc(r.nombre)}</b><small>${n(r.id)} ${n(r.id) === 1 ? 'local' : 'locales'}${dsc(r.id) ? ` · ${dsc(r.id)} ${dsc(r.id) === 1 ? 'descuento' : 'descuentos'}` : ''}</small></span></button>`).join('');
+    if(ls.length >= 5) $('ld-cuantos').textContent = `${ls.length} locales en Tucumán y el Norte`;
     portadaLista = true;
   }catch(e){ $('ld-sec-rubros').hidden = true; }
 }
