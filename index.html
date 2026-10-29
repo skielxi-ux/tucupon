@@ -140,24 +140,6 @@ p{margin:0}
 .ld-chk span{display:inline-flex;align-items:center;gap:6px}
 .ld-chk svg{width:15px;height:15px;color:var(--accent,#C4F04A)}
 @media (max-width:560px){.ld-acts .ld-cbtn{width:100%}.ld-slide .in{align-items:flex-end}}
-/* Panel de ejemplo (diapositiva comercios) */
-.ld-demo{display:none}
-@media (min-width:980px){.ld-demo{display:block;position:absolute;right:32px;top:50%;transform:translateY(-58%);width:340px}}
-.ld-dcard{background:#fff;color:#16113A;border-radius:22px;padding:18px;box-shadow:0 30px 60px -24px rgba(0,0,0,.55)}
-.ld-dcard small{display:block;font-size:.72rem;font-weight:700;color:#6B6785;text-transform:uppercase;letter-spacing:.06em}
-.ld-dcard .cod{display:flex;align-items:center;gap:10px;margin-top:10px;border:2px dashed #CDBDF5;border-radius:14px;padding:10px 12px}
-.ld-dcard .cod b{font-family:var(--font-mono);font-size:1.3rem;letter-spacing:.05em;flex:1}
-.ld-dcard .ok{display:inline-flex;align-items:center;gap:5px;background:#E3F7EC;color:#0B7A54;font-weight:800;font-size:.8rem;padding:4px 10px;border-radius:99px}
-.ld-dcard .ok svg{width:14px;height:14px}
-.ld-dcard .cup{display:flex;gap:10px;align-items:center;margin-top:12px;font-weight:700;font-size:.92rem}
-.ld-dcard .cup span{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#EEE8FF;font-size:1.2rem}
-.ld-dkpi{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ld-dkpi>div{background:#fff;color:#16113A;border-radius:18px;padding:14px;box-shadow:0 24px 50px -24px rgba(0,0,0,.55)}
-.ld-dkpi>div>b{display:block;font-family:var(--ld-d);font-size:1.8rem;line-height:1;color:#4F1BB5}
-.ld-dkpi span{display:block;font-size:.78rem;color:#6B6785;font-weight:600;margin-top:4px}
-.ld-dbar{display:flex;align-items:flex-end;gap:5px;height:44px;margin-top:8px}
-.ld-dbar i{flex:1;border-radius:4px 4px 2px 2px;background:#E4DAFF}
-.ld-dbar i.h{background:var(--brand)}
 /* Indicadores de diapositiva */
 .ld-tabs{position:absolute;left:0;right:0;bottom:0;z-index:3}
 .ld-tabs .ld-w{display:flex;gap:18px;padding-bottom:26px}
@@ -751,7 +733,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   <header class="ld-top"><div class="ld-w">
     <nav class="ld-nav" aria-label="Principal">
       <a class="ld-logo" href="/" aria-label="Tucupón, inicio"><picture><source srcset="logo.png" media="(prefers-color-scheme: dark)"><img src="logo-oscuro.png" alt="Tucupón" width="656" height="160"></picture></a>
-      <div class="ld-menu"><a href="/" aria-current="page">Inicio</a><a href="#ld-como">Cómo funciona</a><a href="/comercios">Para comercios</a></div>
+      <div class="ld-menu"><a href="/" aria-current="page">Inicio</a><a href="#ld-como">Cómo funciona</a><a href="/comercios">Info para comercios</a></div>
       <div class="r"><button type="button" class="ld-pbtn brand solo-ancho" data-ir-app>Ver descuentos</button><button type="button" class="ld-pbtn line" data-ir-auth="login">Ingresar</button></div>
     </nav>
   </div></header>
@@ -782,16 +764,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
             <a class="ld-cbtn ghost" href="/comercios#fundador">Quiero ser Local fundador</a>
           </div>
         </div>
-        <div class="ld-demo" aria-hidden="true">
-          <div class="ld-dcard"><small>Validar código</small>
-            <div class="cod"><b>TC-4821</b><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Canjeado</span></div>
-            <div class="cup"><span>🍺</span>2x1 en cerveza artesanal</div>
-          </div>
-          <div class="ld-dkpi">
-            <div><b>+38</b><span>clientes este mes</span></div>
-            <div><span style="margin:0">Martes flojos</span><div class="ld-dbar"><i style="height:40%"></i><i style="height:55%"></i><i class="h" style="height:95%"></i><i style="height:60%"></i><i style="height:75%"></i></div></div>
-          </div>
-        </div></div>
+        </div>
       </article>
     </div>
     <div class="ld-tabs"><div class="ld-w" role="tablist" aria-label="Diapositivas">
