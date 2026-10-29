@@ -113,14 +113,12 @@ p{margin:0}
 .ld-slide .bg img{width:100%;height:100%;object-fit:cover;object-position:70% 42%;transform:scale(1.06);transition:transform 8s ease-out}
 .ld-slide.on .bg img{transform:scale(1)}
 .ld-slide .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,8,58,.94) 0%,rgba(22,8,58,.78) 38%,rgba(22,8,58,.25) 72%,rgba(22,8,58,.1) 100%),linear-gradient(0deg,rgba(22,8,58,.75) 0%,rgba(22,8,58,0) 40%)}
-@media (min-width:900px){
-  .ld-slide.s1 .bg{background:linear-gradient(135deg,#16083A,#2B0F63)}
-  .ld-slide.s1 .bg img{position:absolute;right:0;top:0;width:58%;height:100%;object-position:50% 35%}
-  .ld-slide.s1 .bg::after{background:linear-gradient(90deg,#1A0A45 0%,#1A0A45 42%,rgba(26,10,69,.55) 56%,rgba(26,10,69,0) 75%),linear-gradient(0deg,rgba(22,8,58,.6) 0%,rgba(22,8,58,0) 30%)}
-}
 @media (max-width:640px){.ld-slides{min-height:730px}.ld-slide .in{padding-block:40px 104px}}
-.ld-slide.s2 .bg{background:radial-gradient(700px 500px at 85% 30%,#7B3FF0 0%,transparent 60%),radial-gradient(600px 420px at 70% 100%,rgba(196,240,74,.28) 0%,transparent 60%),linear-gradient(135deg,#1A0B42,#3A158F 70%,#5B22C7)}
-.ld-slide.s2 .bg::after{display:none}
+.ld-slide.s1 .bg img{object-position:62% 30%}
+@media (min-width:641px){.ld-slide.s1 .bg::after{background:linear-gradient(90deg,rgba(22,8,58,.94) 0%,rgba(22,8,58,.72) 34%,rgba(22,8,58,.18) 56%,rgba(22,8,58,0) 72%),linear-gradient(0deg,rgba(22,8,58,.7) 0%,rgba(22,8,58,0) 30%)}}
+.ld-slide.s2 .bg img{object-position:50% 50%}
+.ld-slide.s2 .bg::after{background:linear-gradient(90deg,rgba(22,8,58,.95) 0%,rgba(43,15,99,.82) 40%,rgba(43,15,99,.45) 70%,rgba(43,15,99,.35) 100%),linear-gradient(0deg,rgba(22,8,58,.75) 0%,rgba(22,8,58,0) 40%)}
+@media (max-width:640px){.ld-slide .bg img{object-position:50% 30%}.ld-slide .bg::after{background:linear-gradient(0deg,rgba(22,8,58,.97) 0%,rgba(22,8,58,.86) 48%,rgba(22,8,58,.35) 78%,rgba(22,8,58,.2) 100%)}}
 .ld-slide .in{position:relative;height:100%;display:flex;align-items:center;padding-block:56px 120px}
 .ld-copy{max-width:36rem}
 .ld-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;font-weight:600;font-size:.84rem;padding:6px 13px;border-radius:99px}
@@ -760,7 +758,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
   <div class="ld-hero" id="ld-hero">
     <div class="ld-slides">
       <article class="ld-slide s1 on" aria-roledescription="diapositiva" aria-label="1 de 2: Descuentos">
-        <div class="bg"><picture><source media="(max-width:640px)" srcset="hero-descuentos-m.webp"><img src="hero-descuentos.webp" alt="" width="1080" height="1234" fetchpriority="high" decoding="async"></picture></div>
+        <div class="bg"><picture><source media="(max-width:640px)" srcset="hero-usuarios-m.webp"><img src="hero-usuarios.webp" alt="Chica sonriendo mientras mira descuentos en el celular" width="1920" height="1280" fetchpriority="high" decoding="async"></picture></div>
         <div class="ld-w in"><div class="ld-copy">
           <span class="ld-chip"><span class="dot"></span><span id="ld-cuantos">Tucumán y el Norte · Guía de descuentos</span></span>
           <h1>Los mejores descuentos de <em>Tucumán y el Norte</em></h1>
@@ -773,7 +771,7 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
         </div></div>
       </article>
       <article class="ld-slide s2" aria-roledescription="diapositiva" aria-label="2 de 2: Para comercios">
-        <div class="bg"></div>
+        <div class="bg"><picture><source media="(max-width:640px)" srcset="hero-comercios-m.webp"><img src="hero-comercios.webp" alt="Interior de un bar con barra y mesas" width="1920" height="1280" loading="lazy" decoding="async"></picture></div>
         <div class="ld-w in"><div class="ld-copy">
           <span class="ld-chip"><span class="dot"></span>Para comercios · Gratis en el lanzamiento</span>
           <h2>Llená tus <em>horarios flojos</em></h2>
