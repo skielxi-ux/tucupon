@@ -213,16 +213,17 @@ p{margin:0}
 .ld-band h2{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:800;line-height:1.02;margin-top:16px;color:#fff;max-width:32rem;text-wrap:balance}
 .ld-band p.sub{font-size:1.08rem;line-height:1.6;color:rgba(255,255,255,.8);margin-top:14px;max-width:30rem}
 .ld-band .ld-acts{margin-top:26px}
-.ld-band.b1{background:linear-gradient(100deg,#1A0B42 0%,#2B0F63 45%,#6A2BE0 100%)}
-.ld-band.b2{background:linear-gradient(100deg,#1A0B42 0%,#3A1A2E 40%,#B9721F 100%)}
-.ld-band.b3{background:linear-gradient(100deg,#0F2A2E 0%,#0F4C47 45%,#14946A 100%)}
-.ld-band.b4{background:linear-gradient(100deg,#1A0B42 0%,#2B1A6E 45%,#2F56D9 100%)}
-.ld-vis{display:none}
-@media (min-width:900px){.ld-vis{display:grid;justify-items:center}}
-.ld-orb{position:relative;width:260px;height:260px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22),rgba(255,255,255,.04) 60%);border:1px solid rgba(255,255,255,.18);font-size:6.5rem;box-shadow:inset 0 0 60px rgba(255,255,255,.06)}
-.ld-orb .tag{position:absolute;right:-6px;top:30px;background:#fff;color:#1A0B42;font-family:var(--ld-d);font-weight:800;font-size:1.05rem;padding:8px 14px;border-radius:14px;box-shadow:0 18px 36px -18px rgba(0,0,0,.6)}
-.ld-orb .tag.l{right:auto;left:-14px;top:auto;bottom:34px;background:var(--accent,#C4F04A)}
-
+.ld-band{background:#1A0B42}
+.ld-bg{position:absolute;inset:0}
+.ld-bg img{width:100%;height:100%;object-fit:cover;display:block}
+.ld-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--b0) 0%,var(--b1) 38%,var(--b2) 62%,transparent 85%)}
+.ld-band .ld-w{grid-template-columns:1fr}
+.ld-band .ld-w>div{max-width:32rem}
+.ld-band.b1{--b0:rgba(26,11,66,.96);--b1:rgba(43,15,99,.86);--b2:rgba(43,15,99,.28)}
+.ld-band.b2{--b0:rgba(42,20,8,.95);--b1:rgba(92,48,16,.82);--b2:rgba(120,70,20,.22)}
+.ld-band.b3{--b0:rgba(8,38,36,.96);--b1:rgba(12,72,62,.84);--b2:rgba(16,110,84,.25)}
+.ld-band.b4{--b0:rgba(15,16,58,.96);--b1:rgba(36,32,120,.84);--b2:rgba(47,86,217,.22)}
+@media (max-width:640px){.ld-band{padding-block:280px 56px}.ld-bg::after{background:linear-gradient(0deg,var(--b0) 0%,var(--b0) 42%,var(--b1) 56%,transparent 80%)}.ld-bg img{object-position:50% 18%!important}.ld-band.b4 .ld-bg img{object-position:50% 45%!important}.ld-band.b2 .ld-bg img{object-position:40% 62%!important}}
 /* Bloque comercios */
 .ld-com{background:var(--ld-noche);color:#fff;padding-block:80px}
 @media (min-width:900px){.ld-com{padding-block:112px}}
@@ -815,25 +816,21 @@ main.wrap{margin-top:-60px;padding-bottom:64px;position:relative}
     </div>
   </div></section>
 
-  <section class="ld-band b1"><div class="ld-w">
+  <section class="ld-band b1"><div class="ld-bg"><picture><source media="(max-width:640px)" srcset="band-relampago-m.webp"><img src="band-relampago.webp" alt="Pareja brindando en un restaurante" width="1600" height="1066" loading="lazy" decoding="async" style="object-position:65% 40%"></picture></div><div class="ld-w">
     <div><span class="ld-chip">⚡ Cupones relámpago</span><h2>Descuentos fuertes, por pocas horas</h2><p class="sub">Pocos códigos y tiempo limitado: el que llega primero, gana. Mirá los que están activos ahora.</p>
       <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver descuentos</button></div></div>
-    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">⚡<span class="tag">-40%</span><span class="tag l">Quedan 6</span></div></div>
   </div></section>
-  <section class="ld-band b2"><div class="ld-w">
+  <section class="ld-band b2"><div class="ld-bg"><picture><source media="(max-width:640px)" srcset="band-caja-m.webp"><img src="band-caja.webp" alt="Bolsa de papel con frutas y verduras" width="1600" height="1066" loading="lazy" decoding="async" style="object-position:70% 60%"></picture></div><div class="ld-w">
     <div><span class="ld-chip">🎁 Caja Sorpresa</span><h2>Lo que sobró del día, a precio bajísimo</h2><p class="sub">Reservá una caja, pasá a retirarla en el horario y pagala en el local. Ahorrás vos y no se tira comida.</p>
       <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver Cajas Sorpresa</button></div></div>
-    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">🎁<span class="tag">Hoy 19 h</span></div></div>
   </div></section>
-  <section class="ld-band b3"><div class="ld-w">
+  <section class="ld-band b3"><div class="ld-bg"><picture><source media="(max-width:640px)" srcset="band-sellos-m.webp"><img src="band-sellos.webp" alt="Cliente pagando en la barra de un bar" width="1600" height="1066" loading="lazy" decoding="async" style="object-position:62% 12%"></picture></div><div class="ld-w">
     <div><span class="ld-chip">🎟️ Tarjeta de sellos</span><h2>Cada visita suma</h2><p class="sub">Completá la tarjeta digital de tu local favorito y llevate el premio. Sin cartoncitos que se pierden.</p>
       <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver locales</button></div></div>
-    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">🎟️<span class="tag">4 de 5</span></div></div>
   </div></section>
-  <section class="ld-band b4"><div class="ld-w">
+  <section class="ld-band b4"><div class="ld-bg"><picture><source media="(max-width:640px)" srcset="band-menu-m.webp"><img src="band-menu.webp" alt="Hamburguesa doble con queso" width="1600" height="1066" loading="lazy" decoding="async" style="object-position:60% 34%"></picture></div><div class="ld-w">
     <div><span class="ld-chip">🍽️ Menú y pedidos</span><h2>Pedí desde el menú del local</h2><p class="sub">Elegí lo que querés, sumá aclaraciones y te llega todo armado al WhatsApp del local. Retiro o envío.</p>
       <div class="ld-acts"><button type="button" class="ld-cbtn white" data-ir-app>Ver menús</button></div></div>
-    <div class="ld-vis" aria-hidden="true"><div class="ld-orb">🛒<span class="tag">2 × Muzza</span></div></div>
   </div></section>
 
   <section class="ld-com"><div class="ld-w">
